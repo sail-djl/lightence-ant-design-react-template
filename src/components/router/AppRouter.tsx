@@ -16,10 +16,16 @@ import RequireAuth from '@app/components/router/RequireAuth';
 import { withLoading } from '@app/hocs/withLoading.hoc';
 import NftDashboardPage from '@app/pages/DashboardPages/NftDashboardPage';
 import MedicalDashboardPage from '@app/pages/DashboardPages/MedicalDashboardPage';
+import FinanceDashboardPage from '@app/pages/DashboardPages/FinanceDashboardPage';
 
 const NewsFeedPage = React.lazy(() => import('@app/pages/NewsFeedPage'));
 const DataTablesPage = React.lazy(() => import('@app/pages/DataTablesPage'));
 const ChartsPage = React.lazy(() => import('@app/pages/ChartsPage'));
+const KlinePage = React.lazy(() => import('@app/pages/trading/KlinePage'));
+const PortfolioPage = React.lazy(() => import('@app/pages/trading/PortfolioPage'));
+const StockMarketPage = React.lazy(() => import('@app/pages/market/StockMarketPage'));
+const CryptoMarketPage = React.lazy(() => import('@app/pages/market/CryptoMarketPage'));
+const ForexMarketPage = React.lazy(() => import('@app/pages/market/ForexMarketPage'));
 const ServerErrorPage = React.lazy(() => import('@app/pages/ServerErrorPage'));
 const Error404Page = React.lazy(() => import('@app/pages/Error404Page'));
 const AdvancedFormsPage = React.lazy(() => import('@app/pages/AdvancedFormsPage'));
@@ -65,8 +71,14 @@ export const MEDICAL_DASHBOARD_PATH = '/medical-dashboard';
 
 const MedicalDashboard = withLoading(MedicalDashboardPage);
 const NftDashboard = withLoading(NftDashboardPage);
+const FinanceDashboard = withLoading(FinanceDashboardPage);
 const NewsFeed = withLoading(NewsFeedPage);
 const AdvancedForm = withLoading(AdvancedFormsPage);
+const Kline = withLoading(KlinePage);
+const Portfolio = withLoading(PortfolioPage);
+const StockMarket = withLoading(StockMarketPage);
+const CryptoMarket = withLoading(CryptoMarketPage);
+const ForexMarket = withLoading(ForexMarketPage);
 
 // UI Components
 const Buttons = withLoading(ButtonsPage);
@@ -129,8 +141,17 @@ export const AppRouter: React.FC = () => {
     <BrowserRouter>
       <Routes>
         <Route path={NFT_DASHBOARD_PATH} element={protectedLayout}>
-          <Route index element={<NftDashboard />} />
+          <Route index element={<FinanceDashboard />} />
           <Route path={MEDICAL_DASHBOARD_PATH} element={<MedicalDashboard />} />
+          <Route path="market">
+            <Route path="stock" element={<StockMarket />} />
+            <Route path="crypto" element={<CryptoMarket />} />
+            <Route path="forex" element={<ForexMarket />} />
+          </Route>
+          <Route path="trading">
+            <Route path="kline" element={<Kline />} />
+            <Route path="portfolio" element={<Portfolio />} />
+          </Route>
           <Route path="apps">
             <Route path="feed" element={<NewsFeed />} />
           </Route>
