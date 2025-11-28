@@ -10,14 +10,14 @@ interface Language {
 export const languages: Language[] = [
   {
     id: 1,
-    name: 'en',
-    title: 'English',
-    countryCode: 'gb',
+    name: 'zh',
+    title: '中文',
+    countryCode: 'cn',
   },
   {
     id: 2,
-    name: 'de',
-    title: 'German',
-    countryCode: 'de',
+    name: 'en',
+    title: 'English',
+    countryCode: 'gb',
   },
 ];
