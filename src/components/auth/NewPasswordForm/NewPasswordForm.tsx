@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { notificationController } from '@app/controllers/notificationController';
@@ -23,10 +23,32 @@ export const NewPasswordForm: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+  const [token, setToken] = useState<string | null>(null);
+
+  // 从 URL 查询参数中获取 token（FastAPI 密码重置链接会包含 token）
+  useEffect(() => {
+    const tokenFromUrl = searchParams.get('token');
+    if (tokenFromUrl) {
+      setToken(tokenFromUrl);
+    } else {
+      // 如果没有 token，显示错误并跳转
+      notificationController.error({
+        message: t('newPassword.tokenMissing'),
+        description: t('newPassword.tokenMissingDescription'),
+      });
+      navigate('/auth/forgot-password');
+    }
+  }, [searchParams, navigate, t]);
 
   const handleSubmit = (values: NewPasswordFormData) => {
+    if (!token) {
+      notificationController.error({ message: t('newPassword.tokenMissing') });
+      return;
+    }
+
     setLoading(true);
-    dispatch(doSetNewPassword({ newPassword: values.password }))
+    dispatch(doSetNewPassword({ newPassword: values.password, token }))
       .unwrap()
       .then(() => {
         navigate('/auth/login');

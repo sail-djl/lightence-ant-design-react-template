@@ -24,8 +24,8 @@ export const KlineChart: React.FC<KlineChartProps> = ({
 }) => {
   const [klineData, setKlineData] = useState<KlineData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentSymbol, setCurrentSymbol] = useState(symbol);
-  const [currentInterval, setCurrentInterval] = useState(defaultInterval);
+  const [currentSymbol, setCurrentSymbol] = useState<string>(symbol);
+  const [currentInterval, setCurrentInterval] = useState<string>(defaultInterval);
   const theme = useAppSelector((state) => state.theme.theme);
 
   useEffect(() => {
@@ -189,10 +189,12 @@ export const KlineChart: React.FC<KlineChartProps> = ({
   return (
     <S.KlineChartWrapper>
       <S.ChartControls>
-        <S.SymbolSelect
+        <Select
           value={currentSymbol}
-          onChange={setCurrentSymbol}
-          style={{ width: 120 }}
+          onChange={(value) => {
+            setCurrentSymbol(value as string);
+          }}
+          style={{ width: 120, minWidth: 120 }}
         >
           <Option value="AAPL">AAPL</Option>
           <Option value="MSFT">MSFT</Option>
@@ -200,10 +202,12 @@ export const KlineChart: React.FC<KlineChartProps> = ({
           <Option value="TSLA">TSLA</Option>
           <Option value="BTC/USDT">BTC/USDT</Option>
           <Option value="ETH/USDT">ETH/USDT</Option>
-        </S.SymbolSelect>
+        </Select>
         <Select
           value={currentInterval}
-          onChange={setCurrentInterval}
+          onChange={(value) => {
+            setCurrentInterval(value as string);
+          }}
           style={{ width: 100 }}
         >
           <Option value="1m">1分钟</Option>
@@ -219,4 +223,5 @@ export const KlineChart: React.FC<KlineChartProps> = ({
     </S.KlineChartWrapper>
   );
 };
+
 
