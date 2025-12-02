@@ -17,6 +17,7 @@ import { withLoading } from '@app/hocs/withLoading.hoc';
 import NftDashboardPage from '@app/pages/DashboardPages/NftDashboardPage';
 import MedicalDashboardPage from '@app/pages/DashboardPages/MedicalDashboardPage';
 import FinanceDashboardPage from '@app/pages/DashboardPages/FinanceDashboardPage';
+import IndexDashboardPage from '@app/pages/index/IndexDashboardPage';
 
 const NewsFeedPage = React.lazy(() => import('@app/pages/NewsFeedPage'));
 const DataTablesPage = React.lazy(() => import('@app/pages/DataTablesPage'));
@@ -151,6 +152,9 @@ export const AppRouter: React.FC = () => {
           <Route path="trading">
             <Route path="kline" element={<Kline />} />
             <Route path="portfolio" element={<Portfolio />} />
+          </Route>
+          <Route path="index">
+            <Route path="dashboard" element={<IndexDashboardPage />} />
           </Route>
           <Route path="apps">
             <Route path="feed" element={<NewsFeed />} />

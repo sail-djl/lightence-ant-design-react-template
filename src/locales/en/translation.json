@@ -143,6 +143,8 @@
     "country": "Country",
     "nft-dashboard": "NFT Dashboard",
     "finance-dashboard": "Finance Dashboard",
+    "index": "Index",
+    "index-dashboard": "Dashboard",
     "market": "Market",
     "stock-market": "Stock Market",
     "crypto-market": "Crypto Market",

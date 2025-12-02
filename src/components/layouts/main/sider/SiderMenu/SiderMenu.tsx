@@ -1,22 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import * as S from './SiderMenu.styles';
-import { sidebarNavigation, SidebarNavigationItem } from '../sidebarNavigation';
+import { convertMenuToSidebarNavigation, SidebarNavigationItem } from '../sidebarNavigation';
+import { getMenuTree, MenuItem } from '@app/api/menu.api';
 
 interface SiderContentProps {
   setCollapsed: (isCollapsed: boolean) => void;
 }
 
-const sidebarNavFlat = sidebarNavigation.reduce(
-  (result: SidebarNavigationItem[], current) =>
-    result.concat(current.children && current.children.length > 0 ? current.children : current),
-  [],
-);
-
 const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
   const { t } = useTranslation();
   const location = useLocation();
+  const [sidebarNavigation, setSidebarNavigation] = useState<SidebarNavigationItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // 从后端获取菜单数据
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        setLoading(true);
+        const menus = await getMenuTree();
+        const navigation = convertMenuToSidebarNavigation(menus);
+        setSidebarNavigation(navigation);
+      } catch (error) {
+        console.error('Failed to fetch menu:', error);
+        // 如果获取失败，使用空数组（不显示菜单）
+        setSidebarNavigation([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMenu();
+  }, []);
+
+  // 将嵌套菜单结构扁平化
+  const sidebarNavFlat = sidebarNavigation.reduce(
+    (result: SidebarNavigationItem[], current) =>
+      result.concat(current.children && current.children.length > 0 ? current.children : current),
+    [],
+  );
 
   const currentMenuItem = sidebarNavFlat.find(({ url }) => url === location.pathname);
   const defaultSelectedKeys = currentMenuItem ? [currentMenuItem.key] : [];
@@ -25,6 +49,11 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
     children?.some(({ url }) => url === location.pathname),
   );
   const defaultOpenKeys = openedSubmenu ? [openedSubmenu.key] : [];
+
+  // 如果正在加载，显示空菜单
+  if (loading) {
+    return <S.Menu mode="inline" items={[]} />;
+  }
 
   return (
     <S.Menu
