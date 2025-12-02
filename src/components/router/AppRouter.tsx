@@ -14,7 +14,6 @@ import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';
 import ProfileLayout from '@app/components/profile/ProfileLayout';
 import RequireAuth from '@app/components/router/RequireAuth';
 import { withLoading } from '@app/hocs/withLoading.hoc';
-import NftDashboardPage from '@app/pages/DashboardPages/NftDashboardPage';
 import MedicalDashboardPage from '@app/pages/DashboardPages/MedicalDashboardPage';
 import FinanceDashboardPage from '@app/pages/DashboardPages/FinanceDashboardPage';
 import IndexDashboardPage from '@app/pages/index/IndexDashboardPage';
@@ -34,6 +33,9 @@ const PersonalInfoPage = React.lazy(() => import('@app/pages/PersonalInfoPage'))
 const SecuritySettingsPage = React.lazy(() => import('@app/pages/SecuritySettingsPage'));
 const NotificationsPage = React.lazy(() => import('@app/pages/NotificationsPage'));
 const PaymentsPage = React.lazy(() => import('@app/pages/PaymentsPage'));
+const UserManagementPage = React.lazy(() => import('@app/pages/system/UserManagementPage'));
+const MenuManagementPage = React.lazy(() => import('@app/pages/system/MenuManagementPage'));
+const RoleManagementPage = React.lazy(() => import('@app/pages/system/RoleManagementPage'));
 const ButtonsPage = React.lazy(() => import('@app/pages/uiComponentsPages/ButtonsPage'));
 const SpinnersPage = React.lazy(() => import('@app/pages/uiComponentsPages/SpinnersPage'));
 const AvatarsPage = React.lazy(() => import('@app/pages/uiComponentsPages/dataDisplay/AvatarsPage'));
@@ -71,7 +73,6 @@ export const NFT_DASHBOARD_PATH = '/';
 export const MEDICAL_DASHBOARD_PATH = '/medical-dashboard';
 
 const MedicalDashboard = withLoading(MedicalDashboardPage);
-const NftDashboard = withLoading(NftDashboardPage);
 const FinanceDashboard = withLoading(FinanceDashboardPage);
 const NewsFeed = withLoading(NewsFeedPage);
 const AdvancedForm = withLoading(AdvancedFormsPage);
@@ -127,6 +128,9 @@ const PersonalInfo = withLoading(PersonalInfoPage);
 const SecuritySettings = withLoading(SecuritySettingsPage);
 const Notifications = withLoading(NotificationsPage);
 const Payments = withLoading(PaymentsPage);
+const UserManagement = withLoading(UserManagementPage);
+const MenuManagement = withLoading(MenuManagementPage);
+const RoleManagement = withLoading(RoleManagementPage);
 
 const AuthLayoutFallback = withLoading(AuthLayout);
 const LogoutFallback = withLoading(Logout);
@@ -177,6 +181,11 @@ export const AppRouter: React.FC = () => {
             <Route path="security-settings" element={<SecuritySettings />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="payments" element={<Payments />} />
+          </Route>
+          <Route path="system">
+            <Route path="users" element={<UserManagement />} />
+            <Route path="menus" element={<MenuManagement />} />
+            <Route path="roles" element={<RoleManagement />} />
           </Route>
           <Route path="ui-components">
             <Route path="button" element={<Buttons />} />

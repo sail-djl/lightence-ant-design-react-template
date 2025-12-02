@@ -148,6 +148,3 @@ export const RiskLight = styled.span<RiskLightProps>`
       }
     }};
 `;
-
-
-

@@ -15,4 +15,3 @@ export const ChartControls = styled.div`
 export const SymbolSelect = styled(Select)`
   min-width: 120px;
 `;
-

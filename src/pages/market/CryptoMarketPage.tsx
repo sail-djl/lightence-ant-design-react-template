@@ -22,4 +22,3 @@ const CryptoMarketPage: React.FC = () => {
 };
 
 export default CryptoMarketPage;
-

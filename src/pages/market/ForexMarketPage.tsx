@@ -22,4 +22,3 @@ const ForexMarketPage: React.FC = () => {
 };
 
 export default ForexMarketPage;
-

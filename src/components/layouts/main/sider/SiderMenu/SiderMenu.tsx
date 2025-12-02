@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import * as S from './SiderMenu.styles';
 import { convertMenuToSidebarNavigation, SidebarNavigationItem } from '../sidebarNavigation';
-import { getMenuTree, MenuItem } from '@app/api/menu.api';
+import { getMenuTree } from '@app/api/menu.api';
 
 interface SiderContentProps {
   setCollapsed: (isCollapsed: boolean) => void;

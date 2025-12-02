@@ -50,20 +50,43 @@ const generateMockIndicators = (): FinancialIndicator[] => {
     { name: '创业板指', value: 2450.67, unit: '点', change: 8.5, trend: 'up' },
     { name: '沪深300', value: 4100.12, unit: '点', change: 12.8, trend: 'up' },
     { name: '美元指数', value: 103.45, unit: '点', change: -0.3, trend: 'down' },
-    { name: '黄金价格', value: 1980.50, unit: '美元/盎司', change: 5.2, trend: 'up' },
+    { name: '黄金价格', value: 1980.5, unit: '美元/盎司', change: 5.2, trend: 'up' },
   ];
 };
 
 const generateMockPortfolio = (): PortfolioData => {
   return {
-    totalValue: 1250000,
-    totalProfit: 125000,
+    totalValue: 1_250_000,
+    totalProfit: 125_000,
     totalProfitPercent: 11.11,
     positions: [
-      { symbol: 'AAPL', name: '苹果公司', quantity: 100, avgPrice: 150, currentPrice: 175, profit: 2500, profitPercent: 16.67 },
-      { symbol: 'MSFT', name: '微软', quantity: 50, avgPrice: 300, currentPrice: 350, profit: 2500, profitPercent: 16.67 },
-      { symbol: 'GOOGL', name: '谷歌', quantity: 30, avgPrice: 120, currentPrice: 140, profit: 600, profitPercent: 16.67 },
+      {
+        symbol: 'AAPL',
+        name: '苹果公司',
+        quantity: 100,
+        avgPrice: 150,
+        currentPrice: 175,
+        profit: 2500,
+        profitPercent: 16.67,
+      },
+      {
+        symbol: 'MSFT',
+        name: '微软',
+        quantity: 50,
+        avgPrice: 300,
+        currentPrice: 350,
+        profit: 2500,
+        profitPercent: 16.67,
+      },
+      {
+        symbol: 'GOOGL',
+        name: '谷歌',
+        quantity: 30,
+        avgPrice: 120,
+        currentPrice: 140,
+        profit: 600,
+        profitPercent: 16.67,
+      },
     ],
   };
 };
-

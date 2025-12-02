@@ -1,53 +1,42 @@
 import React from 'react';
-import {
-  CompassOutlined,
-  DashboardOutlined,
-  FormOutlined,
-  HomeOutlined,
-  LayoutOutlined,
-  LineChartOutlined,
-  TableOutlined,
-  UserOutlined,
-  BlockOutlined,
-} from '@ant-design/icons';
+import * as Icons from '@ant-design/icons';
 import { ReactComponent as NftIcon } from '@app/assets/icons/nft-icon.svg';
 
-/**
- * 图标名称到 React 组件的映射
- */
-const iconMap: Record<string, React.ReactNode> = {
-  CompassOutlined: <CompassOutlined />,
-  DashboardOutlined: <DashboardOutlined />,
-  FormOutlined: <FormOutlined />,
-  HomeOutlined: <HomeOutlined />,
-  LayoutOutlined: <LayoutOutlined />,
-  LineChartOutlined: <LineChartOutlined />,
-  TableOutlined: <TableOutlined />,
-  UserOutlined: <UserOutlined />,
-  BlockOutlined: <BlockOutlined />,
+// 自定义图标映射（非 Ant Design Icons 的图标）
+const customIconMap: Record<string, React.ReactNode> = {
   NftIcon: <NftIcon />,
 };
 
 /**
  * 根据图标名称获取 React 组件
- * @param iconName 图标名称（如 'LineChartOutlined'）
+ * 自动从 @ant-design/icons 中查找图标，无需手动注册
+ * @param iconName 图标名称（如 'LineChartOutlined', 'MenuOutlined', 'SafetyOutlined'）
  * @returns React 组件或 undefined
  */
 export const getIconComponent = (iconName?: string | null): React.ReactNode | undefined => {
   if (!iconName) {
     return undefined;
   }
-  return iconMap[iconName] || undefined;
+
+  // 先检查自定义图标
+  if (customIconMap[iconName]) {
+    return customIconMap[iconName];
+  }
+
+  // 从 @ant-design/icons 中动态获取图标
+  const IconComponent = (Icons as any)[iconName];
+  if (IconComponent && typeof IconComponent === 'function') {
+    return React.createElement(IconComponent);
+  }
+
+  return undefined;
 };
 
 /**
- * 注册新的图标映射
+ * 注册新的图标映射（用于自定义图标）
  * @param name 图标名称
  * @param component React 组件
  */
 export const registerIcon = (name: string, component: React.ReactNode): void => {
-  iconMap[name] = component;
+  customIconMap[name] = component;
 };
-
-
-

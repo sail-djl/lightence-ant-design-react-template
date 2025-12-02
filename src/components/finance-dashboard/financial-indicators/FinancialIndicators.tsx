@@ -53,7 +53,8 @@ export const FinancialIndicators: React.FC = () => {
                 />
                 {indicator.change !== undefined && (
                   <S.ChangeText isPositive={indicator.change >= 0}>
-                    {indicator.change >= 0 ? '+' : ''}{indicator.change.toFixed(2)}
+                    {indicator.change >= 0 ? '+' : ''}
+                    {indicator.change.toFixed(2)}
                   </S.ChangeText>
                 )}
               </Card>
@@ -64,5 +65,3 @@ export const FinancialIndicators: React.FC = () => {
     </S.IndicatorsWrapper>
   );
 };
-
-

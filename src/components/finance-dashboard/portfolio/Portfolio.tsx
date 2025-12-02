@@ -70,8 +70,8 @@ export const Portfolio: React.FC = () => {
       width: 120,
       render: (profit: number) => (
         <span style={{ color: profit >= 0 ? '#52c41a' : '#ff4d4f' }}>
-          {profit >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-          ${profit >= 0 ? '+' : ''}{profit.toFixed(2)}
+          {profit >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}${profit >= 0 ? '+' : ''}
+          {profit.toFixed(2)}
         </span>
       ),
     },
@@ -82,7 +82,8 @@ export const Portfolio: React.FC = () => {
       width: 120,
       render: (percent: number) => (
         <Tag color={percent >= 0 ? 'success' : 'error'}>
-          {percent >= 0 ? '+' : ''}{percent.toFixed(2)}%
+          {percent >= 0 ? '+' : ''}
+          {percent.toFixed(2)}%
         </Tag>
       ),
     },
@@ -109,8 +110,8 @@ export const Portfolio: React.FC = () => {
               value={portfolioData.totalProfit}
               precision={2}
               prefix="$"
-              valueStyle={{ 
-                color: portfolioData.totalProfit >= 0 ? '#52c41a' : '#ff4d4f' 
+              valueStyle={{
+                color: portfolioData.totalProfit >= 0 ? '#52c41a' : '#ff4d4f',
               }}
             />
           </Card>
@@ -122,22 +123,16 @@ export const Portfolio: React.FC = () => {
               value={portfolioData.totalProfitPercent}
               precision={2}
               suffix="%"
-              valueStyle={{ 
-                color: portfolioData.totalProfitPercent >= 0 ? '#52c41a' : '#ff4d4f' 
+              valueStyle={{
+                color: portfolioData.totalProfitPercent >= 0 ? '#52c41a' : '#ff4d4f',
               }}
             />
           </Card>
         </Col>
       </Row>
       <BaseCard title="持仓明细" padding="1.25rem 1.25rem 0" style={{ marginTop: 16 }}>
-        <Table
-          columns={columns}
-          dataSource={portfolioData.positions}
-          rowKey="symbol"
-          pagination={false}
-        />
+        <Table columns={columns} dataSource={portfolioData.positions} rowKey="symbol" pagination={false} />
       </BaseCard>
     </S.PortfolioWrapper>
   );
 };
-

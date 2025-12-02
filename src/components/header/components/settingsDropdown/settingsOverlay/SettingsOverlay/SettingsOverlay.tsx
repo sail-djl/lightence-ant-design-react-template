@@ -5,13 +5,24 @@ import { LanguagePicker } from '../LanguagePicker/LanguagePicker';
 import { NightModeSettings } from '../nightModeSettings/NightModeSettings';
 import { ThemePicker } from '../ThemePicker/ThemePicker';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
-import { useAppSelector } from '@app/hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
+import { clearPrompt } from '@app/store/slices/pwaSlice';
+import { getDeferredPrompt } from '@app/hooks/usePWA';
 import * as S from './SettingsOverlay.styles';
 
 export const SettingsOverlay: React.FC = ({ ...props }) => {
   const { t } = useTranslation();
 
-  const { isPWASupported, event } = useAppSelector((state) => state.pwa);
+  const dispatch = useAppDispatch();
+  const { isPWASupported, canPrompt } = useAppSelector((state) => state.pwa);
+
+  const handlePwaInstall = async () => {
+    const promptEvent = getDeferredPrompt();
+    if (promptEvent) {
+      await promptEvent.prompt();
+      dispatch(clearPrompt());
+    }
+  };
 
   return (
     <S.SettingsOverlayMenu {...props}>
@@ -26,9 +37,9 @@ export const SettingsOverlay: React.FC = ({ ...props }) => {
           <NightModeSettings />
         </DropdownCollapse.Panel>
       </DropdownCollapse>
-      {isPWASupported && (
+      {isPWASupported && canPrompt && (
         <S.PwaInstallWrapper>
-          <BaseButton block type="primary" onClick={() => event && (event as BeforeInstallPromptEvent).prompt()}>
+          <BaseButton block type="primary" onClick={handlePwaInstall}>
             {t('common.pwa')}
           </BaseButton>
         </S.PwaInstallWrapper>

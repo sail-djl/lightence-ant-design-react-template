@@ -7,7 +7,6 @@ import { MarketOverview } from '@app/components/finance-dashboard/market-overvie
 import { StockList } from '@app/components/finance-dashboard/stock-list/StockList';
 import { FinancialIndicators } from '@app/components/finance-dashboard/financial-indicators/FinancialIndicators';
 import { useResponsive } from '@app/hooks/useResponsive';
-import * as S from './DashboardPage.styles';
 
 const FinanceDashboardPage: React.FC = () => {
   const { isDesktop } = useResponsive();
@@ -55,4 +54,3 @@ const FinanceDashboardPage: React.FC = () => {
 };
 
 export default FinanceDashboardPage;
-

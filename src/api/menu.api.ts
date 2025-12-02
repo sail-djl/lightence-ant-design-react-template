@@ -12,54 +12,39 @@ export interface MenuItem {
   children?: MenuItem[];
 }
 
-/**
- * 获取菜单树
- */
+/** 获取权限树（菜单树） */
 export const getMenuTree = async (): Promise<MenuItem[]> => {
-  const response = await httpApi.get<MenuItem[]>('menu/tree');
+  const response = await httpApi.get<MenuItem[]>('permissions/tree');
   return response.data;
 };
 
-/**
- * 获取所有菜单（扁平列表，用于管理）
- */
-export const getAllMenus = async (skip: number = 0, limit: number = 100): Promise<{ data: MenuItem[]; count: number }> => {
-  const response = await httpApi.get<{ data: MenuItem[]; count: number }>('menu/', {
+/** 获取全部权限（菜单，平铺，用于管理页） */
+export const getAllMenus = async (skip = 0, limit = 100): Promise<{ data: MenuItem[]; count: number }> => {
+  const response = await httpApi.get<{ data: MenuItem[]; count: number }>('permissions/', {
     params: { skip, limit },
   });
   return response.data;
 };
 
-/**
- * 根据ID获取菜单
- */
+/** 根据 ID 获取权限（菜单） */
 export const getMenuById = async (id: number): Promise<MenuItem> => {
-  const response = await httpApi.get<MenuItem>(`menu/${id}`);
+  const response = await httpApi.get<MenuItem>(`permissions/${id}`);
   return response.data;
 };
 
-/**
- * 创建菜单
- */
+/** 创建权限（菜单） */
 export const createMenu = async (menu: Omit<MenuItem, 'id'>): Promise<MenuItem> => {
-  const response = await httpApi.post<MenuItem>('menu/', menu);
+  const response = await httpApi.post<MenuItem>('permissions/', menu);
   return response.data;
 };
 
-/**
- * 更新菜单
- */
+/** 更新权限（菜单） */
 export const updateMenu = async (id: number, menu: Partial<MenuItem>): Promise<MenuItem> => {
-  const response = await httpApi.put<MenuItem>(`menu/${id}`, menu);
+  const response = await httpApi.put<MenuItem>(`permissions/${id}`, menu);
   return response.data;
 };
 
-/**
- * 删除菜单
- */
+/** 删除权限（菜单） */
 export const deleteMenu = async (id: number): Promise<void> => {
-  await httpApi.delete(`menu/${id}`);
+  await httpApi.delete(`permissions/${id}`);
 };
-
-
-

@@ -18,4 +18,3 @@ const KlinePage: React.FC = () => {
 };
 
 export default KlinePage;
-

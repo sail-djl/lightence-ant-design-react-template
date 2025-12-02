@@ -46,7 +46,9 @@ export const MarketOverview: React.FC = () => {
                   prefix={item.change >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
                 />
                 <S.ChangeText isPositive={item.change >= 0}>
-                  {item.change >= 0 ? '+' : ''}{item.change.toFixed(2)} ({item.changePercent >= 0 ? '+' : ''}{item.changePercent.toFixed(2)}%)
+                  {item.change >= 0 ? '+' : ''}
+                  {item.change.toFixed(2)} ({item.changePercent >= 0 ? '+' : ''}
+                  {item.changePercent.toFixed(2)}%)
                 </S.ChangeText>
               </S.MarketPrice>
             </S.MarketItem>
@@ -56,4 +58,3 @@ export const MarketOverview: React.FC = () => {
     </S.MarketOverviewWrapper>
   );
 };
-

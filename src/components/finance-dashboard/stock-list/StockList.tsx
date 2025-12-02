@@ -52,10 +52,11 @@ export const StockList: React.FC = () => {
       dataIndex: 'change',
       key: 'change',
       width: 120,
-      render: (change: number, record: MarketData) => (
+      render: (change: number) => (
         <span style={{ color: change >= 0 ? '#52c41a' : '#ff4d4f' }}>
           {change >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-          {change >= 0 ? '+' : ''}{change.toFixed(2)}
+          {change >= 0 ? '+' : ''}
+          {change.toFixed(2)}
         </span>
       ),
       sorter: (a, b) => a.change - b.change,
@@ -67,7 +68,8 @@ export const StockList: React.FC = () => {
       width: 120,
       render: (changePercent: number) => (
         <Tag color={changePercent >= 0 ? 'success' : 'error'}>
-          {changePercent >= 0 ? '+' : ''}{changePercent.toFixed(2)}%
+          {changePercent >= 0 ? '+' : ''}
+          {changePercent.toFixed(2)}%
         </Tag>
       ),
       sorter: (a, b) => a.changePercent - b.changePercent,
@@ -83,8 +85,7 @@ export const StockList: React.FC = () => {
       title: '市值',
       dataIndex: 'marketCap',
       key: 'marketCap',
-      render: (marketCap?: number) => 
-        marketCap ? `$${(marketCap / 1000000000).toFixed(2)}B` : '-',
+      render: (marketCap?: number) => (marketCap ? `$${(marketCap / 1_000_000_000).toFixed(2)}B` : '-'),
       sorter: (a, b) => (a.marketCap || 0) - (b.marketCap || 0),
     },
   ];
@@ -105,4 +106,3 @@ export const StockList: React.FC = () => {
     </BaseCard>
   );
 };
-

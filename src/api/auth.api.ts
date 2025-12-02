@@ -164,7 +164,7 @@ export const setNewPassword = async (newPasswordData: NewPasswordData): Promise<
   if (!newPasswordData.token) {
     throw new Error('Token is required for password reset');
   }
-  
+
   // FastAPI 后端重置密码接口
   await httpApi.post<{ message: string }>('reset-password/', {
     token: newPasswordData.token,

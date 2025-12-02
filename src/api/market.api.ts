@@ -16,12 +16,10 @@ export const getMarketData = async (): Promise<MarketData[]> => {
     return response.data;
   } catch (error) {
     console.error('获取市场数据失败:', error);
-    // 返回模拟数据
     return generateMockMarketData();
   }
 };
 
-// 生成模拟市场数据
 const generateMockMarketData = (): MarketData[] => {
   const symbols = [
     { symbol: 'AAPL', name: '苹果公司' },
@@ -39,17 +37,15 @@ const generateMockMarketData = (): MarketData[] => {
     const basePrice = Math.random() * 500 + 50;
     const change = (Math.random() - 0.5) * 20;
     const changePercent = (change / basePrice) * 100;
-    
+
     return {
       symbol: item.symbol,
       name: item.name,
       price: Number(basePrice.toFixed(2)),
       change: Number(change.toFixed(2)),
       changePercent: Number(changePercent.toFixed(2)),
-      volume: Math.floor(Math.random() * 10000000) + 1000000,
-      marketCap: Math.floor(Math.random() * 1000000000000) + 100000000000,
+      volume: Math.floor(Math.random() * 10_000_000) + 1_000_000,
+      marketCap: Math.floor(Math.random() * 1_000_000_000_000) + 100_000_000_000,
     };
   });
 };
-
-

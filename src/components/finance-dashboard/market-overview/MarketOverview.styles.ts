@@ -16,7 +16,7 @@ export const MarketItem = styled.div`
   align-items: center;
   padding: 12px;
   border-bottom: 1px solid var(--border-color);
-  
+
   &:last-child {
     border-bottom: none;
   }
@@ -50,4 +50,3 @@ export const ChangeText = styled.div<{ isPositive: boolean }>`
   font-size: 12px;
   color: ${(props) => (props.isPositive ? '#52c41a' : '#ff4d4f')};
 `;
-

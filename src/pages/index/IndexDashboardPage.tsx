@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Card, Row, Col, Select, Statistic, Progress, Tag, Typography } from 'antd';
-import { ArrowUpOutlined, ArrowDownOutlined, DashboardOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
+import { Card, Row, Select, Typography } from 'antd';
 import ReactECharts from 'echarts-for-react';
+import type { CallbackDataParams, EChartsOption } from 'echarts';
 import { useTranslation } from 'react-i18next';
-import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import * as S from './IndexDashboardPage.styles';
@@ -11,30 +10,100 @@ import * as S from './IndexDashboardPage.styles';
 const { Title, Text } = Typography;
 const { Option } = Select;
 
-// Mock数据
 const mockIndexData = [
-  { name: '上证指数', code: '000001', value: 3125.68, change: 1.25, changePercent: 0.04, ytd: 5.32, volume: '3.2万亿', turnover: 0.85, pePercentile: 58.3, pbPercentile: 62.1, trend: 'strong' },
-  { name: '沪深300', code: '000300', value: 3856.42, change: -12.35, changePercent: -0.32, ytd: 3.21, volume: '1.8万亿', turnover: 0.72, pePercentile: 65.3, pbPercentile: 68.5, trend: 'weak' },
-  { name: '中证500', code: '000905', value: 5421.89, change: 28.56, changePercent: 0.53, ytd: 8.45, volume: '1.2万亿', turnover: 1.15, pePercentile: 45.2, pbPercentile: 48.7, trend: 'strong' },
-  { name: '创业板指', code: '399006', value: 2156.78, change: 15.23, changePercent: 0.71, ytd: 12.34, volume: '0.9万亿', turnover: 1.45, pePercentile: 72.5, pbPercentile: 75.2, trend: 'strong' },
-  { name: '上证50', code: '000016', value: 2654.32, change: -8.45, changePercent: -0.32, ytd: 2.15, volume: '0.6万亿', turnover: 0.58, pePercentile: 68.9, pbPercentile: 71.3, trend: 'weak' },
-  { name: '科创50', code: '000688', value: 985.67, change: 12.34, changePercent: 1.27, ytd: 15.67, volume: '0.3万亿', turnover: 1.85, pePercentile: 55.4, pbPercentile: 58.9, trend: 'strong' },
+  {
+    name: '上证指数',
+    code: '000001',
+    value: 3125.68,
+    change: 1.25,
+    changePercent: 0.04,
+    ytd: 5.32,
+    volume: '3.2万亿',
+    turnover: 0.85,
+    pePercentile: 58.3,
+    pbPercentile: 62.1,
+    trend: 'strong',
+  },
+  {
+    name: '沪深300',
+    code: '000300',
+    value: 3856.42,
+    change: -12.35,
+    changePercent: -0.32,
+    ytd: 3.21,
+    volume: '1.8万亿',
+    turnover: 0.72,
+    pePercentile: 65.3,
+    pbPercentile: 68.5,
+    trend: 'weak',
+  },
+  {
+    name: '中证500',
+    code: '000905',
+    value: 5421.89,
+    change: 28.56,
+    changePercent: 0.53,
+    ytd: 8.45,
+    volume: '1.2万亿',
+    turnover: 1.15,
+    pePercentile: 45.2,
+    pbPercentile: 48.7,
+    trend: 'strong',
+  },
+  {
+    name: '创业板指',
+    code: '399006',
+    value: 2156.78,
+    change: 15.23,
+    changePercent: 0.71,
+    ytd: 12.34,
+    volume: '0.9万亿',
+    turnover: 1.45,
+    pePercentile: 72.5,
+    pbPercentile: 75.2,
+    trend: 'strong',
+  },
+  {
+    name: '上证50',
+    code: '000016',
+    value: 2654.32,
+    change: -8.45,
+    changePercent: -0.32,
+    ytd: 2.15,
+    volume: '0.6万亿',
+    turnover: 0.58,
+    pePercentile: 68.9,
+    pbPercentile: 71.3,
+    trend: 'weak',
+  },
+  {
+    name: '科创50',
+    code: '000688',
+    value: 985.67,
+    change: 12.34,
+    changePercent: 1.27,
+    ytd: 15.67,
+    volume: '0.3万亿',
+    turnover: 1.85,
+    pePercentile: 55.4,
+    pbPercentile: 58.9,
+    trend: 'strong',
+  },
 ];
 
 const IndexDashboardPage: React.FC = () => {
   const { t } = useTranslation();
   const [selectedIndex, setSelectedIndex] = useState('000300');
 
-  // 风格热力图配置
-  const styleHeatmapOption = {
+  const styleHeatmapOption: EChartsOption = {
     title: {
-      text: '风格相对收益热力图 (近3月)',
+      text: '风格相对收益热力图(%)',
       left: 'center',
       textStyle: { fontSize: 14 },
     },
     tooltip: {
       position: 'top',
-      formatter: (params: any) => `${params.seriesName}<br/>${params.name}: ${params.value}%`,
+      formatter: (params: CallbackDataParams) => `${params.seriesName}<br/>${params.name}: ${params.value}%`,
     },
     grid: {
       height: '60%',
@@ -66,13 +135,27 @@ const IndexDashboardPage: React.FC = () => {
         name: '相对收益',
         type: 'heatmap',
         data: [
-          [0, 0, 2.3], [1, 0, 1.8], [2, 0, 1.2],
-          [0, 1, 3.5], [1, 1, 2.9], [2, 1, 2.1],
-          [0, 2, 4.2], [1, 2, 3.8], [2, 2, 3.1],
-          [0, 3, 2.8], [1, 3, 2.1], [2, 3, 1.5],
-          [0, 4, -1.2], [1, 4, -0.8], [2, 4, -0.3],
-          [0, 5, -0.5], [1, 5, 0.2], [2, 5, 0.8],
-          [0, 6, 3.2], [1, 6, 2.5], [2, 6, 1.9],
+          [0, 0, 2.3],
+          [1, 0, 1.8],
+          [2, 0, 1.2],
+          [0, 1, 3.5],
+          [1, 1, 2.9],
+          [2, 1, 2.1],
+          [0, 2, 4.2],
+          [1, 2, 3.8],
+          [2, 2, 3.1],
+          [0, 3, 2.8],
+          [1, 3, 2.1],
+          [2, 3, 1.5],
+          [0, 4, -1.2],
+          [1, 4, -0.8],
+          [2, 4, -0.3],
+          [0, 5, -0.5],
+          [1, 5, 0.2],
+          [2, 5, 0.8],
+          [0, 6, 3.2],
+          [1, 6, 2.5],
+          [2, 6, 1.9],
         ],
         label: {
           show: true,
@@ -88,8 +171,7 @@ const IndexDashboardPage: React.FC = () => {
     ],
   };
 
-  // 风格雷达图配置
-  const styleRadarOption = {
+  const styleRadarOption: EChartsOption = {
     tooltip: {},
     radar: {
       indicator: [
@@ -126,8 +208,7 @@ const IndexDashboardPage: React.FC = () => {
     ],
   };
 
-  // 资金流图表配置
-  const flowChartOption = {
+  const flowChartOption: EChartsOption = {
     title: {
       text: '北向资金净流入 (亿元)',
       left: 'center',
@@ -172,24 +253,23 @@ const IndexDashboardPage: React.FC = () => {
       {
         name: '北向资金',
         type: 'bar',
-        data: Array.from({ length: 21 }, () => (Math.random() * 100 - 50).toFixed(2)),
+        data: Array.from({ length: 21 }, () => Number((Math.random() * 100 - 50).toFixed(2))),
         itemStyle: {
-          color: (params: any) => (params.value >= 0 ? '#52c41a' : '#f5222d'),
+          color: (params: CallbackDataParams) => (Number(params.value) >= 0 ? '#52c41a' : '#f5222d'),
         },
       },
       {
         name: '融资余额变化',
         type: 'line',
         yAxisIndex: 1,
-        data: Array.from({ length: 21 }, () => (Math.random() * 50 - 25).toFixed(2)),
+        data: Array.from({ length: 21 }, () => Number((Math.random() * 50 - 25).toFixed(2))),
         lineStyle: { color: '#1890ff' },
         itemStyle: { color: '#1890ff' },
       },
     ],
   };
 
-  // ETF资金流图表配置
-  const etfFlowChartOption = {
+  const etfFlowChartOption: EChartsOption = {
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
@@ -218,8 +298,7 @@ const IndexDashboardPage: React.FC = () => {
     ],
   };
 
-  // K线图配置（简化版）
-  const klineChartOption = {
+  const klineChartOption: EChartsOption = {
     tooltip: {
       trigger: 'axis',
     },
@@ -267,13 +346,11 @@ const IndexDashboardPage: React.FC = () => {
     <>
       <PageTitle>{t('common.index-dashboard')}</PageTitle>
       <S.Wrapper>
-        {/* 页面标题 */}
         <S.Header>
           <Title level={2}>📊 指数面板 - 指挥中枢</Title>
           <Text type="secondary">市场风格判断 · 仓位指导 · 策略信号</Text>
         </S.Header>
 
-        {/* 指数概览区 */}
         <Card title="指数概览 (Market Overview)" style={{ marginBottom: 16 }}>
           <Row gutter={[16, 16]}>
             {mockIndexData.map((index) => (
@@ -290,7 +367,10 @@ const IndexDashboardPage: React.FC = () => {
                     {index.changePercent.toFixed(2)}%)
                   </S.IndexChange>
                   <S.IndexMeta>
-                    <div>年内: {index.changePercent >= 0 ? '+' : ''}{index.ytd.toFixed(2)}%</div>
+                    <div>
+                      年内: {index.changePercent >= 0 ? '+' : ''}
+                      {index.ytd.toFixed(2)}%
+                    </div>
                     <div>成交: {index.volume}</div>
                     <div>
                       PE分位: {index.pePercentile.toFixed(1)}% | PB分位: {index.pbPercentile.toFixed(1)}%
@@ -302,9 +382,7 @@ const IndexDashboardPage: React.FC = () => {
           </Row>
         </Card>
 
-        {/* 中部：风格轮动与资金流 */}
         <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-          {/* 左侧：风格与行业轮动 */}
           <BaseCol xs={24} lg={12}>
             <Card title="风格与行业轮动 (Style & Sector Rotation)">
               <ReactECharts option={styleHeatmapOption} style={{ height: '300px' }} />
@@ -317,7 +395,6 @@ const IndexDashboardPage: React.FC = () => {
             </Card>
           </BaseCol>
 
-          {/* 右侧：资金流向与情绪 */}
           <BaseCol xs={24} lg={12}>
             <Card title="资金流向与情绪 (Flow & Sentiment)">
               <ReactECharts option={flowChartOption} style={{ height: '300px' }} />
@@ -331,18 +408,12 @@ const IndexDashboardPage: React.FC = () => {
           </BaseCol>
         </Row>
 
-        {/* 底部：指数详情与策略信号 */}
         <Row gutter={[16, 16]}>
-          {/* 左侧：K线图与相对收益 */}
           <BaseCol xs={24} lg={14}>
             <Card
               title="指数详情 (Index Detail)"
               extra={
-                <Select
-                  value={selectedIndex}
-                  onChange={setSelectedIndex}
-                  style={{ width: 150 }}
-                >
+                <Select value={selectedIndex} onChange={setSelectedIndex} style={{ width: 150 }}>
                   <Option value="000300">沪深300</Option>
                   <Option value="000905">中证500</Option>
                   <Option value="399006">创业板指</Option>
@@ -354,7 +425,6 @@ const IndexDashboardPage: React.FC = () => {
             </Card>
           </BaseCol>
 
-          {/* 右侧：策略信号 */}
           <BaseCol xs={24} lg={10}>
             <Card title="策略信号 (Strategy Signals)">
               <S.SignalCard>
@@ -397,6 +467,3 @@ const IndexDashboardPage: React.FC = () => {
 };
 
 export default IndexDashboardPage;
-
-
-

@@ -22,4 +22,3 @@ const StockMarketPage: React.FC = () => {
 };
 
 export default StockMarketPage;
-

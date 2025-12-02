@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import type { CallbackDataParams } from 'echarts/types/dist/shared';
+import type { EChartsOption } from 'echarts-for-react';
 import { BaseChart } from '@app/components/common/charts/BaseChart';
 import { getKlineData, KlineData } from '@app/api/kline.api';
-import { EChartsOption } from 'echarts-for-react';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { themeObject } from '@app/styles/themes/themeVariables';
 import { getDefaultTooltipStyles } from '@app/components/common/charts/BaseChart';
@@ -17,10 +18,10 @@ interface KlineChartProps {
   height?: string | number;
 }
 
-export const KlineChart: React.FC<KlineChartProps> = ({ 
-  symbol = 'AAPL', 
+export const KlineChart: React.FC<KlineChartProps> = ({
+  symbol = 'AAPL',
   interval: defaultInterval = '1d',
-  height = '600px'
+  height = '600px',
 }) => {
   const [klineData, setKlineData] = useState<KlineData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,14 +62,16 @@ export const KlineChart: React.FC<KlineChartProps> = ({
         type: 'cross',
       },
       ...getDefaultTooltipStyles(themeObject[theme]),
-      formatter: (params: any) => {
-        if (Array.isArray(params)) {
-          const data = params[0];
-          const kline = klineData[data.dataIndex];
-          if (kline) {
-            return `
+      formatter: (params: CallbackDataParams | CallbackDataParams[]) => {
+        const paramArray = Array.isArray(params) ? params : [params];
+        const first = paramArray[0];
+        const dataIndex = typeof first?.dataIndex === 'number' ? first.dataIndex : undefined;
+        const kline = typeof dataIndex === 'number' ? klineData[dataIndex] : undefined;
+
+        if (first && kline) {
+          return `
               <div>
-                <div><strong>${data.axisValue}</strong></div>
+                <div><strong>${first.axisValue}</strong></div>
                 <div>开盘: ${kline.open}</div>
                 <div>收盘: ${kline.close}</div>
                 <div>最高: ${kline.high}</div>
@@ -76,7 +79,6 @@ export const KlineChart: React.FC<KlineChartProps> = ({
                 <div>成交量: ${kline.volume.toLocaleString()}</div>
               </div>
             `;
-          }
         }
         return '';
       },
@@ -98,7 +100,7 @@ export const KlineChart: React.FC<KlineChartProps> = ({
     xAxis: [
       {
         type: 'category',
-        data: klineData.map(item => item.time),
+        data: klineData.map((item) => item.time),
         scale: true,
         boundaryGap: false,
         axisLine: { onZero: false },
@@ -109,7 +111,7 @@ export const KlineChart: React.FC<KlineChartProps> = ({
       {
         type: 'category',
         gridIndex: 1,
-        data: klineData.map(item => item.time),
+        data: klineData.map((item) => item.time),
         scale: true,
         boundaryGap: false,
         axisLine: { onZero: false },
@@ -157,7 +159,7 @@ export const KlineChart: React.FC<KlineChartProps> = ({
       {
         name: currentSymbol,
         type: 'candlestick',
-        data: klineData.map(item => [item.open, item.close, item.low, item.high]),
+        data: klineData.map((item) => [item.open, item.close, item.low, item.high]),
         itemStyle: {
           color: '#26a69a',
           color0: '#ef5350',
@@ -170,14 +172,16 @@ export const KlineChart: React.FC<KlineChartProps> = ({
         type: 'bar',
         xAxisIndex: 1,
         yAxisIndex: 1,
-        data: klineData.map(item => item.volume),
+        data: klineData.map((item) => item.volume),
         itemStyle: {
-          color: (params: any) => {
-            const index = params.dataIndex;
+          color: (params: CallbackDataParams) => {
+            const index = typeof params.dataIndex === 'number' ? params.dataIndex : 0;
             if (index > 0) {
               const current = klineData[index];
               const prev = klineData[index - 1];
-              return current.close >= prev.close ? '#26a69a' : '#ef5350';
+              if (current && prev) {
+                return current.close >= prev.close ? '#26a69a' : '#ef5350';
+              }
             }
             return '#26a69a';
           },
@@ -208,7 +212,7 @@ export const KlineChart: React.FC<KlineChartProps> = ({
           onChange={(value) => {
             setCurrentInterval(value as string);
           }}
-          style={{ width: 100 }}
+          style={{ width: 120 }}
         >
           <Option value="1m">1分钟</Option>
           <Option value="5m">5分钟</Option>
@@ -223,5 +227,3 @@ export const KlineChart: React.FC<KlineChartProps> = ({
     </S.KlineChartWrapper>
   );
 };
-
-

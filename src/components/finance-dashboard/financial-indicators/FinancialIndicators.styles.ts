@@ -9,4 +9,3 @@ export const ChangeText = styled.div<{ isPositive: boolean }>`
   font-size: 12px;
   color: ${(props) => (props.isPositive ? '#52c41a' : '#ff4d4f')};
 `;
-

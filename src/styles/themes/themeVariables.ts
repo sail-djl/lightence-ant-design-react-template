@@ -4,8 +4,9 @@ import { css } from 'styled-components';
 import { BASE_COLORS } from './constants';
 import { darkColorsTheme, antDarkColorsTheme } from './dark/darkTheme';
 import { lightColorsTheme } from './light/lightTheme';
+import { ITheme } from './types';
 
-export const themeObject = {
+export const themeObject: Record<ThemeType, ITheme> = {
   light: lightColorsTheme,
   dark: darkColorsTheme,
 };

@@ -1,22 +1,35 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-  event: null,
+interface PwaState {
+  canPrompt: boolean;
+  isPWASupported: boolean;
+  isStandalone: boolean;
+  event: null;
+}
+
+const initialState: PwaState = {
+  canPrompt: false,
   isPWASupported: false,
   isStandalone: window.matchMedia('(display-mode: standalone)').matches,
+  event: null,
 };
 
 export const pwaSlice = createSlice({
   name: 'pwa',
   initialState,
   reducers: {
-    addDeferredPrompt: (state, action) => {
-      state.event = action.payload;
+    markPromptReady: (state) => {
+      state.canPrompt = true;
       state.isPWASupported = true;
+      state.event = null;
+    },
+    clearPrompt: (state) => {
+      state.canPrompt = false;
+      state.event = null;
     },
   },
 });
 
-export const { addDeferredPrompt } = pwaSlice.actions;
+export const { markPromptReady, clearPrompt } = pwaSlice.actions;
 
 export default pwaSlice.reducer;
