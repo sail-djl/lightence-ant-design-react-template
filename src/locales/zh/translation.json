@@ -203,6 +203,7 @@
     "pages": "页面",
     "pagination": "分页",
     "password": "密码",
+    "passwordMinLength": "密码至少需要 8 个字符",
     "payment": "支付",
     "phone": "电话",
     "pigeonMaps": "Pigeon 地图",

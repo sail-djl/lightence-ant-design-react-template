@@ -203,6 +203,7 @@
     "pages": "Pages",
     "pagination": "Pagination",
     "password": "Password",
+    "passwordMinLength": "Password must be at least 8 characters",
     "payment": "Payment",
     "phone": "Phone",
     "pigeonMaps": "Pigeon Maps",

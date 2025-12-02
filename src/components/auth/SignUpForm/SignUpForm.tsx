@@ -6,25 +6,21 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { useAppDispatch } from '@app/hooks/reduxHooks';
 import { doSignUp } from '@app/store/slices/authSlice';
 import { notificationController } from '@app/controllers/notificationController';
-import { ReactComponent as GoogleIcon } from '@app/assets/icons/google.svg';
-import { ReactComponent as FacebookIcon } from '@app/assets/icons/facebook.svg';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import * as S from './SignUpForm.styles';
 
 interface SignUpFormData {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   password: string;
 }
 
 const initValues = {
-  firstName: 'Chris',
-  lastName: 'Johnson',
-  email: 'chris.johnson@altence.com',
-  password: 'test-pass',
-  confirmPassword: 'test-pass',
-  termOfUse: true,
+  name: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  termOfUse: false,
 };
 
 export const SignUpForm: React.FC = () => {
@@ -36,7 +32,14 @@ export const SignUpForm: React.FC = () => {
 
   const handleSubmit = (values: SignUpFormData) => {
     setLoading(true);
-    dispatch(doSignUp(values))
+    // 将name字段转换为firstName和lastName格式（name作为firstName，lastName为空）
+    const signUpData = {
+      firstName: values.name,
+      lastName: '',
+      email: values.email,
+      password: values.password,
+    };
+    dispatch(doSignUp(signUpData))
       .unwrap()
       .then(() => {
         notificationController.success({
@@ -56,18 +59,11 @@ export const SignUpForm: React.FC = () => {
       <BaseForm layout="vertical" onFinish={handleSubmit} requiredMark="optional" initialValues={initValues}>
         <S.Title>{t('common.signUp')}</S.Title>
         <Auth.FormItem
-          name="firstName"
-          label={t('common.firstName')}
+          name="name"
+          label={t('common.name')}
           rules={[{ required: true, message: t('common.requiredField') }]}
         >
-          <Auth.FormInput placeholder={t('common.firstName')} />
-        </Auth.FormItem>
-        <Auth.FormItem
-          name="lastName"
-          label={t('common.lastName')}
-          rules={[{ required: true, message: t('common.requiredField') }]}
-        >
-          <Auth.FormInput placeholder={t('common.lastName')} />
+          <Auth.FormInput placeholder={t('common.name')} />
         </Auth.FormItem>
         <Auth.FormItem
           name="email"
@@ -85,7 +81,13 @@ export const SignUpForm: React.FC = () => {
         <Auth.FormItem
           label={t('common.password')}
           name="password"
-          rules={[{ required: true, message: t('common.requiredField') }]}
+          rules={[
+            { required: true, message: t('common.requiredField') },
+            {
+              min: 8,
+              message: t('common.passwordMinLength'),
+            },
+          ]}
         >
           <Auth.FormInputPassword placeholder={t('common.password')} />
         </Auth.FormItem>
@@ -127,22 +129,6 @@ export const SignUpForm: React.FC = () => {
           <Auth.SubmitButton type="primary" htmlType="submit" loading={isLoading}>
             {t('common.signUp')}
           </Auth.SubmitButton>
-        </BaseForm.Item>
-        <BaseForm.Item noStyle>
-          <Auth.SocialButton type="default" htmlType="submit">
-            <Auth.SocialIconWrapper>
-              <GoogleIcon />
-            </Auth.SocialIconWrapper>
-            {t('signup.googleLink')}
-          </Auth.SocialButton>
-        </BaseForm.Item>
-        <BaseForm.Item noStyle>
-          <Auth.SocialButton type="default" htmlType="submit">
-            <Auth.SocialIconWrapper>
-              <FacebookIcon />
-            </Auth.SocialIconWrapper>
-            {t('signup.facebookLink')}
-          </Auth.SocialButton>
         </BaseForm.Item>
         <Auth.FooterWrapper>
           <Auth.Text>
