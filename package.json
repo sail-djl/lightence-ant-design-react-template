@@ -1,8 +1,8 @@
 {
-  "name": "lightence-admin",
+  "name": "hangrong-admin",
   "version": "1.0.0",
   "license": "MIT",
-  "description": "Free and easy-to-use admin template based on React 17+",
+  "description": "航融 - 金融管理平台",
   "repository": {
     "type": "git",
     "url": "git+github.com:altence/lightence-admin.git"
