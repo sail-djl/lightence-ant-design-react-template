@@ -13,16 +13,16 @@ Before submitting your contribution though, please make sure to take a moment an
     * Checkout from upstream `develop`.
     * Work on your fork in dedicated branch.
     * When you're ready to show results - create PR against upstream `develop` and add a developer for review. You can ping said developer to speed things up ;).
-* It's OK to have multiple small commits as you work on the PR - we will let GitHub automatically squash it before merging.
+* It's OK to have multiple small commits as you work on the PR.
 
 * Good stuff to add in your pull request:
-    * If your PR fully resolves existing issue, add `(fix #xxxx[,#xxx])` (#xxxx is the issue id) so that GitHub will close the issue once it's up on `main`. You have to add that to the body of PR, won't work in header :).
+    * Provide detailed description of the issue in the PR if it's not done in the issue.
     * Provide detailed description of the issue in the PR if it's not done in the issue.
     * If you're working on visual changes - provide before/after screenshot. That speeds up review immensely.
 
 ### Branches
 
-* Upstream branches (**altence/lightence-admin**):
+* Upstream branches:
     * `main` - stable snapshot from `develop`. Releases and hotfixes only. **Do not submit PR's to `main`!**
     * `develop` - main development branch.
 

@@ -44,7 +44,7 @@ Check out a [live demo](https://altence.com/lightence-landing).
 #### To go with the latest version please copy and past in your terminal the following steps
 
 ```
-git clone https://github.com/altence/lightence-ant-design-react-template.git my-awesome-project && cd my-awesome-project
+git clone <your-repo-url> my-awesome-project && cd my-awesome-project
 ```
 
 Development mode
@@ -82,7 +82,6 @@ As our admin system with a medical dashboard is fully customizable, we understan
 ### How you can give a shout-out to us
 
 - 🏗️ Make your disruptive products with Lightence
-- ⭐ Star our GitHub repo
 - 🐞 Create requests, submit bugs, suggest new features
 - ☄️ Spread the word and share links about **Lightence** on social media
 - 🔥 Follow us on [Twitter](https://twitter.com/altence_team) and [LinkedIn](https://linkedin.com/company/altence)

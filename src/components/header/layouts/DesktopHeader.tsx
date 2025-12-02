@@ -19,18 +19,12 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout
         <BaseCol xl={15} xxl={12}>
           <HeaderSearch />
         </BaseCol>
-        <BaseCol>
-          <S.GHButton />
-        </BaseCol>
       </BaseRow>
     </S.SearchColumn>
   ) : (
     <>
       <BaseCol lg={10} xxl={8}>
         <HeaderSearch />
-      </BaseCol>
-      <BaseCol>
-        <S.GHButton />
       </BaseCol>
     </>
   );

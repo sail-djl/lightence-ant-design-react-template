@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 import { BurgerIcon } from '@app/components/common/Burger/BurgerIcon';
-import { GitHubButton } from '@app/components/header/components/GithubButton/GitHubButton';
 import { LAYOUT, media } from '@app/styles/themes/constants';
 import { BaseCollapse } from '../common/BaseCollapse/BaseCollapse';
 import { BaseCol } from '../common/BaseCol/BaseCol';
@@ -80,10 +79,3 @@ export const ProfileColumn = styled(BaseCol)<ProfileColumn>`
   }
 `;
 
-export const GHButton = styled(GitHubButton)`
-  display: none;
-
-  @media only screen and ${media.lg} {
-    display: block;
-  }
-`;

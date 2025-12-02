@@ -190,6 +190,5 @@ yarn start
 ## 参考文档
 
 - [FastAPI 文档](https://fastapi.tiangolo.com)
-- [Lightence 文档](https://github.com/altence/lightence-ant-design-react-template)
 - [Axios 文档](https://axios-http.com)
 

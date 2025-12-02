@@ -3,13 +3,6 @@
   "version": "1.0.0",
   "license": "MIT",
   "description": "航融 - 金融管理平台",
-  "repository": {
-    "type": "git",
-    "url": "git+github.com:altence/lightence-admin.git"
-  },
-  "bugs": {
-    "url": "https://github.com/altence/lightence-admin/issues"
-  },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
     "@craco/craco": "^6.1.2",
