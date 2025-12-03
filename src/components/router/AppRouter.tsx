@@ -23,6 +23,7 @@ const DataTablesPage = React.lazy(() => import('@app/pages/DataTablesPage'));
 const ChartsPage = React.lazy(() => import('@app/pages/ChartsPage'));
 const KlinePage = React.lazy(() => import('@app/pages/trading/KlinePage'));
 const PortfolioPage = React.lazy(() => import('@app/pages/trading/PortfolioPage'));
+const PolarizationModelPage = React.lazy(() => import('@app/pages/model/PolarizationModelPage'));
 const StockMarketPage = React.lazy(() => import('@app/pages/market/StockMarketPage'));
 const CryptoMarketPage = React.lazy(() => import('@app/pages/market/CryptoMarketPage'));
 const ForexMarketPage = React.lazy(() => import('@app/pages/market/ForexMarketPage'));
@@ -78,6 +79,7 @@ const NewsFeed = withLoading(NewsFeedPage);
 const AdvancedForm = withLoading(AdvancedFormsPage);
 const Kline = withLoading(KlinePage);
 const Portfolio = withLoading(PortfolioPage);
+const PolarizationModel = withLoading(PolarizationModelPage);
 const StockMarket = withLoading(StockMarketPage);
 const CryptoMarket = withLoading(CryptoMarketPage);
 const ForexMarket = withLoading(ForexMarketPage);
@@ -156,6 +158,9 @@ export const AppRouter: React.FC = () => {
           <Route path="trading">
             <Route path="kline" element={<Kline />} />
             <Route path="portfolio" element={<Portfolio />} />
+          </Route>
+          <Route path="model">
+            <Route path="polarization" element={<PolarizationModel />} />
           </Route>
           <Route path="index">
             <Route path="dashboard" element={<IndexDashboardPage />} />

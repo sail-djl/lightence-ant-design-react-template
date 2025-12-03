@@ -882,5 +882,110 @@
     "trendingCollections": "Trending Collections",
     "recentlyAddedNFTs": "Recently Added NFTs",
     "trendingCreators": "Trending Creators"
+  },
+  "polarization": {
+    "title": "Polarization Model",
+    "subtitle": "Polarization Analysis · Fund Allocation · Revenue Expectation · Risk Control",
+    "pageTitle": "Polarization Model - Trading Decision System",
+    "objectSelection": {
+      "title": "Polarization Object Selection",
+      "titleEn": "Polarization Object Selection",
+      "benchmark": "Benchmark",
+      "comparison": "Comparison",
+      "searchPlaceholder": "Search fund code or name",
+      "change": "Change",
+      "volume": "Volume",
+      "price": "Price"
+    },
+    "deviation": {
+      "title": "Daily Deviation Data",
+      "titleEn": "Daily Deviation Data",
+      "today": "Today",
+      "weekAvg": "Week Average",
+      "monthAvg": "Month Average",
+      "yearAvg": "Year Average",
+      "trend": "Deviation Trend"
+    },
+    "timeRange": {
+      "week1": "Last Week",
+      "month1": "Last Month",
+      "month3": "Last 3 Months",
+      "month6": "Last 6 Months",
+      "year1": "Last Year",
+      "year3": "Last 3 Years"
+    },
+    "overview": {
+      "title": "Polarization Overview",
+      "titleEn": "Polarization Overview",
+      "calculationBasis": "Calculation Basis:",
+      "calculationDescription": "Based on the two selected ETFs, calculate the average polarization over the past 3 years (approximately 750 trading days) as the 'moderate polarization' benchmark. Compare the current polarization with the benchmark: below 15% of the benchmark is low polarization, above 15% is high polarization, and the rest is moderate polarization. Polarization = ETF1 Price / ETF2 Price.",
+      "avg3Year": "3-Year Average",
+      "trend": "Trend",
+      "trendRising": "Rising",
+      "trendFalling": "Falling",
+      "trendStable": "Stable",
+      "statusHigh": "High Polarization",
+      "statusLow": "Low Polarization",
+      "statusModerate": "Moderate Polarization",
+      "selectTwoFunds": "Please select two ETFs to view polarization overview"
+    },
+    "fundBasket": {
+      "title": "Fund Basket Model",
+      "titleEn": "Fund Basket Model",
+      "description": "Model Description:",
+      "descriptionText": "The fund basket adopts a 4+1+4+1+n = 10+n structure, where Venture*4, Shanghai*4, Shenzhen*1, Cash*1, and Additional*n is the dynamic adjustment part."
+    },
+    "operationCapital": {
+      "title": "Operation Capital Calculation",
+      "titleEn": "Operation Capital Calculation",
+      "operationAmount": "Operation Amount",
+      "fundAmount": "Fund Amount",
+      "cashReserve": "Cash Reserve",
+      "totalAmount": "Total Amount",
+      "perDay": "k/day"
+    },
+    "revenue": {
+      "minExpected": {
+        "title": "Minimum Expected Return",
+        "titleEn": "Minimum Expected Return",
+        "description": "Average expected operation return 0.5%, 21 days per month, 250 days per year",
+        "operation": "Operation",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "yearly": "Yearly"
+      },
+      "maxExpected": {
+        "title": "Maximum Expected Return",
+        "titleEn": "Maximum Expected Return",
+        "description": "Average expected operation return 1%, 21 days per month, 250 days per year"
+      }
+    },
+    "specialCases": {
+      "title": "Special Case Handling",
+      "titleEn": "Special Case Handling",
+      "continuousDecline": {
+        "title": "Continuous Decline",
+        "description": "When the market experiences continuous decline, the system will automatically trigger a position replenishment mechanism and adjust fund allocation based on polarization changes.",
+        "button": "View Replenishment Strategy"
+      },
+      "continuousDeviation": {
+        "title": "Continuous Deviation",
+        "description": "Continuous deviation exceeding the threshold has been detected. It is recommended to perform periodic correction and rebalance the fund basket configuration.",
+        "button": "Execute Periodic Correction"
+      }
+    },
+    "trend": {
+      "title": "Polarization Trend",
+      "titleEn": "Polarization Trend",
+      "realtimeMonitoring": "Real-time Monitoring",
+      "marketPolarization": "Market Polarization",
+      "operationSuggestion": "Operation Suggestion",
+      "riskLevel": "Risk Level",
+      "normalOperation": "Normal Operation",
+      "lowRisk": "Low Risk",
+      "moderate": "Moderate",
+      "noData": "No Data"
+    }
   }
 }

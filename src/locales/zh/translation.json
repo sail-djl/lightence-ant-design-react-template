@@ -882,6 +882,111 @@
     "trendingCollections": "热门收藏",
     "recentlyAddedNFTs": "最近添加的NFT",
     "trendingCreators": "热门创作者"
+  },
+  "polarization": {
+    "title": "偏振模型",
+    "subtitle": "偏振度分析 · 资金配置 · 收益预期 · 风险控制",
+    "pageTitle": "偏振模型 - 交易决策系统",
+    "objectSelection": {
+      "title": "偏振对象选择",
+      "titleEn": "Polarization Object Selection",
+      "benchmark": "基准",
+      "comparison": "对比",
+      "searchPlaceholder": "搜索基金代码或名称",
+      "change": "涨跌幅",
+      "volume": "成交量",
+      "price": "价格"
+    },
+    "deviation": {
+      "title": "每日偏差数据",
+      "titleEn": "Daily Deviation Data",
+      "today": "今日偏差",
+      "weekAvg": "周平均偏差",
+      "monthAvg": "月平均偏差",
+      "yearAvg": "年平均偏差",
+      "trend": "偏差趋势"
+    },
+    "timeRange": {
+      "week1": "近1周",
+      "month1": "近1月",
+      "month3": "近3月",
+      "month6": "近6月",
+      "year1": "近1年",
+      "year3": "近3年"
+    },
+    "overview": {
+      "title": "偏振度概览",
+      "titleEn": "Polarization Overview",
+      "calculationBasis": "计算依据：",
+      "calculationDescription": "基于选中的两个ETF，计算近3年（约750个交易日）的平均偏振度作为\"中度偏振\"基准值。当前偏振度与基准值比较：低于基准值15%为低偏振，高于基准值15%为高偏振，其余为中等偏振。偏振度 = ETF1价格 / ETF2价格。",
+      "avg3Year": "3年平均",
+      "trend": "趋势",
+      "trendRising": "上升",
+      "trendFalling": "下降",
+      "trendStable": "稳定",
+      "statusHigh": "高偏振",
+      "statusLow": "低偏振",
+      "statusModerate": "中等偏振",
+      "selectTwoFunds": "请先选择两个ETF以查看偏振度概览"
+    },
+    "fundBasket": {
+      "title": "资金篮模型",
+      "titleEn": "Fund Basket Model",
+      "description": "模型说明：",
+      "descriptionText": "资金篮采用 4+1+4+1+n = 10+n 结构，其中创业*4、上证*4、深指*1、现金*1，加仓*n为动态调整部分。"
+    },
+    "operationCapital": {
+      "title": "操作资金计算",
+      "titleEn": "Operation Capital Calculation",
+      "operationAmount": "操作金额",
+      "fundAmount": "基金资金",
+      "cashReserve": "现金储备",
+      "totalAmount": "资金总和",
+      "perDay": "k/天"
+    },
+    "revenue": {
+      "minExpected": {
+        "title": "最低期望收益",
+        "titleEn": "Minimum Expected Return",
+        "description": "平均期望操作收益 0.5%，月天21，年天250",
+        "operation": "操作",
+        "daily": "日收益",
+        "weekly": "周收益",
+        "monthly": "月收益",
+        "yearly": "年收益"
+      },
+      "maxExpected": {
+        "title": "最高期望收益",
+        "titleEn": "Maximum Expected Return",
+        "description": "平均期望操作收益 1%，月天21，年天250"
+      }
+    },
+    "specialCases": {
+      "title": "特殊情况处理",
+      "titleEn": "Special Case Handling",
+      "continuousDecline": {
+        "title": "连续下跌",
+        "description": "当市场出现连续下跌时，系统会自动触发补仓机制，根据偏振度变化调整资金配置。",
+        "button": "查看补仓策略"
+      },
+      "continuousDeviation": {
+        "title": "连续偏差",
+        "description": "检测到连续偏差超过阈值，建议进行周期性矫正，重新平衡资金篮配置。",
+        "button": "执行周期性矫正"
+      }
+    },
+    "trend": {
+      "title": "偏振度趋势",
+      "titleEn": "Polarization Trend",
+      "realtimeMonitoring": "实时监控",
+      "marketPolarization": "市场偏振度",
+      "operationSuggestion": "操作建议",
+      "riskLevel": "风险等级",
+      "normalOperation": "正常操作",
+      "lowRisk": "低风险",
+      "moderate": "中等",
+      "noData": "暂无数据"
+    }
   }
 }
 
