@@ -912,7 +912,8 @@
       "month3": "Last 3 Months",
       "month6": "Last 6 Months",
       "year1": "Last Year",
-      "year3": "Last 3 Years"
+      "year3": "Last 3 Years",
+      "year5": "Last 5 Years"
     },
     "overview": {
       "title": "Polarization Overview",

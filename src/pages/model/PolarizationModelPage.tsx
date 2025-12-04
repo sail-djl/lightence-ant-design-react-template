@@ -10,15 +10,20 @@ import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
 import { BaseChart } from '@app/components/common/charts/BaseChart';
 import { EChartsOption } from 'echarts-for-react';
+import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
+import { AppDate } from '@app/constants/Dates';
+import { Dates } from '@app/constants/Dates';
 import { 
   getETFList, 
   getPolarizationData, 
   getDeviationData, 
-  getDeviationSummary, 
+  getDeviationSummary,
+  getAccumulativeData,
   ETFInfo,
   DeviationData,
   DeviationSummary,
   PolarizationData,
+  AccumulativeData,
 } from '@app/api/polarization.api';
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
 import { setSelectedFund1, setSelectedFund2 } from '@app/store/slices/polarizationSlice';
@@ -69,6 +74,7 @@ export const PolarizationModelPage: React.FC = () => {
     { value: 180, label: t('polarization.timeRange.month6') },
     { value: 365, label: t('polarization.timeRange.year1') },
     { value: 1095, label: t('polarization.timeRange.year3') },
+    { value: 1825, label: t('polarization.timeRange.year5') },
   ], [t]);
   
   const [etfList, setEtfList] = useState<ETFInfo[]>([]);
@@ -76,10 +82,13 @@ export const PolarizationModelPage: React.FC = () => {
   const [etf1, setEtf1] = useState<string>(storedFund1 || '510300');
   const [etf2, setEtf2] = useState<string>(storedFund2 || '510500');
   const [timeRange, setTimeRange] = useState<number>(7);
+  const [accumulativeTimeRange, setAccumulativeTimeRange] = useState<number>(365); // 累加收益图表独立的时间范围，默认1年
+  const [accumulativeDateRange, setAccumulativeDateRange] = useState<[AppDate | null, AppDate | null]>([null, null]); // 自定义日期范围
   const [operationAmount, setOperationAmount] = useState<number>(2.5);
   const [deviationData, setDeviationData] = useState<DeviationData[]>([]);
   const [deviationSummary, setDeviationSummary] = useState<DeviationSummary | null>(null);
   const [polarizationData, setPolarizationData] = useState<PolarizationData | null>(null);
+  const [accumulativeData, setAccumulativeData] = useState<AccumulativeData[]>([]);
 
   // 加载ETF列表
   useEffect(() => {
@@ -199,6 +208,14 @@ export const PolarizationModelPage: React.FC = () => {
           getDeviationSummary(etf1, etf2),
           getPolarizationData(etf1, etf2),
         ]);
+        // 调试：检查偏差数据格式
+        if (process.env.NODE_ENV === 'development' && devData.length > 0) {
+          console.log('📊 Deviation Data loaded:', devData.length, 'records');
+          console.log('📊 First deviation sample:', devData[0]);
+          console.log('📊 First deviation keys:', Object.keys(devData[0]));
+          console.log('📊 etf1PctChg:', devData[0]?.etf1PctChg, 'type:', typeof devData[0]?.etf1PctChg);
+          console.log('📊 etf2PctChg:', devData[0]?.etf2PctChg, 'type:', typeof devData[0]?.etf2PctChg);
+        }
         setDeviationData(devData);
         setDeviationSummary(summary);
         setPolarizationData(polarData);
@@ -207,10 +224,104 @@ export const PolarizationModelPage: React.FC = () => {
     }
   }, [etf1, etf2, timeRange]);
 
+  // 加载累加数据（使用独立的时间范围或自定义日期范围）
+  useEffect(() => {
+    if (etf1 && etf2 && etf1 !== etf2) {
+      const loadAccumulativeData = async () => {
+        let accumData: AccumulativeData[] = [];
+        if (accumulativeDateRange[0] && accumulativeDateRange[1]) {
+          // 使用自定义日期范围
+          const startDate = Dates.format(accumulativeDateRange[0], 'YYYY-MM-DD');
+          const endDate = Dates.format(accumulativeDateRange[1], 'YYYY-MM-DD');
+          accumData = await getAccumulativeData(etf1, etf2, undefined, startDate, endDate);
+        } else {
+          // 使用固定时间范围
+          accumData = await getAccumulativeData(etf1, etf2, accumulativeTimeRange);
+        }
+        setAccumulativeData(accumData);
+      };
+      loadAccumulativeData();
+    }
+  }, [etf1, etf2, accumulativeTimeRange, accumulativeDateRange]);
+
   // 计算操作资金
   const fundAmount = operationAmount * 9;
   const cashAmount = operationAmount;
   const totalAmount = fundAmount + cashAmount;
+
+  // 生成累加图表配置
+  const accumulativeChartOption = useMemo((): EChartsOption => {
+    if (accumulativeData.length === 0) {
+      return {};
+    }
+
+    const dates = accumulativeData.map(d => {
+      const date = new Date(d.date);
+      return date.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
+    });
+    const stableLine = accumulativeData.map(d => d.stableLine);
+    const profitLine = accumulativeData.map(d => d.profitLine);
+
+    return {
+      title: {
+        text: `${etf1Info?.name || ''} vs ${etf2Info?.name || ''} - ${TIME_RANGES.find(r => r.value === accumulativeTimeRange)?.label}累加收益`,
+        left: 'center',
+        textStyle: { fontSize: 14 },
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'cross' },
+        formatter: (params: any) => {
+          let result = `${params[0].axisValue}<br/>`;
+          params.forEach((param: any) => {
+            const value = typeof param.value === 'number' ? param.value.toFixed(2) : param.value;
+            result += `${param.marker}${param.seriesName}: ${value}%<br/>`;
+          });
+          return result;
+        },
+      },
+      legend: {
+        data: ['稳定线', '收益线'],
+        bottom: 0,
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '15%',
+        containLabel: true,
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: dates,
+      },
+      yAxis: {
+        type: 'value',
+        name: '累加收益(%)',
+        axisLabel: {
+          formatter: '{value}%',
+        },
+      },
+      series: [
+        {
+          name: '稳定线',
+          type: 'line',
+          smooth: true,
+          data: stableLine,
+          lineStyle: { color: '#1890ff', width: 2 },
+          itemStyle: { color: '#1890ff' },
+        },
+        {
+          name: '收益线',
+          type: 'line',
+          smooth: true,
+          data: profitLine,
+          lineStyle: { color: '#52c41a', width: 2 },
+          itemStyle: { color: '#52c41a' },
+        },
+      ],
+    };
+  }, [accumulativeData, etf1Info, etf2Info, accumulativeTimeRange, t, TIME_RANGES]);
 
   // 生成偏差图表配置
   const deviationChartOption = useMemo((): EChartsOption => {
@@ -223,8 +334,22 @@ export const PolarizationModelPage: React.FC = () => {
       return date.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
     });
     const deviationValues = deviationData.map(d => d.deviation);
-    const etf1Prices = deviationData.map(d => d.etf1Price);
-    const etf2Prices = deviationData.map(d => d.etf2Price);
+    const etf1PctChg = deviationData.map(d => d.etf1PctChg);
+    const etf2PctChg = deviationData.map(d => d.etf2PctChg);
+
+    // 计算所有数据的范围（涨跌幅和偏差趋势），用于统一两个Y轴的刻度范围
+    const allPctChg = [...etf1PctChg, ...etf2PctChg];
+    const pctChgMin = Math.min(...allPctChg);
+    const pctChgMax = Math.max(...allPctChg);
+    const deviationMin = Math.min(...deviationValues);
+    const deviationMax = Math.max(...deviationValues);
+    
+    // 取两个范围的并集，确保两个Y轴使用相同的刻度范围
+    const unifiedMin = Math.min(pctChgMin, deviationMin);
+    const unifiedMax = Math.max(pctChgMax, deviationMax);
+    const padding = (unifiedMax - unifiedMin) * 0.1 || 0.1;
+    const unifiedAxisMin = unifiedMin - padding;
+    const unifiedAxisMax = unifiedMax + padding;
 
     return {
       title: {
@@ -235,9 +360,21 @@ export const PolarizationModelPage: React.FC = () => {
       tooltip: {
         trigger: 'axis',
         axisPointer: { type: 'cross' },
+        formatter: (params: any) => {
+          let result = `${params[0].axisValue}<br/>`;
+          params.forEach((param: any) => {
+            const value = typeof param.value === 'number' ? param.value.toFixed(2) : param.value;
+            result += `${param.marker}${param.seriesName}: ${value}%<br/>`;
+          });
+          return result;
+        },
       },
       legend: {
-        data: [t('polarization.deviation.trend'), etf1Info?.name || '', etf2Info?.name || ''],
+        data: [
+          `${etf1Info?.name || ''} ${t('polarization.objectSelection.change')}`,
+          `${etf2Info?.name || ''} ${t('polarization.objectSelection.change')}`,
+          t('polarization.deviation.trend'),
+        ],
         bottom: 0,
       },
       grid: {
@@ -254,22 +391,50 @@ export const PolarizationModelPage: React.FC = () => {
       yAxis: [
         {
           type: 'value',
-          name: t('polarization.deviation.trend'),
+          name: `${t('polarization.objectSelection.change')}(%)`,
           position: 'left',
+          min: unifiedAxisMin,
+          max: unifiedAxisMax,
+          axisLabel: {
+            formatter: '{value}%',
+          },
         },
         {
           type: 'value',
-          name: t('polarization.objectSelection.price'),
+          name: `${t('polarization.deviation.trend')}(%)`,
           position: 'right',
+          min: unifiedAxisMin,
+          max: unifiedAxisMax,
+          axisLabel: {
+            formatter: '{value}%',
+          },
         },
       ],
       series: [
+        {
+          name: `${etf1Info?.name || ''} ${t('polarization.objectSelection.change')}`,
+          type: 'line',
+          smooth: true,
+          data: etf1PctChg,
+          yAxisIndex: 0,
+          lineStyle: { color: '#1890ff', width: 1.5 },
+          itemStyle: { color: '#1890ff' },
+        },
+        {
+          name: `${etf2Info?.name || ''} ${t('polarization.objectSelection.change')}`,
+          type: 'line',
+          smooth: true,
+          data: etf2PctChg,
+          yAxisIndex: 0,
+          lineStyle: { color: '#f5222d', width: 1.5 },
+          itemStyle: { color: '#f5222d' },
+        },
         {
           name: t('polarization.deviation.trend'),
           type: 'line',
           smooth: true,
           data: deviationValues,
-          yAxisIndex: 0,
+          yAxisIndex: 1,
           areaStyle: {
             color: {
               type: 'linear',
@@ -278,35 +443,17 @@ export const PolarizationModelPage: React.FC = () => {
               x2: 0,
               y2: 1,
               colorStops: [
-                { offset: 0, color: 'rgba(24, 144, 255, 0.3)' },
-                { offset: 1, color: 'rgba(24, 144, 255, 0.1)' },
+                { offset: 0, color: 'rgba(140, 140, 140, 0.3)' },
+                { offset: 1, color: 'rgba(140, 140, 140, 0.1)' },
               ],
             },
           },
-          lineStyle: { color: '#1890ff', width: 2 },
-          itemStyle: { color: '#1890ff' },
-        },
-        {
-          name: etf1Info?.name || '',
-          type: 'line',
-          smooth: true,
-          data: etf1Prices,
-          yAxisIndex: 1,
-          lineStyle: { color: '#f5222d', width: 1.5 },
-          itemStyle: { color: '#f5222d' },
-        },
-        {
-          name: etf2Info?.name || '',
-          type: 'line',
-          smooth: true,
-          data: etf2Prices,
-          yAxisIndex: 1,
-          lineStyle: { color: '#52c41a', width: 1.5 },
-          itemStyle: { color: '#52c41a' },
+          lineStyle: { color: '#8c8c8c', width: 2 },
+          itemStyle: { color: '#8c8c8c' },
         },
       ],
     };
-  }, [deviationData, etf1Info, etf2Info, timeRange]);
+  }, [deviationData, etf1Info, etf2Info, timeRange, t, TIME_RANGES]);
 
   // 生成偏振度趋势图
   const polarizationTrendOption = useMemo((): EChartsOption => {
@@ -482,6 +629,59 @@ export const PolarizationModelPage: React.FC = () => {
               </S.EtfSelectorCard>
             </BaseCol>
           </BaseRow>
+
+          {/* 累加收益图表 */}
+          {etf1 && etf2 && etf1 !== etf2 && (
+            <S.DeviationDisplay style={{ marginBottom: '24px' }}>
+              <S.SectionTitle>累加收益对比</S.SectionTitle>
+              
+              {/* 时间范围选择 */}
+              <S.TimeRangeSelector>
+                {TIME_RANGES.map(range => (
+                  <BaseButton
+                    key={range.value}
+                    type={accumulativeTimeRange === range.value && !accumulativeDateRange[0] ? 'primary' : 'default'}
+                    onClick={() => {
+                      setAccumulativeTimeRange(range.value);
+                      setAccumulativeDateRange([null, null]); // 清空日期范围
+                    }}
+                  >
+                    {range.label}
+                  </BaseButton>
+                ))}
+              </S.TimeRangeSelector>
+              
+              {/* 自定义日期范围选择 */}
+              <div style={{ marginTop: '12px', marginBottom: '20px' }}>
+                <DayjsDatePicker.RangePicker
+                  value={accumulativeDateRange}
+                  onChange={(dates) => {
+                    if (dates && dates[0] && dates[1]) {
+                      setAccumulativeDateRange([dates[0], dates[1]]);
+                      setAccumulativeTimeRange(0); // 清空固定时间范围
+                    } else {
+                      setAccumulativeDateRange([null, null]);
+                      setAccumulativeTimeRange(365); // 恢复默认时间范围
+                    }
+                  }}
+                  format="YYYY-MM-DD"
+                  placeholder={['开始日期', '结束日期']}
+                  style={{ width: '100%', maxWidth: '400px' }}
+                />
+              </div>
+
+              {accumulativeData.length > 0 ? (
+                <BaseChart
+                  option={accumulativeChartOption}
+                  height="350px"
+                />
+              ) : (
+                <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
+                  {t('polarization.loadingData')}
+                </div>
+              )}
+            </S.DeviationDisplay>
+          )}
 
           {/* 偏差数据展示 */}
           {etf1 && etf2 && etf1 !== etf2 && deviationSummary && (

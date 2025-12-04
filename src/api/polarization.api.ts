@@ -20,9 +20,9 @@ export interface PolarizationData {
 
 export interface DeviationData {
   date: string;
-  deviation: number;
-  etf1Price: number;
-  etf2Price: number;
+  deviation: number; // 涨跌幅差值 (fund1.pct_chg - fund2.pct_chg)
+  etf1PctChg: number; // 基金1涨跌幅 (pct_chg)
+  etf2PctChg: number; // 基金2涨跌幅 (pct_chg)
 }
 
 export interface DeviationSummary {
@@ -30,6 +30,12 @@ export interface DeviationSummary {
   weekAvg: number;
   monthAvg: number;
   yearAvg: number;
+}
+
+export interface AccumulativeData {
+  date: string;
+  stableLine: number; // 稳定线累加值
+  profitLine: number; // 收益线累加值
 }
 
 // ============================================
@@ -175,5 +181,38 @@ export const getDeviationSummary = async (etf1Code: string, etf2Code: string): P
       monthAvg: 0.79,
       yearAvg: 0.75,
     };
+  }
+};
+
+/**
+ * 获取累加数据（从 fund.fund_nav 计算）
+ */
+export const getAccumulativeData = async (
+  etf1Code: string,
+  etf2Code: string,
+  timeRange?: number,
+  startDate?: string,
+  endDate?: string
+): Promise<AccumulativeData[]> => {
+  try {
+    const params: Record<string, string | number> = {
+      fund1Code: etf1Code,
+      fund2Code: etf2Code,
+    };
+    
+    if (startDate && endDate) {
+      params.startDate = startDate;
+      params.endDate = endDate;
+    } else if (timeRange !== undefined) {
+      params.timeRange = timeRange;
+    }
+    
+    const response = await httpApi.get('/polarization/accumulative', {
+      params,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('获取累加数据失败:', error);
+    return [];
   }
 };

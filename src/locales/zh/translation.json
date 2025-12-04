@@ -912,13 +912,14 @@
       "month3": "近3月",
       "month6": "近6月",
       "year1": "近1年",
-      "year3": "近3年"
+      "year3": "近3年",
+      "year5": "近5年"
     },
     "overview": {
       "title": "偏振度概览",
       "titleEn": "Polarization Overview",
       "calculationBasis": "计算依据：",
-      "calculationDescription": "基于选中的两个ETF，计算近3年（约750个交易日）的平均偏振度作为\"中度偏振\"基准值。当前偏振度与基准值比较：低于基准值15%为低偏振，高于基准值15%为高偏振，其余为中等偏振。偏振度 = ETF1价格 / ETF2价格。",
+      "calculationDescription": "基于选中的两个ETF，计算近3年（约750个交易日）的平均偏振度作为“中度偏振”基准值。当前偏振度与基准值比较：低于基准15%为低偏振，高于基准15%为高偏振，其余为中等偏振。偏振度 = ETF1价格 / ETF2价格。",
       "avg3Year": "3年平均",
       "trend": "趋势",
       "trendRising": "上升",
@@ -933,7 +934,7 @@
       "title": "资金篮模型",
       "titleEn": "Fund Basket Model",
       "description": "模型说明：",
-      "descriptionText": "资金篮采用 4+1+4+1+n = 10+n 结构，其中创业*4、上证*4、深指*1、现金*1，加仓*n为动态调整部分。"
+      "descriptionText": "资金篮采用 4+1+4+1+n = 10+n 结构，其中创业*4、上证*4、深指*1、现金*1，加仓*n 为动态调整部分。"
     },
     "operationCapital": {
       "title": "操作资金计算",
@@ -948,7 +949,7 @@
       "minExpected": {
         "title": "最低期望收益",
         "titleEn": "Minimum Expected Return",
-        "description": "平均期望操作收益 0.5%，月天21，年天250",
+        "description": "平均期望操作收益 0.5%，月计 21 天，年计 250 天",
         "operation": "操作",
         "daily": "日收益",
         "weekly": "周收益",
@@ -958,7 +959,7 @@
       "maxExpected": {
         "title": "最高期望收益",
         "titleEn": "Maximum Expected Return",
-        "description": "平均期望操作收益 1%，月天21，年天250"
+        "description": "平均期望操作收益 1%，月计 21 天，年计 250 天"
       }
     },
     "specialCases": {
@@ -989,4 +990,3 @@
     }
   }
 }
-
