@@ -262,6 +262,12 @@ export const PolarizationModelPage: React.FC = () => {
     const stableLine = accumulativeData.map(d => d.stableLine);
     const profitLine = accumulativeData.map(d => d.profitLine);
 
+    // 计算平均值（只计算稳定线的平均值）
+    const stableValues = stableLine.filter(v => typeof v === 'number' && !isNaN(v));
+    const averageValue = stableValues.length > 0 
+      ? stableValues.reduce((sum, val) => sum + val, 0) / stableValues.length 
+      : 0;
+
     return {
       title: {
         text: `${etf1Info?.name || ''} vs ${etf2Info?.name || ''} - ${TIME_RANGES.find(r => r.value === accumulativeTimeRange)?.label}累加收益`,
@@ -301,6 +307,9 @@ export const PolarizationModelPage: React.FC = () => {
         axisLabel: {
           formatter: '{value}%',
         },
+        splitLine: {
+          show: true,
+        },
       },
       series: [
         {
@@ -310,6 +319,67 @@ export const PolarizationModelPage: React.FC = () => {
           data: stableLine,
           lineStyle: { color: '#1890ff', width: 2 },
           itemStyle: { color: '#1890ff' },
+          markLine: {
+            silent: true,
+            data: [
+              {
+                yAxis: 0,
+                lineStyle: {
+                  color: '#ff4d4f',
+                  type: 'dashed',
+                  width: 2,
+                },
+                label: {
+                  show: true,
+                  position: 'end',
+                  formatter: 'y = 0',
+                  color: '#ff4d4f',
+                },
+              },
+              {
+                yAxis: -5,
+                lineStyle: {
+                  color: '#faad14',
+                  type: 'dashed',
+                  width: 2,
+                },
+                label: {
+                  show: true,
+                  position: 'end',
+                  formatter: 'y = -5',
+                  color: '#faad14',
+                },
+              },
+              {
+                yAxis: -10,
+                lineStyle: {
+                  color: '#ff4d4f',
+                  type: 'dashed',
+                  width: 2,
+                },
+                label: {
+                  show: true,
+                  position: 'end',
+                  formatter: 'y = -10',
+                  color: '#ff4d4f',
+                },
+              },
+              {
+                yAxis: averageValue,
+                lineStyle: {
+                  color: '#722ed1',
+                  type: 'dashed',
+                  width: 2,
+                },
+                label: {
+                  show: true,
+                  position: 'end',
+                  formatter: `y = ${averageValue.toFixed(2)}`,
+                  color: '#722ed1',
+                },
+              },
+            ],
+          },
         },
         {
           name: '收益线',

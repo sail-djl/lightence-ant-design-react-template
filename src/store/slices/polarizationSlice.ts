@@ -64,3 +64,5 @@ export const { setSelectedFund1, setSelectedFund2, setSelectedFunds } = polariza
 
 export default polarizationSlice.reducer;
 
+
+

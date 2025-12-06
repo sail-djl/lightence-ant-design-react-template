@@ -212,3 +212,5 @@ export const SpecialCaseContent = styled.div`
   line-height: 1.6;
   margin-bottom: 8px;
 `;
+
+
