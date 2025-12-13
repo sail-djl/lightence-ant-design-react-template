@@ -4,11 +4,13 @@ const CracoAlias = require('craco-alias');
 
 process.env.BROWSER = 'none';
 
+const enableAnalyzer = process.env.ANALYZE === 'true';
+
 module.exports = {
   webpack: {
     plugins: [
       new WebpackBar({ profile: true }),
-      ...(process.env.NODE_ENV === 'development' ? [new BundleAnalyzerPlugin({ openAnalyzer: false, analyzerPort: 8889 })] : []),
+      ...(enableAnalyzer ? [new BundleAnalyzerPlugin({ analyzerMode: 'server', openAnalyzer: true, analyzerPort: 8889 })] : []),
     ],
   },
   plugins: [
