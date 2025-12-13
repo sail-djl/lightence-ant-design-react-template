@@ -246,7 +246,11 @@
     "verifyEmailPage": "验证邮箱页面",
     "warning": "警告",
     "zipcode": "邮编",
-    "delete": "删除"
+    "delete": "删除",
+    "data-market": "数据市场",
+    "etf": "ETF",
+    "index-data": "指数数据",
+    "macro-economy": "宏观经济"
   },
   "medical-dashboard": {
     "activity": {

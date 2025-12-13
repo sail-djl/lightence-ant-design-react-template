@@ -197,29 +197,29 @@ export const RoleManagementPage: React.FC = () => {
 
   const columns: ColumnsType<Role> = [
     {
-      title: 'Name',
+      title: '名称',
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: 'Code',
+      title: '编码',
       dataIndex: 'code',
       key: 'code',
     },
     {
-      title: 'Description',
+      title: '描述',
       dataIndex: 'description',
       key: 'description',
       render: (text: string) => text || '-',
     },
     {
-      title: 'Status',
+      title: '状态',
       dataIndex: 'is_active',
       key: 'is_active',
-      render: (isActive: boolean) => (isActive ? 'Active' : 'Inactive'),
+      render: (isActive: boolean) => (isActive ? '启用' : '停用'),
     },
     {
-      title: 'Sort Order',
+      title: '排序',
       dataIndex: 'sort_order',
       key: 'sort_order',
     },
@@ -233,7 +233,7 @@ export const RoleManagementPage: React.FC = () => {
             {t('common.edit')}
           </BaseButton>
           <BaseButton type="link" onClick={() => handleManagePermissions(record)}>
-            Permissions
+            权限
           </BaseButton>
           <BaseButton type="link" danger onClick={() => handleDelete(record)}>
             {t('common.delete')}
@@ -245,12 +245,12 @@ export const RoleManagementPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>Role Management</PageTitle>
+      <PageTitle>{t('common.role-management')}</PageTitle>
       <S.Card>
         <S.Header>
-          <S.Title>Roles</S.Title>
+          <S.Title>{t('common.role-management')}</S.Title>
           <BaseButton type="primary" onClick={handleCreate}>
-            {t('common.create')} Role
+            {`${t('common.create')} ${t('common.role-management')}`}
           </BaseButton>
         </S.Header>
         <BaseTable
@@ -273,43 +273,43 @@ export const RoleManagementPage: React.FC = () => {
 
       {/* 角色编辑/创建弹窗 */}
       <BaseModal
-        title={editingRole ? 'Edit Role' : 'Create Role'}
+        title={editingRole ? '编辑角色' : '创建角色'}
         open={isModalVisible}
         onOk={handleSubmit}
         onCancel={() => setIsModalVisible(false)}
         width={600}
       >
         <BaseForm form={form} layout="vertical">
-          <BaseForm.Item name="name" label="Name" rules={[{ required: true, message: 'Name is required' }]}>
-            <BaseInput placeholder="Role Name" />
+          <BaseForm.Item name="name" label="名称" rules={[{ required: true, message: '请输入名称' }]}>
+            <BaseInput placeholder="角色名称" />
           </BaseForm.Item>
 
-          <BaseForm.Item name="code" label="Code" rules={[{ required: true, message: 'Code is required' }]}>
-            <BaseInput placeholder="role_code" disabled={!!editingRole} />
+          <BaseForm.Item name="code" label="编码" rules={[{ required: true, message: '请输入编码' }]}>
+            <BaseInput placeholder="角色编码" disabled={!!editingRole} />
           </BaseForm.Item>
 
-          <BaseForm.Item name="description" label="Description">
-            <BaseInput.TextArea placeholder="Role description" rows={3} />
+          <BaseForm.Item name="description" label="描述">
+            <BaseInput.TextArea placeholder="角色描述" rows={3} />
           </BaseForm.Item>
 
           <BaseForm.Item
             name="sort_order"
-            label="Sort Order"
-            rules={[{ required: true, message: 'Sort order is required' }]}
+            label="排序"
+            rules={[{ required: true, message: '请输入排序' }]}
           >
             <InputNumber min={0} placeholder="0" style={{ width: '100%' }} />
           </BaseForm.Item>
 
           <BaseForm.Item name="is_active" valuePropName="checked">
-            <BaseSwitch checkedChildren="Active" unCheckedChildren="Inactive" />
-            <S.Label>Active</S.Label>
+            <BaseSwitch checkedChildren="启用" unCheckedChildren="停用" />
+            <S.Label>启用</S.Label>
           </BaseForm.Item>
         </BaseForm>
       </BaseModal>
 
       {/* 权限分配弹窗 */}
       <BaseModal
-        title={`Manage Permissions - ${selectedRole?.name || ''}`}
+        title={`权限分配 - ${selectedRole?.name || ''}`}
         open={isPermissionModalVisible}
         onOk={handleSavePermissions}
         onCancel={() => setIsPermissionModalVisible(false)}

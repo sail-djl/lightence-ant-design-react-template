@@ -12,7 +12,7 @@ import { PatientResultsCard } from '@app/components/medical-dashboard/PatientRes
 import { StatisticsCards } from '@app/components/medical-dashboard/statisticsCards/StatisticsCards';
 import { BloodScreeningCard } from '@app/components/medical-dashboard/bloodScreeningCard/BloodScreeningCard/BloodScreeningCard';
 import { NewsCard } from '@app/components/medical-dashboard/NewsCard/NewsCard';
-import { References } from '@app/components/common/References/References';
+
 import { useResponsive } from '@app/hooks/useResponsive';
 import * as S from './DashboardPage.styles';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
@@ -65,7 +65,6 @@ const MedicalDashboardPage: React.FC = () => {
             <NewsCard />
           </BaseCol>
         </BaseRow>
-        <References />
       </S.LeftSideCol>
 
       <S.RightSideCol xl={8} xxl={7}>

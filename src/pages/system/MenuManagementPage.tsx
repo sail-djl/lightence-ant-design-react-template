@@ -53,7 +53,7 @@ export const MenuManagementPage: React.FC = () => {
       setTotal(response.count);
       setPagination({ current: page, pageSize });
     } catch (error: unknown) {
-      notificationController.error({ message: getErrorMessage(error, 'Failed to fetch menus') });
+      notificationController.error({ message: getErrorMessage(error, '获取菜单失败') });
     } finally {
       setLoading(false);
     }
@@ -64,7 +64,7 @@ export const MenuManagementPage: React.FC = () => {
       const tree = await getMenuTree();
       setMenuTree(tree);
     } catch (error: unknown) {
-      console.error('Failed to fetch menu tree:', error);
+      console.error('获取菜单树失败:', error);
     }
   }, []);
 
@@ -105,12 +105,12 @@ export const MenuManagementPage: React.FC = () => {
   const handleDelete = async (menu: MenuItem) => {
     try {
       await deleteMenu(menu.id);
-      notificationController.success({ message: 'Menu deleted successfully' });
+      notificationController.success({ message: '菜单删除成功' });
       fetchMenus(pagination.current, pagination.pageSize);
       fetchMenuTree();
     } catch (error: unknown) {
       notificationController.error({
-        message: getErrorMessage(error, 'Failed to delete menu'),
+        message: getErrorMessage(error, '删除菜单失败'),
       });
     }
   };
@@ -121,17 +121,17 @@ export const MenuManagementPage: React.FC = () => {
 
       if (editingMenu) {
         await updateMenu(editingMenu.id, values);
-        notificationController.success({ message: 'Menu updated successfully' });
+        notificationController.success({ message: '菜单更新成功' });
       } else {
         await createMenu(values);
-        notificationController.success({ message: 'Menu created successfully' });
+        notificationController.success({ message: '菜单创建成功' });
       }
 
       setIsModalVisible(false);
       fetchMenus(pagination.current, pagination.pageSize);
       fetchMenuTree();
     } catch (error: unknown) {
-      notificationController.error({ message: getErrorMessage(error, 'Failed to save menu') });
+      notificationController.error({ message: getErrorMessage(error, '保存菜单失败') });
     }
   };
 
@@ -141,7 +141,7 @@ export const MenuManagementPage: React.FC = () => {
     items.forEach((item) => {
       options.push({
         value: item.id,
-        label: '  '.repeat(level) + item.title,
+        label: '  '.repeat(level) + t(item.title),
       });
       if (item.children && item.children.length > 0) {
         options.push(...buildParentOptions(item.children, level + 1));
@@ -152,42 +152,50 @@ export const MenuManagementPage: React.FC = () => {
 
   const columns: ColumnsType<MenuItem> = [
     {
-      title: 'Key',
+      title: '键',
       dataIndex: 'key',
       key: 'key',
+      align: 'center',
     },
     {
-      title: 'Title',
+      title: '标题',
       dataIndex: 'title',
       key: 'title',
+      render: (text: string) => t(text),
+      align: 'center',
     },
     {
       title: 'URL',
       dataIndex: 'url',
       key: 'url',
       render: (text: string) => text || '-',
+      align: 'center',
     },
     {
-      title: 'Icon',
+      title: '图标',
       dataIndex: 'icon',
       key: 'icon',
       render: (text: string) => text || '-',
+      align: 'center',
     },
     {
-      title: 'Sort Order',
+      title: '排序',
       dataIndex: 'sort_order',
       key: 'sort_order',
+      align: 'center',
     },
     {
-      title: 'Status',
+      title: '状态',
       dataIndex: 'is_active',
       key: 'is_active',
-      render: (isActive: boolean) => (isActive ? 'Active' : 'Inactive'),
+      render: (isActive: boolean) => (isActive ? '启用' : '停用'),
+      align: 'center',
     },
     {
       title: t('tables.actions'),
       key: 'actions',
       width: 200,
+      align: 'center',
       render: (_, record: MenuItem) => (
         <BaseSpace>
           <BaseButton type="link" onClick={() => handleEdit(record)}>
@@ -203,12 +211,12 @@ export const MenuManagementPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>Menu Management</PageTitle>
+      <PageTitle>{t('common.menu-management')}</PageTitle>
       <S.Card>
         <S.Header>
-          <S.Title>Menus</S.Title>
+          <S.Title>{t('common.menu-management')}</S.Title>
           <BaseButton type="primary" onClick={handleCreate}>
-            {t('common.create')} Menu
+            {`${t('common.create')} ${t('common.menu-management')}`}
           </BaseButton>
         </S.Header>
         <BaseTable
@@ -221,7 +229,7 @@ export const MenuManagementPage: React.FC = () => {
             pageSize: pagination.pageSize,
             total: total,
             showSizeChanger: true,
-            showTotal: (total) => `Total ${total} menus`,
+            showTotal: (total) => `共 ${total} 个菜单`,
           }}
           onChange={(pageConfig) => {
             handleTableChange(pageConfig.current || 1, pageConfig.pageSize || 10);
@@ -230,44 +238,44 @@ export const MenuManagementPage: React.FC = () => {
       </S.Card>
 
       <BaseModal
-        title={editingMenu ? 'Edit Menu' : 'Create Menu'}
+        title={editingMenu ? '编辑菜单' : '创建菜单'}
         open={isModalVisible}
         onOk={handleSubmit}
         onCancel={() => setIsModalVisible(false)}
         width={600}
       >
         <BaseForm form={form} layout="vertical">
-          <BaseForm.Item name="key" label="Key" rules={[{ required: true, message: 'Key is required' }]}>
+          <BaseForm.Item name="key" label="键" rules={[{ required: true, message: '请输入键' }]}>
             <BaseInput placeholder="menu.key" disabled={!!editingMenu} />
           </BaseForm.Item>
 
-          <BaseForm.Item name="title" label="Title" rules={[{ required: true, message: 'Title is required' }]}>
-            <BaseInput placeholder="Menu Title" />
+          <BaseForm.Item name="title" label="标题" rules={[{ required: true, message: '请输入标题' }]}>
+            <BaseInput placeholder="菜单标题" />
           </BaseForm.Item>
 
           <BaseForm.Item name="url" label="URL">
             <BaseInput placeholder="/path/to/page" />
           </BaseForm.Item>
 
-          <BaseForm.Item name="icon" label="Icon">
+          <BaseForm.Item name="icon" label="图标">
             <IconPicker placeholder="点击选择图标" />
           </BaseForm.Item>
 
-          <BaseForm.Item name="parent_id" label="Parent Menu">
-            <BaseSelect placeholder="Select parent menu" allowClear options={buildParentOptions(menuTree)} />
+          <BaseForm.Item name="parent_id" label="父菜单">
+            <BaseSelect placeholder="选择父菜单" allowClear options={buildParentOptions(menuTree)} />
           </BaseForm.Item>
 
           <BaseForm.Item
             name="sort_order"
-            label="Sort Order"
-            rules={[{ required: true, message: 'Sort order is required' }]}
+            label="排序"
+            rules={[{ required: true, message: '请输入排序' }]}
           >
             <InputNumber min={0} placeholder="0" style={{ width: '100%' }} />
           </BaseForm.Item>
 
           <BaseForm.Item name="is_active" valuePropName="checked">
-            <BaseSwitch checkedChildren="Active" unCheckedChildren="Inactive" />
-            <S.Label>Active</S.Label>
+            <BaseSwitch checkedChildren="启用" unCheckedChildren="停用" />
+            <S.Label>启用</S.Label>
           </BaseForm.Item>
         </BaseForm>
       </BaseModal>
