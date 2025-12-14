@@ -4,6 +4,7 @@ import nightModeReducer from '@app/store/slices/nightModeSlice';
 import themeReducer from '@app/store/slices/themeSlice';
 import pwaReducer from '@app/store/slices/pwaSlice';
 import polarizationReducer from '@app/store/slices/polarizationSlice';
+import searchHistoryReducer from '@app/store/slices/searchHistorySlice';
 
 export default {
   user: userReducer,
@@ -12,4 +13,5 @@ export default {
   theme: themeReducer,
   pwa: pwaReducer,
   polarization: polarizationReducer,
+  searchHistory: searchHistoryReducer,
 };

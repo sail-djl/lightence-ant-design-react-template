@@ -1,0 +1,227 @@
+请求 URL
+http://localhost:8000/api/v1/permissions/tree
+请求方法
+GET
+状态代码
+200 OK
+远程地址
+127.0.0.1:8000
+引用站点策略
+strict-origin-when-cross-origin
+
+[
+    {
+        "key": "finance-dashboard",
+        "title": "金融仪表盘",
+        "url": "/",
+        "parent_id": null,
+        "icon": "LineChartOutlined",
+        "sort_order": 1,
+        "is_active": true,
+        "id": 1,
+        "children": null
+    },
+    {
+        "key": "market",
+        "title": "市场",
+        "url": null,
+        "parent_id": null,
+        "icon": "DashboardOutlined",
+        "sort_order": 2,
+        "is_active": true,
+        "id": 2,
+        "children": [
+            {
+                "key": "stock-market",
+                "title": "股票市场",
+                "url": "/market/stock",
+                "parent_id": 2,
+                "icon": null,
+                "sort_order": 1,
+                "is_active": true,
+                "id": 3,
+                "children": null
+            },
+            {
+                "key": "crypto-market",
+                "title": "加密货币市场",
+                "url": "/market/crypto",
+                "parent_id": 2,
+                "icon": null,
+                "sort_order": 2,
+                "is_active": true,
+                "id": 4,
+                "children": null
+            },
+            {
+                "key": "forex-market",
+                "title": "外汇市场",
+                "url": "/market/forex",
+                "parent_id": 2,
+                "icon": null,
+                "sort_order": 3,
+                "is_active": true,
+                "id": 5,
+                "children": null
+            }
+        ]
+    },
+    {
+        "key": "trading",
+        "title": "交易",
+        "url": null,
+        "parent_id": null,
+        "icon": "LineChartOutlined",
+        "sort_order": 3,
+        "is_active": true,
+        "id": 6,
+        "children": [
+            {
+                "key": "kline",
+                "title": "K线图",
+                "url": "/trading/kline",
+                "parent_id": 6,
+                "icon": null,
+                "sort_order": 1,
+                "is_active": true,
+                "id": 7,
+                "children": null
+            },
+            {
+                "key": "portfolio",
+                "title": "投资组合",
+                "url": "/trading/portfolio",
+                "parent_id": 6,
+                "icon": null,
+                "sort_order": 2,
+                "is_active": true,
+                "id": 8,
+                "children": null
+            }
+        ]
+    },
+    {
+        "key": "data-market",
+        "title": "数据市场",
+        "url": null,
+        "parent_id": null,
+        "icon": "DatabaseOutlined",
+        "sort_order": 10,
+        "is_active": true,
+        "id": 20,
+        "children": [
+            {
+                "key": "etf",
+                "title": "ETF",
+                "url": "/data-market/etf",
+                "parent_id": 20,
+                "icon": "FundOutlined",
+                "sort_order": 1,
+                "is_active": true,
+                "id": 21,
+                "children": null
+            },
+            {
+                "key": "index-data",
+                "title": "指数数据",
+                "url": "/data-market/index",
+                "parent_id": 20,
+                "icon": "LineChartOutlined",
+                "sort_order": 2,
+                "is_active": true,
+                "id": 22,
+                "children": null
+            },
+            {
+                "key": "macro-economy",
+                "title": "宏观经济",
+                "url": "/data-market/macro",
+                "parent_id": 20,
+                "icon": "GlobalOutlined",
+                "sort_order": 3,
+                "is_active": true,
+                "id": 23,
+                "children": null
+            }
+        ]
+    },
+    {
+        "key": "index",
+        "title": "指数",
+        "url": null,
+        "parent_id": null,
+        "icon": "LineChartOutlined",
+        "sort_order": 20,
+        "is_active": true,
+        "id": 9,
+        "children": [
+            {
+                "key": "index-dashboard",
+                "title": "看板",
+                "url": "/index/dashboard",
+                "parent_id": 9,
+                "icon": "DashboardOutlined",
+                "sort_order": 1,
+                "is_active": true,
+                "id": 10,
+                "children": null
+            }
+        ]
+    },
+    {
+        "key": "trading-models",
+        "title": "交易模型",
+        "url": null,
+        "parent_id": null,
+        "icon": "LineChartOutlined",
+        "sort_order": 30,
+        "is_active": true,
+        "id": 14,
+        "children": [
+            {
+                "key": "polarization-model",
+                "title": "偏振模型",
+                "url": "/model/polarization",
+                "parent_id": 14,
+                "icon": "RadarChartOutlined",
+                "sort_order": 1,
+                "is_active": true,
+                "id": 16,
+                "children": null
+            }
+        ]
+    },
+    {
+        "key": "user-management",
+        "title": "用户",
+        "url": "/system/users",
+        "parent_id": null,
+        "icon": "UserOutlined",
+        "sort_order": 100,
+        "is_active": true,
+        "id": 11,
+        "children": null
+    },
+    {
+        "key": "menu-management",
+        "title": "菜单",
+        "url": "/system/menus",
+        "parent_id": null,
+        "icon": "MenuOutlined",
+        "sort_order": 101,
+        "is_active": true,
+        "id": 12,
+        "children": null
+    },
+    {
+        "key": "role-management",
+        "title": "角色",
+        "url": "/system/roles",
+        "parent_id": null,
+        "icon": "SafetyOutlined",
+        "sort_order": 102,
+        "is_active": true,
+        "id": 13,
+        "children": null
+    }
+]
