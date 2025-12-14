@@ -151,17 +151,17 @@ export const MenuManagementPage: React.FC = () => {
   };
 
   const columns: ColumnsType<MenuItem> = [
-    {
-      title: '键',
-      dataIndex: 'key',
-      key: 'key',
-      align: 'center',
-    },
-    {
+        {
       title: '标题',
       dataIndex: 'title',
       key: 'title',
       render: (text: string) => t(text),
+      align: 'center',
+    },
+    {
+      title: '键',
+      dataIndex: 'key',
+      key: 'key',
       align: 'center',
     },
     {

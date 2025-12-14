@@ -166,6 +166,7 @@
     "doctor": "Doctor",
     "dropdown": "Dropdown",
     "edit": "Edit",
+    "create": "Create",
     "email": "Email",
     "emailError": "Please input users name or delete this field",
     "notValidEmail": "Please input a valid email address!",

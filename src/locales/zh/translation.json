@@ -166,6 +166,7 @@
     "doctor": "医生",
     "dropdown": "下拉菜单",
     "edit": "编辑",
+    "create": "创建",
     "email": "邮箱",
     "emailError": "请输入用户名或删除此字段",
     "notValidEmail": "请输入有效的邮箱地址！",
