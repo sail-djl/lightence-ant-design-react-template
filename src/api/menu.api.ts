@@ -34,7 +34,13 @@ export const getMenuById = async (id: number): Promise<MenuItem> => {
 
 /** 创建权限（菜单） */
 export const createMenu = async (menu: Omit<MenuItem, 'id'>): Promise<MenuItem> => {
-  const response = await httpApi.post<MenuItem>('permissions/', menu);
+  const payload = {
+    ...menu,
+    url: menu.url || undefined,
+    icon: menu.icon || undefined,
+    parent_id: menu.parent_id ?? undefined,
+  };
+  const response = await httpApi.post<MenuItem>('permissions/', payload);
   return response.data;
 };
 

@@ -48,7 +48,12 @@ export const MenuManagementPage: React.FC = () => {
     status: 'all',
   });
 
-  const getErrorMessage = (error: unknown, fallback: string) => (error instanceof Error ? error.message : fallback);
+  const getErrorMessage = (error: unknown, fallback: string) => {
+    if (error && typeof error === 'object' && 'message' in (error as any)) {
+      return (error as any).message || fallback;
+    }
+    return fallback;
+  };
 
   const fetchMenus = useCallback(async (page = 1, pageSize = 10) => {
     setLoading(true);
