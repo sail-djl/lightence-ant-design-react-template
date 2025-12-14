@@ -35,29 +35,37 @@ export const MenuManagementPage: React.FC = () => {
   const { t } = useTranslation();
   const [menus, setMenus] = useState<MenuItem[]>([]);
   const [menuTree, setMenuTree] = useState<MenuItem[]>([]);
+  const [filteredTree, setFilteredTree] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState(initialPagination);
   const [total, setTotal] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingMenu, setEditingMenu] = useState<MenuItem | null>(null);
   const [form] = BaseForm.useForm<MenuFormData>();
+  const [allMenus, setAllMenus] = useState<MenuItem[]>([]);
+  const [query, setQuery] = useState<{ keyword: string; status: 'all' | 'active' | 'inactive' }>({
+    keyword: '',
+    status: 'all',
+  });
 
   const getErrorMessage = (error: unknown, fallback: string) => (error instanceof Error ? error.message : fallback);
 
   const fetchMenus = useCallback(async (page = 1, pageSize = 10) => {
     setLoading(true);
     try {
-      const skip = (page - 1) * pageSize;
-      const response = await getAllMenus(skip, pageSize);
-      setMenus(response.data);
-      setTotal(response.count);
+      const response = await getAllMenus(0, 1000);
+      setAllMenus(response.data);
+      const filtered = applyFilters(response.data);
+      const start = (page - 1) * pageSize;
+      setMenus(filtered.slice(start, start + pageSize));
+      setTotal(filtered.length);
       setPagination({ current: page, pageSize });
     } catch (error: unknown) {
       notificationController.error({ message: getErrorMessage(error, '获取菜单失败') });
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [applyFilters]);
 
   const fetchMenuTree = useCallback(async () => {
     try {
@@ -73,8 +81,59 @@ export const MenuManagementPage: React.FC = () => {
     fetchMenuTree();
   }, [fetchMenus, fetchMenuTree]);
 
+  useEffect(() => {
+    setFilteredTree(applyTreeFilters(menuTree));
+  }, [menuTree, applyTreeFilters]);
+
+  const applyTreeFilters = useCallback((items: MenuItem[]): MenuItem[] => {
+    const kw = query.keyword.trim().toLowerCase();
+    const matchNode = (i: MenuItem) => {
+      const values = [i.key, i.title, i.url || '', i.icon || ''];
+      const kwMatch = kw ? values.some((v) => v?.toLowerCase().includes(kw)) : true;
+      const statusMatch = query.status === 'all' ? true : i.is_active === (query.status === 'active');
+      return kwMatch && statusMatch;
+    };
+    const filterRecursive = (nodes: MenuItem[]): MenuItem[] => {
+      return nodes
+        .map((node) => {
+          const children = node.children ? filterRecursive(node.children) : undefined;
+          const selfMatch = matchNode(node);
+          if (selfMatch || (children && children.length)) {
+            return { ...node, children };
+          }
+          return null;
+        })
+        .filter((n): n is MenuItem => n !== null);
+    };
+    return filterRecursive(items);
+  }, [query]);
+
+  const applyFilters = useCallback((items: MenuItem[]) => {
+    const kw = query.keyword.trim().toLowerCase();
+    let filtered = items;
+    if (kw) {
+      filtered = filtered.filter((i) => {
+        const values = [i.key, i.title, i.url || '', i.icon || ''];
+        return values.some((v) => v?.toLowerCase().includes(kw));
+      });
+    }
+    if (query.status !== 'all') {
+      const active = query.status === 'active';
+      filtered = filtered.filter((i) => i.is_active === active);
+    }
+    return filtered;
+  }, [query]);
+
+  const updateDisplay = useCallback((page: number, pageSize: number) => {
+    const filtered = applyFilters(allMenus);
+    const start = (page - 1) * pageSize;
+    setMenus(filtered.slice(start, start + pageSize));
+    setTotal(filtered.length);
+    setPagination({ current: page, pageSize });
+  }, [allMenus, applyFilters]);
+
   const handleTableChange = (page: number, pageSize: number) => {
-    fetchMenus(page, pageSize);
+    updateDisplay(page, pageSize);
   };
 
   const handleCreate = () => {
@@ -211,29 +270,43 @@ export const MenuManagementPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>{t('common.menu-management')}</PageTitle>
       <S.Card>
         <S.Header>
           <S.Title>{t('common.menu-management')}</S.Title>
+        </S.Header>
+        <BaseSpace style={{ display: 'flex', marginBottom: '1rem' }}>
+          <BaseInput
+            placeholder="关键词（键/标题/URL）"
+            allowClear
+            value={query.keyword}
+            onChange={(e) => setQuery((prev) => ({ ...prev, keyword: e.target.value }))}
+            style={{ width: 220 }}
+          />
+          <BaseSelect
+            value={query.status}
+            onChange={(val) => setQuery((prev) => ({ ...prev, status: val as 'all' | 'active' | 'inactive' }))}
+            options={[
+              { value: 'all', label: '全部' },
+              { value: 'active', label: '启用' },
+              { value: 'inactive', label: '停用' },
+            ]}
+            style={{ width: 120 }}
+          />
+          <BaseButton onClick={() => setFilteredTree(applyTreeFilters(menuTree))}>查询</BaseButton>
+          <BaseButton onClick={fetchMenuTree}>刷新</BaseButton>
+        </BaseSpace>
+        <BaseSpace style={{ display: 'flex' }}>
           <BaseButton type="primary" onClick={handleCreate}>
             {`${t('common.create')} ${t('common.menu-management')}`}
           </BaseButton>
-        </S.Header>
+        </BaseSpace>
         <BaseTable
           columns={columns}
-          dataSource={menus}
+          dataSource={filteredTree.length ? filteredTree : menuTree}
           rowKey="id"
           loading={loading}
-          pagination={{
-            current: pagination.current,
-            pageSize: pagination.pageSize,
-            total: total,
-            showSizeChanger: true,
-            showTotal: (total) => `共 ${total} 个菜单`,
-          }}
-          onChange={(pageConfig) => {
-            handleTableChange(pageConfig.current || 1, pageConfig.pageSize || 10);
-          }}
+          pagination={false}
+          expandable={{ defaultExpandAllRows: true }}
         />
       </S.Card>
 
