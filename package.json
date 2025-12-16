@@ -68,6 +68,7 @@
     "lint": "eslint \"*/**/*.{js,ts,tsx}\" --fix",
     "lint:styles": "stylelint '*/**/*.{js,ts,tsx}'",
     "prepare": "husky install",
+    "postinstall": "patch-package",
     "buildThemes": "lessc --js --clean-css=\"--s1 --advanced\" src/styles/themes/main.less public/themes/main.css"
   },
   "browserslist": [
@@ -102,6 +103,7 @@
     "less": "^4.1.2",
     "less-plugin-clean-css": "^1.5.1",
     "lint-staged": "^11.0.0",
+    "patch-package": "^8.0.1",
     "prettier": "^2.3.1",
     "stylelint": "^13.13.1",
     "stylelint-config-recommended": "^5.0.0",
