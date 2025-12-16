@@ -55,6 +55,45 @@ export const MenuManagementPage: React.FC = () => {
     return fallback;
   };
 
+  const applyFilters = useCallback((items: MenuItem[]) => {
+    const kw = query.keyword.trim().toLowerCase();
+    let filtered = items;
+    if (kw) {
+      filtered = filtered.filter((i) => {
+        const values = [i.key, i.title, i.url || '', i.icon || ''];
+        return values.some((v) => v?.toLowerCase().includes(kw));
+      });
+    }
+    if (query.status !== 'all') {
+      const active = query.status === 'active';
+      filtered = filtered.filter((i) => i.is_active === active);
+    }
+    return filtered;
+  }, [query]);
+
+  const applyTreeFilters = useCallback((items: MenuItem[]): MenuItem[] => {
+    const kw = query.keyword.trim().toLowerCase();
+    const matchNode = (i: MenuItem) => {
+      const values = [i.key, i.title, i.url || '', i.icon || ''];
+      const kwMatch = kw ? values.some((v) => v?.toLowerCase().includes(kw)) : true;
+      const statusMatch = query.status === 'all' ? true : i.is_active === (query.status === 'active');
+      return kwMatch && statusMatch;
+    };
+    const filterRecursive = (nodes: MenuItem[]): MenuItem[] => {
+      return nodes
+        .map((node) => {
+          const children = node.children ? filterRecursive(node.children) : undefined;
+          const selfMatch = matchNode(node);
+          if (selfMatch || (children && children.length)) {
+            return { ...node, ...(children && { children }) };
+          }
+          return null;
+        })
+        .filter((n): n is MenuItem => n !== null);
+    };
+    return filterRecursive(items);
+  }, [query]);
+
   const fetchMenus = useCallback(async (page = 1, pageSize = 10) => {
     setLoading(true);
     try {
@@ -89,45 +128,6 @@ export const MenuManagementPage: React.FC = () => {
   useEffect(() => {
     setFilteredTree(applyTreeFilters(menuTree));
   }, [menuTree, applyTreeFilters]);
-
-  const applyTreeFilters = useCallback((items: MenuItem[]): MenuItem[] => {
-    const kw = query.keyword.trim().toLowerCase();
-    const matchNode = (i: MenuItem) => {
-      const values = [i.key, i.title, i.url || '', i.icon || ''];
-      const kwMatch = kw ? values.some((v) => v?.toLowerCase().includes(kw)) : true;
-      const statusMatch = query.status === 'all' ? true : i.is_active === (query.status === 'active');
-      return kwMatch && statusMatch;
-    };
-    const filterRecursive = (nodes: MenuItem[]): MenuItem[] => {
-      return nodes
-        .map((node) => {
-          const children = node.children ? filterRecursive(node.children) : undefined;
-          const selfMatch = matchNode(node);
-          if (selfMatch || (children && children.length)) {
-            return { ...node, children };
-          }
-          return null;
-        })
-        .filter((n): n is MenuItem => n !== null);
-    };
-    return filterRecursive(items);
-  }, [query]);
-
-  const applyFilters = useCallback((items: MenuItem[]) => {
-    const kw = query.keyword.trim().toLowerCase();
-    let filtered = items;
-    if (kw) {
-      filtered = filtered.filter((i) => {
-        const values = [i.key, i.title, i.url || '', i.icon || ''];
-        return values.some((v) => v?.toLowerCase().includes(kw));
-      });
-    }
-    if (query.status !== 'all') {
-      const active = query.status === 'active';
-      filtered = filtered.filter((i) => i.is_active === active);
-    }
-    return filtered;
-  }, [query]);
 
   const updateDisplay = useCallback((page: number, pageSize: number) => {
     const filtered = applyFilters(allMenus);

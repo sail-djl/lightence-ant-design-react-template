@@ -29,7 +29,7 @@ export const TreatmentCalendar: React.FC<TreatmentCalendarProps> = ({
   onToday,
 }) => {
   const { language } = useLanguage();
-  const locale = useMemo(() => (language === 'de' ? deDe : enUS), [language]);
+  const locale = useMemo(() => enUS, [language]);
 
   const handleSelect = (value: AppDate) => {
     setDate(value);

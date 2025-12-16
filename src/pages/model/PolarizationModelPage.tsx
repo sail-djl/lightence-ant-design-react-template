@@ -152,14 +152,16 @@ export const PolarizationModelPage: React.FC = () => {
   }, []);
 
   // 当基金选择改变时，保存到 store
-  const handleFund1Change = (value: string) => {
-    setEtf1(value);
-    dispatch(setSelectedFund1(value));
+  const handleFund1Change = (value: unknown) => {
+    const fundValue = typeof value === 'string' ? value : String(value);
+    setEtf1(fundValue);
+    dispatch(setSelectedFund1(fundValue));
   };
 
-  const handleFund2Change = (value: string) => {
-    setEtf2(value);
-    dispatch(setSelectedFund2(value));
+  const handleFund2Change = (value: unknown) => {
+    const fundValue = typeof value === 'string' ? value : String(value);
+    setEtf2(fundValue);
+    dispatch(setSelectedFund2(fundValue));
   };
 
   // 获取ETF信息，并确保数值字段为数字类型
@@ -594,13 +596,13 @@ export const PolarizationModelPage: React.FC = () => {
   }));
 
   // 基金选择器搜索过滤函数（支持按代码或名称搜索）
-  const filterOption = (input: string, option?: { label: string; value: string }) => {
+  const filterOption = (input: string, option?: any) => {
     if (!option || !input) return true;
     const searchText = input.toLowerCase().trim();
     if (!searchText) return true;
     
-    const label = option.label?.toLowerCase() || '';
-    const value = option.value?.toLowerCase() || '';
+    const label = String(option.label || '').toLowerCase();
+    const value = String(option.value || '').toLowerCase();
     
     // 支持按基金代码或名称搜索（label 格式: "基金名称 (代码)"）
     // 可以搜索完整标签、代码或名称部分
@@ -868,7 +870,7 @@ export const PolarizationModelPage: React.FC = () => {
                   <S.CalcInputWrapper>
                     <InputNumber
                       value={operationAmount}
-                      onChange={(value) => setOperationAmount(value || 2.5)}
+                      onChange={(value) => setOperationAmount(typeof value === 'number' ? value : 2.5)}
                       min={0.1}
                       max={100}
                       step={0.1}

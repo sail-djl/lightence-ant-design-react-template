@@ -69,9 +69,10 @@ export const KlineChart: React.FC<KlineChartProps> = ({
         const kline = typeof dataIndex === 'number' ? klineData[dataIndex] : undefined;
 
         if (first && kline) {
+          const axisValue = (first as any).axisValue || first.name || kline.time;
           return `
               <div>
-                <div><strong>${first.axisValue}</strong></div>
+                <div><strong>${axisValue}</strong></div>
                 <div>开盘: ${kline.open}</div>
                 <div>收盘: ${kline.close}</div>
                 <div>最高: ${kline.high}</div>

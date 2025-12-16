@@ -23,6 +23,8 @@ export interface DeviationData {
   deviation: number; // 涨跌幅差值 (fund1.pct_chg - fund2.pct_chg)
   etf1PctChg: number; // 基金1涨跌幅 (pct_chg)
   etf2PctChg: number; // 基金2涨跌幅 (pct_chg)
+  etf1Price?: number; // 基金1价格（可选，用于图表显示）
+  etf2Price?: number; // 基金2价格（可选，用于图表显示）
 }
 
 export interface DeviationSummary {
@@ -149,9 +151,15 @@ const generateMockDeviationData = (timeRange: number): DeviationData[] => {
     const price1 = basePrice1 + (Math.random() * 0.2 - 0.1);
     const price2 = basePrice2 + (Math.random() * 0.2 - 0.1);
 
+    // 生成模拟的涨跌幅数据（-5% 到 +5%）
+    const pctChg1 = (Math.random() * 10 - 5) / 100;
+    const pctChg2 = (Math.random() * 10 - 5) / 100;
+    
     data.push({
       date: date.toISOString().split('T')[0],
-      deviation: parseFloat((price1 / price2).toFixed(3)),
+      deviation: parseFloat((pctChg1 - pctChg2).toFixed(3)),
+      etf1PctChg: parseFloat(pctChg1.toFixed(4)),
+      etf2PctChg: parseFloat(pctChg2.toFixed(4)),
       etf1Price: parseFloat(price1.toFixed(2)),
       etf2Price: parseFloat(price2.toFixed(2)),
     });

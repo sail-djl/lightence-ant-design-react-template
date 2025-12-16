@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Card, Row, Select, Typography } from 'antd';
 import ReactECharts from 'echarts-for-react';
-import type { CallbackDataParams, EChartsOption } from 'echarts';
+import type { CallbackDataParams } from 'echarts/types/dist/shared';
+import type { EChartsOption } from 'echarts-for-react';
 import { useTranslation } from 'react-i18next';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
@@ -10,7 +11,21 @@ import * as S from './IndexDashboardPage.styles';
 const { Title, Text } = Typography;
 const { Option } = Select;
 
-const mockIndexData = [
+interface IndexData {
+  name: string;
+  code: string;
+  value: number;
+  change: number;
+  changePercent: number;
+  ytd: number;
+  volume: string;
+  turnover: number;
+  pePercentile: number;
+  pbPercentile: number;
+  trend: 'strong' | 'weak';
+}
+
+const mockIndexData: IndexData[] = [
   {
     name: '上证指数',
     code: '000001',
