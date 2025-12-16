@@ -42,3 +42,16 @@ export const getFundBasicList = async (params: FundQuery = {}): Promise<FundBasi
   }
 };
 
+export interface FundSyncPayload {
+  start_date?: string;
+  end_date?: string;
+  keyword?: string;
+  market?: 'E' | 'O';
+  status?: 'D' | 'I' | 'L';
+  fund_type?: string;
+  management?: string;
+}
+
+export const syncFundNav = async (payload: FundSyncPayload): Promise<void> => {
+  await httpApi.post('fund/nav/sync', payload);
+};

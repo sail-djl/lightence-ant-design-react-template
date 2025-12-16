@@ -5,12 +5,21 @@ import { BaseSelect } from '@app/components/common/selects/BaseSelect/BaseSelect
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { BaseAutoComplete } from '@app/components/common/BaseAutoComplete/BaseAutoComplete';
+import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
+import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
+import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
+import { AppDate, Dates } from '@app/constants/Dates';
+import { notificationController } from '@app/controllers/notificationController';
 import { ColumnsType } from 'antd/es/table';
-import { FundBasic, getFundBasicList } from '@app/api/fund.api';
+import { FundBasic, getFundBasicList, syncFundNav, FundSyncPayload } from '@app/api/fund.api';
 import { useDispatch, useSelector } from 'react-redux';
 import { addEntry } from '@app/store/slices/searchHistorySlice';
 
 const initialPagination = { current: 1, pageSize: 10 };
+
+import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
+import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
+import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 
 const statusText = (v?: 'D' | 'I' | 'L') => {
   if (v === 'L') return '上市中';
@@ -47,6 +56,10 @@ const FundListPage: React.FC = () => {
   const [keywordOpen, setKeywordOpen] = useState(false);
   const [typeOpen, setTypeOpen] = useState(false);
   const [mgmtOpen, setMgmtOpen] = useState(false);
+  const [syncOpen, setSyncOpen] = useState(false);
+  const [syncQuery, setSyncQuery] = useState(initialQuery);
+  const [syncRange, setSyncRange] = useState<[AppDate | null, AppDate | null]>([null, null]);
+  const [syncLoading, setSyncLoading] = useState(false);
 
   const fetchFunds = useCallback(
     async (page = 1, pageSize = 10, params?: typeof query) => {
@@ -216,6 +229,114 @@ const FundListPage: React.FC = () => {
         <BaseButton onClick={handleReset}>重置</BaseButton>
       </BaseSpace>
 
+      <BaseSpace style={{ display: 'flex', marginBottom: '1rem', justifyContent: 'flex-start' }}>
+        <BaseButton type="primary" onClick={() => {
+          setSyncQuery(query);
+          setSyncOpen(true);
+        }}>同步</BaseButton>
+      </BaseSpace>
+
+      <BaseModal
+        title="基金净值同步"
+        open={syncOpen}
+        onCancel={() => setSyncOpen(false)}
+        confirmLoading={syncLoading}
+        onOk={async () => {
+          const hasStart = !!syncRange[0];
+          const hasEnd = !!syncRange[1];
+          if ((hasStart && !hasEnd) || (!hasStart && hasEnd)) {
+            notificationController.warning({ message: '请选择完整的日期范围' });
+            return;
+          }
+          setSyncLoading(true);
+          try {
+            const payload: FundSyncPayload = {
+              start_date: syncRange[0] ? Dates.format(syncRange[0], 'YYYY-MM-DD') : undefined,
+              end_date: syncRange[1] ? Dates.format(syncRange[1], 'YYYY-MM-DD') : undefined,
+              keyword: syncQuery.keyword || undefined,
+              market: syncQuery.market,
+              status: syncQuery.status,
+              fund_type: syncQuery.fund_type,
+              management: syncQuery.management,
+            };
+            await syncFundNav(payload);
+            notificationController.success({ message: '同步任务已触发' });
+            setSyncOpen(false);
+          } catch (e: any) {
+            notificationController.error({ message: e?.message || '同步失败' });
+          } finally {
+            setSyncLoading(false);
+          }
+        }}
+      >
+        <BaseForm layout="vertical">
+          <BaseForm.Item label="日期范围">
+            <DayjsDatePicker.RangePicker
+              format="YYYY-MM-DD"
+              value={syncRange}
+              onChange={(val) => setSyncRange([val?.[0] || null, val?.[1] || null])}
+            />
+          </BaseForm.Item>
+          
+          <BaseRow gutter={[10, 10]}>
+            <BaseCol span={12}>
+              <BaseForm.Item label="关键词">
+                <BaseInput 
+                  value={syncQuery.keyword} 
+                  onChange={(e) => setSyncQuery({...syncQuery, keyword: e.target.value})} 
+                  placeholder="代码/简称/管理人"
+                />
+              </BaseForm.Item>
+            </BaseCol>
+            <BaseCol span={12}>
+              <BaseForm.Item label="市场">
+                <BaseSelect
+                  value={syncQuery.market}
+                  onChange={(val) => setSyncQuery({...syncQuery, market: val as any})}
+                  allowClear
+                  options={[
+                    { value: 'E', label: '场内(E)' },
+                    { value: 'O', label: '场外(O)' },
+                  ]}
+                />
+              </BaseForm.Item>
+            </BaseCol>
+            <BaseCol span={12}>
+              <BaseForm.Item label="状态">
+                <BaseSelect
+                  value={syncQuery.status}
+                  onChange={(val) => setSyncQuery({...syncQuery, status: val as any})}
+                  allowClear
+                  options={[
+                    { value: 'L', label: '上市中(L)' },
+                    { value: 'I', label: '发行(I)' },
+                    { value: 'D', label: '摘牌(D)' },
+                  ]}
+                />
+              </BaseForm.Item>
+            </BaseCol>
+            <BaseCol span={12}>
+              <BaseForm.Item label="类型">
+                 <BaseInput 
+                  value={syncQuery.fund_type} 
+                  onChange={(e) => setSyncQuery({...syncQuery, fund_type: e.target.value})}
+                  placeholder="股票型/混合型等"
+                />
+              </BaseForm.Item>
+            </BaseCol>
+             <BaseCol span={24}>
+              <BaseForm.Item label="管理人">
+                 <BaseInput 
+                  value={syncQuery.management} 
+                  onChange={(e) => setSyncQuery({...syncQuery, management: e.target.value})}
+                  placeholder="管理人名称"
+                />
+              </BaseForm.Item>
+            </BaseCol>
+          </BaseRow>
+        </BaseForm>
+      </BaseModal>
+
       <BaseTable
         columns={columns}
         dataSource={rows}
@@ -239,4 +360,3 @@ const FundListPage: React.FC = () => {
 };
 
 export default FundListPage;
-
