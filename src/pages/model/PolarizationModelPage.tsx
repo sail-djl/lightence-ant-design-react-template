@@ -778,25 +778,25 @@ export const PolarizationModelPage: React.FC = () => {
                 <BaseCol xs={12} sm={6}>
                   <S.DeviationSummaryCard>
                     <div>{t('polarization.deviation.today')}</div>
-                    <S.DeviationValue>{deviationSummary.today.toFixed(3)}</S.DeviationValue>
+                    <S.DeviationValue>{deviationSummary.today != null ? deviationSummary.today.toFixed(3) : '--'}</S.DeviationValue>
                   </S.DeviationSummaryCard>
                 </BaseCol>
                 <BaseCol xs={12} sm={6}>
                   <S.DeviationSummaryCard>
                     <div>{t('polarization.deviation.weekAvg')}</div>
-                    <S.DeviationValue>{deviationSummary.weekAvg.toFixed(3)}</S.DeviationValue>
+                    <S.DeviationValue>{deviationSummary.weekAvg != null ? deviationSummary.weekAvg.toFixed(3) : '--'}</S.DeviationValue>
                   </S.DeviationSummaryCard>
                 </BaseCol>
                 <BaseCol xs={12} sm={6}>
                   <S.DeviationSummaryCard>
                     <div>{t('polarization.deviation.monthAvg')}</div>
-                    <S.DeviationValue>{deviationSummary.monthAvg.toFixed(3)}</S.DeviationValue>
+                    <S.DeviationValue>{deviationSummary.monthAvg != null ? deviationSummary.monthAvg.toFixed(3) : '--'}</S.DeviationValue>
                   </S.DeviationSummaryCard>
                 </BaseCol>
                 <BaseCol xs={12} sm={6}>
                   <S.DeviationSummaryCard>
                     <div>{t('polarization.deviation.yearAvg')}</div>
-                    <S.DeviationValue>{deviationSummary.yearAvg.toFixed(3)}</S.DeviationValue>
+                    <S.DeviationValue>{deviationSummary.yearAvg != null ? deviationSummary.yearAvg.toFixed(3) : '--'}</S.DeviationValue>
                   </S.DeviationSummaryCard>
                 </BaseCol>
               </BaseRow>
@@ -822,12 +822,12 @@ export const PolarizationModelPage: React.FC = () => {
               <BaseCol xs={24} sm={12} md={8} lg={6}>
                 <S.PolarCard>
                   <div>{etf1Info.name} vs {etf2Info.name}</div>
-                  <S.PolarValue>{polarizationData.currentPolarization.toFixed(3)}</S.PolarValue>
+                  <S.PolarValue>{polarizationData.currentPolarization != null ? polarizationData.currentPolarization.toFixed(3) : '--'}</S.PolarValue>
                   <S.PolarStatus>
                     {polarizationData.status === 'high' ? t('polarization.overview.statusHigh') : polarizationData.status === 'low' ? t('polarization.overview.statusLow') : t('polarization.overview.statusModerate')}
                   </S.PolarStatus>
                   <div style={{ fontSize: '12px', color: '#666', marginTop: '12px' }}>
-                    <div>{t('polarization.overview.avg3Year')}: {polarizationData.avgPolarization.toFixed(3)}</div>
+                    <div>{t('polarization.overview.avg3Year')}: {polarizationData.avgPolarization != null ? polarizationData.avgPolarization.toFixed(3) : '--'}</div>
                     <div>{t('polarization.overview.trend')}: {polarizationData.trend === 'rising' ? `📈 ${t('polarization.overview.trendRising')}` : polarizationData.trend === 'falling' ? `📉 ${t('polarization.overview.trendFalling')}` : `➡️ ${t('polarization.overview.trendStable')}`}</div>
                   </div>
                 </S.PolarCard>

@@ -101,22 +101,6 @@ const FundListPage: React.FC = () => {
     { title: '市场', dataIndex: 'market', key: 'market', align: 'center', render: (v) => marketText(v) },
     { title: '状态', dataIndex: 'status', key: 'status', align: 'center', render: (v) => statusText(v) },
     { title: '类型', dataIndex: 'fund_type', key: 'fund_type', align: 'center', render: (v: string) => v || '-' },
-    {
-      title: '管理费',
-      dataIndex: 'm_fee',
-      key: 'm_fee',
-      align: 'center',
-      render: (v?: number | string) => (typeof v === 'number' || typeof v === 'string' ? `${v}%` : '-'),
-    },
-    {
-      title: '托管费',
-      dataIndex: 'c_fee',
-      key: 'c_fee',
-      align: 'center',
-      render: (v?: number | string) => (typeof v === 'number' || typeof v === 'string' ? `${v}%` : '-'),
-    },
-    { title: '成立日期', dataIndex: 'found_date', key: 'found_date', align: 'center', render: (v: string) => v || '-' },
-    { title: '上市日期', dataIndex: 'list_date', key: 'list_date', align: 'center', render: (v: string) => v || '-' },
   ];
 
   return (
