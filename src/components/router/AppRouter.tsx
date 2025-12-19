@@ -71,6 +71,7 @@ const PigeonsMaps = React.lazy(() => import('@app/pages/maps/PigeonsMapsPage/Pig
 const Logout = React.lazy(() => import('./Logout'));
 const EtfListPage = React.lazy(() => import('@app/pages/datamarket/EtfListPage'));
 const FundListPage = React.lazy(() => import('@app/pages/datamarket/FundListPage'));
+const FundDetail = React.lazy(() => import('@app/pages/datamarket/FundDetail'));
 
 export const NFT_DASHBOARD_PATH = '/';
 export const MEDICAL_DASHBOARD_PATH = '/medical-dashboard';
@@ -119,6 +120,7 @@ const DataTables = withLoading(DataTablesPage);
 const Charts = withLoading(ChartsPage);
 const EtfList = withLoading(EtfListPage);
 const FundList = withLoading(FundListPage);
+const FundDetailPage = withLoading(FundDetail);
 
 // Maps
 const Google = withLoading(GoogleMaps);
@@ -180,6 +182,7 @@ export const AppRouter: React.FC = () => {
           <Route path="datamarket">
             <Route path="etf" element={<EtfList />} />
             <Route path="fund" element={<FundList />} />
+            <Route path="fund/:code" element={<FundDetailPage />} />
           </Route>
           <Route path="maps">
             <Route path="google-maps" element={<Google />} />
