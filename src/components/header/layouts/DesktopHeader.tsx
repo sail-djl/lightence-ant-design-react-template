@@ -1,7 +1,6 @@
 import React from 'react';
 import { NotificationsDropdown } from '../components/notificationsDropdown/NotificationsDropdown';
 import { ProfileDropdown } from '../components/profileDropdown/ProfileDropdown/ProfileDropdown';
-import { HeaderSearch } from '../components/HeaderSearch/HeaderSearch';
 import { SettingsDropdown } from '../components/settingsDropdown/SettingsDropdown';
 import { HeaderFullscreen } from '../components/HeaderFullscreen/HeaderFullscreen';
 import * as S from '../Header.styles';
@@ -13,26 +12,8 @@ interface DesktopHeaderProps {
 }
 
 export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout }) => {
-  const leftSide = isTwoColumnsLayout ? (
-    <S.SearchColumn xl={16} xxl={17}>
-      <BaseRow justify="space-between">
-        <BaseCol xl={15} xxl={12}>
-          <HeaderSearch />
-        </BaseCol>
-      </BaseRow>
-    </S.SearchColumn>
-  ) : (
-    <>
-      <BaseCol lg={10} xxl={8}>
-        <HeaderSearch />
-      </BaseCol>
-    </>
-  );
-
   return (
-    <BaseRow justify="space-between" align="middle">
-      {leftSide}
-
+    <BaseRow justify="end" align="middle">
       <S.ProfileColumn xl={8} xxl={7} $isTwoColumnsLayout={isTwoColumnsLayout}>
         <BaseRow align="middle" justify="end" gutter={[5, 5]}>
           <BaseCol>

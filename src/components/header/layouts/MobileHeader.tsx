@@ -26,10 +26,6 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ toggleSider, isSider
           </BaseCol>
 
           <BaseCol>
-            <HeaderSearch />
-          </BaseCol>
-
-          <BaseCol>
             <SettingsDropdown />
           </BaseCol>
         </BaseRow>
