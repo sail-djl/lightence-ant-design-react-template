@@ -743,10 +743,45 @@ export const PolarizationModelPage: React.FC = () => {
               </div>
 
               {accumulativeData.length > 0 ? (
-                <BaseChart
-                  option={accumulativeChartOption}
-                  height="350px"
-                />
+                <div style={{ position: 'relative' }}>
+                  <BaseChart
+                    option={accumulativeChartOption}
+                    height="350px"
+                  />
+                  {/* 始终显示的尾部卡片 */}
+                  {(() => {
+                    const lastItem = accumulativeData[accumulativeData.length - 1];
+                    if (!lastItem) return null;
+                    const date = new Date(lastItem.date).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
+                    return (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '50px',
+                        right: '20px',
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        padding: '10px',
+                        borderRadius: '4px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                        fontSize: '12px',
+                        pointerEvents: 'none',
+                        zIndex: 10,
+                        border: '1px solid #f0f0f0'
+                      }}>
+                        <div style={{ marginBottom: '4px', fontWeight: 600, color: '#666' }}>{date}</div>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
+                          <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#1890ff', marginRight: '6px' }}></span>
+                          <span style={{ color: '#666' }}>稳定线: </span>
+                          <span style={{ marginLeft: '4px', fontWeight: 600 }}>{typeof lastItem.stableLine === 'number' ? lastItem.stableLine.toFixed(2) : '--'}%</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#52c41a', marginRight: '6px' }}></span>
+                          <span style={{ color: '#666' }}>收益线: </span>
+                          <span style={{ marginLeft: '4px', fontWeight: 600 }}>{typeof lastItem.profitLine === 'number' ? lastItem.profitLine.toFixed(2) : '--'}%</span>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
               ) : (
                 <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
                   {t('polarization.loadingData')}
