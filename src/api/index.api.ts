@@ -196,14 +196,11 @@ export const syncIndexWeekly = async (payload: IndexWeeklySyncPayload): Promise<
 // ==================== 申万行业分类 ====================
 export interface IndexClassify {
   index_code: string;
-  industry_code: string;
-  level1?: string;
-  level2?: string;
-  level3?: string;
-  type?: string;
+  industry_name: string;
+  parent_code?: string;
+  level?: string;
+  industry_code?: string;
   is_pub?: string;
-  reason?: string;
-  count?: number;
   src?: string;
 }
 
@@ -215,7 +212,9 @@ export interface IndexClassifyResponse {
 export interface IndexClassifyQuery {
   skip?: number;
   limit?: number;
+  index_code?: string;
   level?: string;
+  parent_code?: string;
   src?: string;
   keyword?: string;
 }
@@ -230,7 +229,9 @@ export const getIndexClassifyList = async (params: IndexClassifyQuery = {}): Pro
 };
 
 export interface IndexClassifySyncPayload {
+  index_code?: string;
   level?: string;
+  parent_code?: string;
   src?: string;
 }
 

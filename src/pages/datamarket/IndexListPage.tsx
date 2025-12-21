@@ -637,14 +637,20 @@ const IndexWeeklyTab: React.FC = () => {
 
 // ==================== Tab 5: 申万行业分类 ====================
 const IndexClassifyTab: React.FC = () => {
-  const [query, setQuery] = useState({ level: undefined as string | undefined, src: 'sw2021', keyword: '' });
+  const [query, setQuery] = useState({ 
+    index_code: '', 
+    level: undefined as string | undefined, 
+    parent_code: '', 
+    src: 'SW2021', 
+    keyword: '' 
+  });
   const [rows, setRows] = useState<IndexClassify[]>([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState(initialPagination);
   const [total, setTotal] = useState(0);
   const [syncOpen, setSyncOpen] = useState(false);
   const [syncLoading, setSyncLoading] = useState(false);
-  const [syncPayload, setSyncPayload] = useState<IndexClassifySyncPayload>({ src: 'sw2021' });
+  const [syncPayload, setSyncPayload] = useState<IndexClassifySyncPayload>({ src: 'SW2021' });
 
   const fetchData = useCallback(async (page = 1, pageSize = 10) => {
     setLoading(true);
@@ -652,7 +658,9 @@ const IndexClassifyTab: React.FC = () => {
       const res = await getIndexClassifyList({
         skip: (page - 1) * pageSize,
         limit: pageSize,
+        index_code: trim(query.index_code) || undefined,
         level: query.level,
+        parent_code: trim(query.parent_code) || undefined,
         src: query.src,
         keyword: trim(query.keyword) || undefined,
       });
@@ -669,19 +677,31 @@ const IndexClassifyTab: React.FC = () => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const columns: ColumnsType<IndexClassify> = [
-    { title: '行业代码', dataIndex: 'index_code', key: 'index_code', align: 'center' },
-    { title: '指数代码', dataIndex: 'industry_code', key: 'industry_code', align: 'center' },
-    { title: '一级行业', dataIndex: 'level1', key: 'level1', align: 'center', render: (v: string) => v || '-' },
-    { title: '二级行业', dataIndex: 'level2', key: 'level2', align: 'center', render: (v: string) => v || '-' },
-    { title: '三级行业', dataIndex: 'level3', key: 'level3', align: 'center', render: (v: string) => v || '-' },
-    { title: '指数类别', dataIndex: 'type', key: 'type', align: 'center', render: (v: string) => v || '-' },
+    { title: '指数代码', dataIndex: 'index_code', key: 'index_code', align: 'center' },
+    { title: '行业名称', dataIndex: 'industry_name', key: 'industry_name', align: 'center' },
+    { title: '行业代码', dataIndex: 'industry_code', key: 'industry_code', align: 'center', render: (v: string) => v || '-' },
+    { title: '父级代码', dataIndex: 'parent_code', key: 'parent_code', align: 'center', render: (v: string) => v || '-' },
+    { title: '行业层级', dataIndex: 'level', key: 'level', align: 'center', render: (v: string) => {
+      if (v === 'L1') return '一级行业';
+      if (v === 'L2') return '二级行业';
+      if (v === 'L3') return '三级行业';
+      return v || '-';
+    }},
     { title: '是否发布', dataIndex: 'is_pub', key: 'is_pub', align: 'center', render: (v: string) => v === '1' ? '是' : '否' },
-    { title: '成分股数', dataIndex: 'count', key: 'count', align: 'right', render: (v: number) => v || '-' },
+    { title: '版本', dataIndex: 'src', key: 'src', align: 'center', render: (v: string) => v || '-' },
   ];
 
   return (
     <>
       <BaseSpace style={{ display: 'flex', marginBottom: '1rem', flexWrap: 'wrap' }}>
+        <BaseInput
+          placeholder="指数代码"
+          allowClear
+          value={query.index_code}
+          onChange={(e) => setQuery((prev) => ({ ...prev, index_code: trim(e.target.value) }))}
+          style={{ width: 150 }}
+          onPressEnter={() => fetchData(1, pagination.pageSize)}
+        />
         <BaseSelect
           placeholder="行业级别"
           allowClear
@@ -697,6 +717,14 @@ const IndexClassifyTab: React.FC = () => {
           ]}
           style={{ width: 150 }}
         />
+        <BaseInput
+          placeholder="父级代码（一级为0）"
+          allowClear
+          value={query.parent_code}
+          onChange={(e) => setQuery((prev) => ({ ...prev, parent_code: trim(e.target.value) }))}
+          style={{ width: 150 }}
+          onPressEnter={() => fetchData(1, pagination.pageSize)}
+        />
         <BaseSelect
           placeholder="版本"
           value={query.src}
@@ -705,8 +733,8 @@ const IndexClassifyTab: React.FC = () => {
             fetchData(1, pagination.pageSize);
           }}
           options={[
-            { value: 'sw2021', label: '2021版本' },
-            { value: 'sw2014', label: '2014版本' },
+            { value: 'SW2021', label: '2021版本' },
+            { value: 'SW2014', label: '2014版本' },
           ]}
           style={{ width: 150 }}
         />
@@ -720,11 +748,16 @@ const IndexClassifyTab: React.FC = () => {
         />
         <BaseButton onClick={() => fetchData(1, pagination.pageSize)}>查询</BaseButton>
         <BaseButton onClick={() => {
-          setQuery({ level: undefined, src: 'sw2021', keyword: '' });
+          setQuery({ index_code: '', level: undefined, parent_code: '', src: 'SW2021', keyword: '' });
           fetchData(1, pagination.pageSize);
         }}>重置</BaseButton>
         <BaseButton type="primary" onClick={() => {
-          setSyncPayload({ level: query.level, src: query.src });
+          setSyncPayload({ 
+            index_code: query.index_code || undefined, 
+            level: query.level, 
+            parent_code: query.parent_code || undefined,
+            src: query.src 
+          });
           setSyncOpen(true);
         }}>同步数据</BaseButton>
       </BaseSpace>
@@ -749,6 +782,13 @@ const IndexClassifyTab: React.FC = () => {
         }}
       >
         <BaseForm layout="vertical">
+          <BaseForm.Item label="指数代码（可选）">
+            <BaseInput
+              value={syncPayload.index_code || ''}
+              onChange={(e) => setSyncPayload({ ...syncPayload, index_code: trim(e.target.value) || undefined })}
+              placeholder="输入指数代码"
+            />
+          </BaseForm.Item>
           <BaseForm.Item label="行业级别（可选）">
             <BaseSelect
               value={syncPayload.level}
@@ -761,13 +801,20 @@ const IndexClassifyTab: React.FC = () => {
               ]}
             />
           </BaseForm.Item>
+          <BaseForm.Item label="父级代码（可选）">
+            <BaseInput
+              value={syncPayload.parent_code || ''}
+              onChange={(e) => setSyncPayload({ ...syncPayload, parent_code: trim(e.target.value) || undefined })}
+              placeholder="输入父级代码（一级为0）"
+            />
+          </BaseForm.Item>
           <BaseForm.Item label="版本">
             <BaseSelect
               value={syncPayload.src}
               onChange={(val) => setSyncPayload({ ...syncPayload, src: val as string })}
               options={[
-                { value: 'sw2021', label: '2021版本' },
-                { value: 'sw2014', label: '2014版本' },
+                { value: 'SW2021', label: '2021版本' },
+                { value: 'SW2014', label: '2014版本' },
               ]}
             />
           </BaseForm.Item>
