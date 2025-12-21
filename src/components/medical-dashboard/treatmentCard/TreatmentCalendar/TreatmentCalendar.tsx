@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import enUS from 'antd/lib/calendar/locale/en_US';
-import deDe from 'antd/es/calendar/locale/de_DE';
 import { CalendarSwitch } from '@app/components/common/CalendarSwitch/CalendarSwitch';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { CalendarEvent } from '@app/api/calendar.api';
