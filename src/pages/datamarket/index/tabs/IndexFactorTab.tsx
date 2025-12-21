@@ -6,30 +6,50 @@ import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
+import { BaseSelect, Option } from '@app/components/common/selects/BaseSelect/BaseSelect';
 import { AppDate, Dates } from '@app/constants/Dates';
 import { notificationController } from '@app/controllers/notificationController';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { IndexFactor, getIndexFactorList, syncIndexFactor, IndexFactorSyncPayload } from '@app/api/index.api';
+import { IndexFactor, getIndexFactorList, syncIndexFactor, IndexFactorSyncPayload, IndexBasic, getIndexBasicList } from '@app/api/index.api';
 import { trim } from '../utils';
 
 export const IndexFactorTab: React.FC = () => {
-  const [query, setQuery] = useState({ ts_code: '', start_date: '', end_date: '' });
+  const [query, setQuery] = useState({ ts_code: [] as string[], start_date: '', end_date: '' });
   const [rows, setRows] = useState<IndexFactor[]>([]);
   const [loading, setLoading] = useState(false);
   const [syncOpen, setSyncOpen] = useState(false);
   const [syncLoading, setSyncLoading] = useState(false);
   const [syncPayload, setSyncPayload] = useState<IndexFactorSyncPayload>({});
   const [syncRange, setSyncRange] = useState<[AppDate | null, AppDate | null]>([null, null]);
+  
+  // 查询区域的指数选项列表
+  const [indexOptions, setIndexOptions] = useState<IndexBasic[]>([]);
+  const [indexOptionsLoading, setIndexOptionsLoading] = useState(false);
+
+  // 加载查询区域的指数选项列表（加载前500条）
+  const fetchIndexOptions = useCallback(async () => {
+    setIndexOptionsLoading(true);
+    try {
+      const res = await getIndexBasicList({
+        skip: 0,
+        limit: 500,
+      });
+      setIndexOptions(res.data);
+    } finally {
+      setIndexOptionsLoading(false);
+    }
+  }, []);
 
   const fetchData = useCallback(async () => {
-    if (!query.ts_code) {
+    if (query.ts_code.length === 0) {
+      setRows([]);
       return;
     }
     setLoading(true);
     try {
       const res = await getIndexFactorList({
-        ts_code: query.ts_code,
+        ts_code: query.ts_code.join(','),
         start_date: query.start_date || undefined,
         end_date: query.end_date || undefined,
         limit: 1000,
@@ -41,7 +61,11 @@ export const IndexFactorTab: React.FC = () => {
   }, [query]);
 
   useEffect(() => {
-    if (query.ts_code) {
+    fetchIndexOptions();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (query.ts_code.length > 0) {
       fetchData();
     }
     // eslint-disable-line react-hooks/exhaustive-deps
@@ -62,14 +86,27 @@ export const IndexFactorTab: React.FC = () => {
   return (
     <>
       <BaseSpace style={{ display: 'flex', marginBottom: '1rem', flexWrap: 'wrap' }}>
-        <BaseInput
-          placeholder="指数代码（如：000001.SH）"
+        <BaseSelect
+          mode="multiple"
+          placeholder="选择指数代码"
           allowClear
           value={query.ts_code}
-          onChange={(e) => setQuery((prev) => ({ ...prev, ts_code: trim(e.target.value) }))}
-          style={{ width: 200 }}
-          onPressEnter={() => fetchData()}
-        />
+          onChange={(val) => setQuery((prev) => ({ ...prev, ts_code: val as string[] }))}
+          style={{ width: 300 }}
+          maxTagCount="responsive"
+          showSearch
+          loading={indexOptionsLoading}
+          filterOption={(input, option) =>
+            (option?.label ?? '').toLowerCase().includes(input.toLowerCase()) ||
+            (option?.value ?? '').toLowerCase().includes(input.toLowerCase())
+          }
+        >
+          {indexOptions.map((item) => (
+            <Option key={item.ts_code} value={item.ts_code} label={`${item.ts_code} - ${item.name || ''}`}>
+              {item.ts_code} - {item.name || ''}
+            </Option>
+          ))}
+        </BaseSelect>
         <DayjsDatePicker
           format="YYYY-MM-DD"
           placeholder="开始日期"
@@ -87,7 +124,7 @@ export const IndexFactorTab: React.FC = () => {
         <BaseButton onClick={() => fetchData()}>查询</BaseButton>
         <BaseButton
           onClick={() => {
-            setQuery({ ts_code: '', start_date: '', end_date: '' });
+            setQuery({ ts_code: [], start_date: '', end_date: '' });
           }}
         >
           重置
@@ -98,7 +135,7 @@ export const IndexFactorTab: React.FC = () => {
         <BaseButton
           type="primary"
           onClick={() => {
-            setSyncPayload({ ts_code: query.ts_code || undefined });
+            setSyncPayload({ ts_code: query.ts_code.length > 0 ? query.ts_code.join(',') : undefined });
             setSyncRange([query.start_date ? dayjs(query.start_date) : null, query.end_date ? dayjs(query.end_date) : null]);
             setSyncOpen(true);
           }}

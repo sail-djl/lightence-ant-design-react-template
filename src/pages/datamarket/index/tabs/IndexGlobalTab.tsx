@@ -14,19 +14,35 @@ import { IndexGlobal, getIndexGlobalList, syncIndexGlobal, IndexGlobalSyncPayloa
 import { trim } from '../utils';
 
 export const IndexGlobalTab: React.FC = () => {
-  const [query, setQuery] = useState({ ts_code: '', start_date: '', end_date: '' });
+  const [query, setQuery] = useState({ ts_code: [] as string[], start_date: '', end_date: '' });
   const [rows, setRows] = useState<IndexGlobal[]>([]);
   const [loading, setLoading] = useState(false);
   const [syncOpen, setSyncOpen] = useState(false);
   const [syncLoading, setSyncLoading] = useState(false);
   const [syncPayload, setSyncPayload] = useState<IndexGlobalSyncPayload>({});
   const [syncRange, setSyncRange] = useState<[AppDate | null, AppDate | null]>([null, null]);
+  
+  // 国际指数选项列表
+  const globalIndexOptions = [
+    { value: 'XIN9', label: '富时中国A50指数' },
+    { value: 'HSI', label: '恒生指数' },
+    { value: 'HKTECH', label: '恒生科技指数' },
+    { value: 'DJI', label: '道琼斯工业指数' },
+    { value: 'SPX', label: '标普500指数' },
+    { value: 'IXIC', label: '纳斯达克指数' },
+    { value: 'FTSE', label: '富时100指数' },
+    { value: 'N225', label: '日经225指数' },
+  ];
 
   const fetchData = useCallback(async () => {
+    if (query.ts_code.length === 0) {
+      setRows([]);
+      return;
+    }
     setLoading(true);
     try {
       const res = await getIndexGlobalList({
-        ts_code: trim(query.ts_code) || undefined,
+        ts_code: query.ts_code.join(','),
         start_date: query.start_date || undefined,
         end_date: query.end_date || undefined,
         limit: 1000,
@@ -38,7 +54,7 @@ export const IndexGlobalTab: React.FC = () => {
   }, [query]);
 
   useEffect(() => {
-    if (query.ts_code) {
+    if (query.ts_code.length > 0) {
       fetchData();
     }
     // eslint-disable-line react-hooks/exhaustive-deps
@@ -59,21 +75,19 @@ export const IndexGlobalTab: React.FC = () => {
     <>
       <BaseSpace style={{ display: 'flex', marginBottom: '1rem', flexWrap: 'wrap' }}>
         <BaseSelect
-          placeholder="指数代码"
+          mode="multiple"
+          placeholder="选择指数代码"
           allowClear
           value={query.ts_code}
-          onChange={(val) => setQuery((prev) => ({ ...prev, ts_code: val as string }))}
-          options={[
-            { value: 'XIN9', label: '富时中国A50指数' },
-            { value: 'HSI', label: '恒生指数' },
-            { value: 'HKTECH', label: '恒生科技指数' },
-            { value: 'DJI', label: '道琼斯工业指数' },
-            { value: 'SPX', label: '标普500指数' },
-            { value: 'IXIC', label: '纳斯达克指数' },
-            { value: 'FTSE', label: '富时100指数' },
-            { value: 'N225', label: '日经225指数' },
-          ]}
-          style={{ width: 200 }}
+          onChange={(val) => setQuery((prev) => ({ ...prev, ts_code: val as string[] }))}
+          options={globalIndexOptions}
+          style={{ width: 300 }}
+          maxTagCount="responsive"
+          showSearch
+          filterOption={(input, option) =>
+            (option?.label ?? '').toLowerCase().includes(input.toLowerCase()) ||
+            (option?.value ?? '').toLowerCase().includes(input.toLowerCase())
+          }
         />
         <DayjsDatePicker
           format="YYYY-MM-DD"
@@ -92,7 +106,7 @@ export const IndexGlobalTab: React.FC = () => {
         <BaseButton onClick={() => fetchData()}>查询</BaseButton>
         <BaseButton
           onClick={() => {
-            setQuery({ ts_code: '', start_date: '', end_date: '' });
+            setQuery({ ts_code: [], start_date: '', end_date: '' });
           }}
         >
           重置
@@ -103,7 +117,7 @@ export const IndexGlobalTab: React.FC = () => {
         <BaseButton
           type="primary"
           onClick={() => {
-            setSyncPayload({ ts_code: query.ts_code || undefined });
+            setSyncPayload({ ts_code: query.ts_code.length > 0 ? query.ts_code.join(',') : undefined });
             setSyncRange([query.start_date ? dayjs(query.start_date) : null, query.end_date ? dayjs(query.end_date) : null]);
             setSyncOpen(true);
           }}
@@ -143,18 +157,16 @@ export const IndexGlobalTab: React.FC = () => {
         <BaseForm layout="vertical">
           <BaseForm.Item label="指数代码" required>
             <BaseSelect
-              value={syncPayload.ts_code}
-              onChange={(val) => setSyncPayload({ ...syncPayload, ts_code: val as string | undefined })}
-              options={[
-                { value: 'XIN9', label: '富时中国A50指数' },
-                { value: 'HSI', label: '恒生指数' },
-                { value: 'HKTECH', label: '恒生科技指数' },
-                { value: 'DJI', label: '道琼斯工业指数' },
-                { value: 'SPX', label: '标普500指数' },
-                { value: 'IXIC', label: '纳斯达克指数' },
-                { value: 'FTSE', label: '富时100指数' },
-                { value: 'N225', label: '日经225指数' },
-              ]}
+              mode="multiple"
+              value={syncPayload.ts_code ? syncPayload.ts_code.split(',') : []}
+              onChange={(val) => setSyncPayload({ ...syncPayload, ts_code: (val as string[]).length > 0 ? (val as string[]).join(',') : undefined })}
+              options={globalIndexOptions}
+              maxTagCount="responsive"
+              showSearch
+              filterOption={(input, option) =>
+                (option?.label ?? '').toLowerCase().includes(input.toLowerCase()) ||
+                (option?.value ?? '').toLowerCase().includes(input.toLowerCase())
+              }
             />
           </BaseForm.Item>
           <BaseForm.Item label="日期范围">
