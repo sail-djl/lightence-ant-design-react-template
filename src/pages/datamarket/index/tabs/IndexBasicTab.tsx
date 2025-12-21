@@ -92,6 +92,9 @@ export const IndexBasicTab: React.FC = () => {
         >
           重置
         </BaseButton>
+      </BaseSpace>
+
+      <BaseSpace style={{ display: 'flex', marginBottom: '1rem' }}>
         <BaseButton
           type="primary"
           onClick={() => {
