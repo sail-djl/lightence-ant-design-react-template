@@ -73,6 +73,8 @@ const EtfListPage = React.lazy(() => import('@app/pages/datamarket/EtfListPage')
 const FundListPage = React.lazy(() => import('@app/pages/datamarket/FundListPage'));
 const FundDetail = React.lazy(() => import('@app/pages/datamarket/FundDetail'));
 const IndexListPage = React.lazy(() => import('@app/pages/datamarket/IndexListPage'));
+const IndexDetailPage = React.lazy(() => import('@app/pages/index/IndexDetailPage'));
+const UserConfigPage = React.lazy(() => import('@app/pages/userconfig/UserConfigPage'));
 
 export const NFT_DASHBOARD_PATH = '/';
 export const MEDICAL_DASHBOARD_PATH = '/medical-dashboard';
@@ -123,6 +125,8 @@ const EtfList = withLoading(EtfListPage);
 const FundList = withLoading(FundListPage);
 const FundDetailPage = withLoading(FundDetail);
 const IndexList = withLoading(IndexListPage);
+const IndexDetail = withLoading(IndexDetailPage);
+const UserConfig = withLoading(UserConfigPage);
 
 // Maps
 const Google = withLoading(GoogleMaps);
@@ -172,6 +176,7 @@ export const AppRouter: React.FC = () => {
           </Route>
           <Route path="index">
             <Route path="dashboard" element={<IndexDashboardPage />} />
+            <Route path="detail/:code" element={<IndexDetail />} />
           </Route>
           <Route path="apps">
             <Route path="feed" element={<NewsFeed />} />
@@ -205,6 +210,7 @@ export const AppRouter: React.FC = () => {
             <Route path="users" element={<UserManagement />} />
             <Route path="menus" element={<MenuManagement />} />
             <Route path="roles" element={<RoleManagement />} />
+            <Route path="user-config" element={<UserConfig />} />
           </Route>
           <Route path="ui-components">
             <Route path="button" element={<Buttons />} />

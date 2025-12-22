@@ -1,0 +1,134 @@
+  await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrap 
+ped_app
+    raise exc
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrap
+ped_app
+    await app(scope, receive, sender)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\fastapi\routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\fastapi\routing.py", line 214, in run_endpoint_fun
+ction
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\concurrency.py", line 39, in run_in_thre 
+adpool
+    return await anyio.to_thread.run_sync(func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2405, in run_sy 
+nc_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 914, in run     
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\app\api\routes\user_config.py", line 91, in get_user_config_list
+    data=[UserConfigPublic(**item) for item in items],
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\app\api\routes\user_config.py", line 91, in <listcomp>
+    data=[UserConfigPublic(**item) for item in items],
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\pydantic\main.py", line 250, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for UserConfigPublic
+user_id
+  Input should be a valid string [type=string_type, input_value=UUID('ca312b94-e1bf-4b62-af65-28d18d1c19d 
+b'), input_type=UUID]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+INFO:     127.0.0.1:8971 - "GET /api/v1/permissions/tree HTTP/1.1" 200 OK
+INFO:     127.0.0.1:8966 - "GET /api/v1/user-config/?skip=0&limit=10 HTTP/1.1" 500 Internal Server Error  
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "E:\finance\api\backend\.venv\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 40
+1, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 70, in  
+__call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\fastapi\applications.py", line 1054, in __call__   
+    await super().__call__(scope, receive, send)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\applications.py", line 113, in __call__  
+    await self.middleware_stack(scope, receive, send)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\middleware\errors.py", line 187, in __ca 
+ll__
+    raise exc
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\middleware\errors.py", line 165, in __ca 
+ll__
+    await self.app(scope, receive, _send)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call_
+_
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple 
+_response
+    await self.app(scope, receive, send)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in _
+_call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrap 
+ped_app
+    raise exc
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrap 
+ped_app
+    await app(scope, receive, sender)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\routing.py", line 715, in __call__       
+    await self.middleware_stack(scope, receive, send)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 62, in wrap 
+ped_app
+    raise exc
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\_exception_handler.py", line 51, in wrap 
+ped_app
+    await app(scope, receive, sender)
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\fastapi\routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\fastapi\routing.py", line 214, in run_endpoint_fun 
+ction
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\starlette\concurrency.py", line 39, in run_in_thre 
+adpool
+    return await anyio.to_thread.run_sync(func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2405, in run_sy 
+nc_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 914, in run     
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\app\api\routes\user_config.py", line 91, in get_user_config_list
+    data=[UserConfigPublic(**item) for item in items],
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\app\api\routes\user_config.py", line 91, in <listcomp>
+    data=[UserConfigPublic(**item) for item in items],
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\finance\api\backend\.venv\Lib\site-packages\pydantic\main.py", line 250, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for UserConfigPublic
+user_id
+  Input should be a valid string [type=string_type, input_value=UUID('ca312b94-e1bf-4b62-af65-28d18d1c19d 
+b'), input_type=UUID]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
