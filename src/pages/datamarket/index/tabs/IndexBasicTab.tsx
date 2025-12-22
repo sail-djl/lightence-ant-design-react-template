@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
-import { BaseSelect } from '@app/components/common/selects/BaseSelect/BaseSelect';
+import { BaseSelect, Option } from '@app/components/common/selects/BaseSelect/BaseSelect';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
@@ -13,21 +13,43 @@ import { useIndexSync } from '../hooks/useIndexSync';
 import { trim } from '../utils';
 
 export const IndexBasicTab: React.FC = () => {
+  // 查询区域的指数选项列表
+  const [indexOptions, setIndexOptions] = useState<IndexBasic[]>([]);
+  const [indexOptionsLoading, setIndexOptionsLoading] = useState(false);
+
+  // 加载查询区域的指数选项列表（加载前500条）
+  const fetchIndexOptions = useCallback(async () => {
+    setIndexOptionsLoading(true);
+    try {
+      const res = await getIndexBasicList({
+        skip: 0,
+        limit: 500,
+      });
+      setIndexOptions(res.data);
+    } finally {
+      setIndexOptionsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchIndexOptions();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const { query, setQuery, rows, loading, pagination, total, fetchData } = useIndexData<
     IndexBasic,
-    { keyword: string; market?: string; publisher?: string }
+    { ts_code: string[]; market?: string; publisher?: string }
   >({
     fetchFn: async (params) => {
       const res = await getIndexBasicList({
         skip: params.skip,
         limit: params.limit,
-        keyword: trim(params.keyword) || undefined,
+        ts_code: params.ts_code.length > 0 ? params.ts_code.join(',') : undefined,
         market: params.market,
         publisher: trim(params.publisher) || undefined,
       });
       return res;
     },
-    initialQuery: { keyword: '', market: undefined, publisher: undefined },
+    initialQuery: { ts_code: [], market: undefined, publisher: undefined },
   });
 
   const { syncOpen, setSyncOpen, syncLoading, syncPayload, setSyncPayload, handleSync } = useIndexSync<
@@ -51,14 +73,27 @@ export const IndexBasicTab: React.FC = () => {
   return (
     <>
       <BaseSpace style={{ display: 'flex', marginBottom: '1rem', flexWrap: 'wrap' }}>
-        <BaseInput
-          placeholder="关键词（代码/名称）"
+        <BaseSelect
+          mode="multiple"
+          placeholder="选择指数代码"
           allowClear
-          value={query.keyword}
-          onChange={(e) => setQuery((prev) => ({ ...prev, keyword: trim(e.target.value) }))}
-          style={{ width: 200 }}
-          onPressEnter={() => fetchData(1, pagination.pageSize)}
-        />
+          value={query.ts_code}
+          onChange={(val) => setQuery((prev) => ({ ...prev, ts_code: val as string[] }))}
+          style={{ width: 300 }}
+          maxTagCount="responsive"
+          showSearch
+          loading={indexOptionsLoading}
+          filterOption={(input, option) =>
+            (option?.label ?? '').toLowerCase().includes(input.toLowerCase()) ||
+            (option?.value ?? '').toLowerCase().includes(input.toLowerCase())
+          }
+        >
+          {indexOptions.map((item) => (
+            <Option key={item.ts_code} value={item.ts_code} label={`${item.ts_code} - ${item.name || ''}`}>
+              {item.ts_code} - {item.name || ''}
+            </Option>
+          ))}
+        </BaseSelect>
         <BaseSelect
           placeholder="市场"
           allowClear
@@ -86,7 +121,7 @@ export const IndexBasicTab: React.FC = () => {
         <BaseButton onClick={() => fetchData(1, pagination.pageSize)}>查询</BaseButton>
         <BaseButton
           onClick={() => {
-            setQuery({ keyword: '', market: undefined, publisher: undefined });
+            setQuery({ ts_code: [], market: undefined, publisher: undefined });
             fetchData(1, pagination.pageSize);
           }}
         >
@@ -98,7 +133,7 @@ export const IndexBasicTab: React.FC = () => {
         <BaseButton
           type="primary"
           onClick={() => {
-            setSyncPayload({ keyword: query.keyword || undefined, market: query.market });
+            setSyncPayload({ keyword: query.ts_code.length > 0 ? query.ts_code.join(',') : undefined, market: query.market });
             setSyncOpen(true);
           }}
         >

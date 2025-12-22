@@ -28,6 +28,7 @@ export interface IndexBasicQuery {
   skip?: number;
   limit?: number;
   keyword?: string;
+  ts_code?: string | string[];
   market?: string;
   publisher?: string;
   category?: string;
