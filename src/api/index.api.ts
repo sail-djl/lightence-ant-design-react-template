@@ -452,6 +452,7 @@ export const getIndexFactorList = async (params: IndexFactorQuery): Promise<Inde
 
 export interface IndexFactorSyncPayload {
   ts_code?: string;
+  trade_date?: string;
   start_date?: string;
   end_date?: string;
 }
