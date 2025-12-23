@@ -1,0 +1,214 @@
+import React from 'react';
+import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
+import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
+import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
+import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
+import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
+import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
+import { BaseSelect, Option } from '@app/components/common/selects/BaseSelect/BaseSelect';
+import { ColumnsType } from 'antd/es/table';
+import { StockDailybasic, getStockDailybasicList, syncStockDailybasic, StockDailybasicSyncPayload } from '@app/api/stock.api';
+import { useStockData } from '../hooks/useStockData';
+import { useStockSync } from '../hooks/useStockSync';
+import { useStockOptions } from '../hooks/useStockOptions';
+import { trim, formatNumber, formatNumberLocale } from '../utils';
+
+export const StockDailybasicTab: React.FC = () => {
+  const { stockOptions, stockOptionsLoading, fetchStockOptions } = useStockOptions();
+
+  const { query, setQuery, rows, loading, pagination, total, fetchData } = useStockData<
+    StockDailybasic,
+    { ts_code?: string; trade_date?: string; start_date?: string; end_date?: string }
+  >({
+    fetchFn: async (params) => {
+      const res = await getStockDailybasicList({
+        ts_code: params.ts_code,
+        trade_date: params.trade_date,
+        start_date: params.start_date,
+        end_date: params.end_date,
+        skip: params.skip,
+        limit: params.limit,
+      });
+      return res;
+    },
+    initialQuery: { ts_code: undefined, trade_date: undefined, start_date: undefined, end_date: undefined },
+    enablePagination: true,
+  });
+
+  const { syncOpen, setSyncOpen, syncLoading, syncPayload, setSyncPayload, handleSync } = useStockSync<
+    StockDailybasicSyncPayload
+  >({
+    syncFn: syncStockDailybasic,
+    onSuccess: () => fetchData(1, pagination.pageSize),
+  });
+
+  const columns: ColumnsType<StockDailybasic> = [
+    { title: '股票代码', dataIndex: 'ts_code', key: 'ts_code', align: 'center' },
+    { title: '交易日期', dataIndex: 'trade_date', key: 'trade_date', align: 'center', render: (v: string) => {
+      if (!v) return '-';
+      // 处理 YYYYMMDD 或 YYYY-MM-DD 格式
+      if (v.length === 8 && !v.includes('-')) {
+        return `${v.slice(0, 4)}-${v.slice(4, 6)}-${v.slice(6, 8)}`;
+      }
+      return v;
+    }},
+    { title: '收盘价', dataIndex: 'close', key: 'close', align: 'right', render: (v: any) => formatNumber(v, 2) },
+    { title: '换手率(%)', dataIndex: 'turnover_rate', key: 'turnover_rate', align: 'right', render: (v: any) => formatNumber(v, 2) },
+    { title: '换手率(自由流通股)', dataIndex: 'turnover_rate_f', key: 'turnover_rate_f', align: 'right', render: (v: any) => formatNumber(v, 2) },
+    { title: '量比', dataIndex: 'volume_ratio', key: 'volume_ratio', align: 'right', render: (v: any) => formatNumber(v, 2) },
+    { title: '市盈率', dataIndex: 'pe', key: 'pe', align: 'right', render: (v: any) => formatNumber(v, 2) },
+    { title: '市盈率TTM', dataIndex: 'pe_ttm', key: 'pe_ttm', align: 'right', render: (v: any) => formatNumber(v, 2) },
+    { title: '市净率', dataIndex: 'pb', key: 'pb', align: 'right', render: (v: any) => formatNumber(v, 2) },
+    { title: '市销率', dataIndex: 'ps', key: 'ps', align: 'right', render: (v: any) => formatNumber(v, 2) },
+    { title: '总市值(万元)', dataIndex: 'total_mv', key: 'total_mv', align: 'right', render: (v: any) => formatNumberLocale(v) },
+    { title: '流通市值(万元)', dataIndex: 'circ_mv', key: 'circ_mv', align: 'right', render: (v: any) => formatNumberLocale(v) },
+  ];
+
+  return (
+    <>
+      <BaseSpace style={{ display: 'flex', marginBottom: '1rem', flexWrap: 'wrap' }}>
+        <BaseSelect
+          placeholder="选择股票代码"
+          allowClear
+          showSearch
+          loading={stockOptionsLoading}
+          value={query.ts_code}
+          onChange={(val) => setQuery((prev) => ({ ...prev, ts_code: val as string | undefined }))}
+          style={{ width: 300 }}
+          onSearch={(value) => {
+            if (value) {
+              fetchStockOptions(value);
+            } else {
+              fetchStockOptions();
+            }
+          }}
+          filterOption={false}
+        >
+          {stockOptions.map((item) => (
+            <Option key={item.ts_code} value={item.ts_code} label={`${item.ts_code} - ${item.name || ''}`}>
+              {item.ts_code} - {item.name || ''}
+            </Option>
+          ))}
+        </BaseSelect>
+        <BaseInput
+          type="date"
+          placeholder="交易日期"
+          value={query.trade_date ? query.trade_date.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : undefined}
+          onChange={(e) => setQuery((prev) => ({ ...prev, trade_date: e.target.value ? e.target.value.replace(/-/g, '') : undefined }))}
+          style={{ width: 200 }}
+        />
+        <BaseInput
+          type="date"
+          placeholder="开始日期"
+          value={query.start_date ? query.start_date.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : undefined}
+          onChange={(e) => setQuery((prev) => ({ ...prev, start_date: e.target.value ? e.target.value.replace(/-/g, '') : undefined }))}
+          style={{ width: 200 }}
+        />
+        <BaseInput
+          type="date"
+          placeholder="结束日期"
+          value={query.end_date ? query.end_date.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : undefined}
+          onChange={(e) => setQuery((prev) => ({ ...prev, end_date: e.target.value ? e.target.value.replace(/-/g, '') : undefined }))}
+          style={{ width: 200 }}
+        />
+        <BaseButton onClick={() => fetchData(1, pagination.pageSize)}>查询</BaseButton>
+        <BaseButton
+          onClick={() => {
+            setQuery({ ts_code: undefined, trade_date: undefined, start_date: undefined, end_date: undefined });
+            fetchData(1, pagination.pageSize);
+          }}
+        >
+          重置
+        </BaseButton>
+      </BaseSpace>
+
+      <BaseSpace style={{ display: 'flex', marginBottom: '1rem' }}>
+        <BaseButton
+          type="primary"
+          onClick={() => {
+            setSyncPayload({ ts_code: query.ts_code, trade_date: query.trade_date, start_date: query.start_date, end_date: query.end_date });
+            setSyncOpen(true);
+          }}
+        >
+          同步数据
+        </BaseButton>
+      </BaseSpace>
+
+      <BaseModal
+        title="每日指标同步"
+        open={syncOpen}
+        onCancel={() => setSyncOpen(false)}
+        confirmLoading={syncLoading}
+        onOk={() => handleSync()}
+      >
+        <BaseForm layout="vertical">
+          <BaseForm.Item label="股票代码（可选）">
+            <BaseSelect
+              placeholder="选择股票代码"
+              allowClear
+              showSearch
+              loading={stockOptionsLoading}
+              value={syncPayload.ts_code}
+              onChange={(val) => setSyncPayload({ ...syncPayload, ts_code: val as string | undefined })}
+              onSearch={(value) => {
+                if (value) {
+                  fetchStockOptions(value);
+                } else {
+                  fetchStockOptions();
+                }
+              }}
+              filterOption={false}
+            >
+              {stockOptions.map((item) => (
+                <Option key={item.ts_code} value={item.ts_code} label={`${item.ts_code} - ${item.name || ''}`}>
+                  {item.ts_code} - {item.name || ''}
+                </Option>
+              ))}
+            </BaseSelect>
+          </BaseForm.Item>
+          <BaseForm.Item label="交易日期（可选）">
+            <BaseInput
+              type="date"
+              value={syncPayload.trade_date}
+              onChange={(e) => setSyncPayload({ ...syncPayload, trade_date: e.target.value ? e.target.value.replace(/-/g, '') : undefined })}
+            />
+          </BaseForm.Item>
+          <BaseForm.Item label="开始日期（可选）">
+            <BaseInput
+              type="date"
+              value={syncPayload.start_date}
+              onChange={(e) => setSyncPayload({ ...syncPayload, start_date: e.target.value ? e.target.value.replace(/-/g, '') : undefined })}
+            />
+          </BaseForm.Item>
+          <BaseForm.Item label="结束日期（可选）">
+            <BaseInput
+              type="date"
+              value={syncPayload.end_date}
+              onChange={(e) => setSyncPayload({ ...syncPayload, end_date: e.target.value ? e.target.value.replace(/-/g, '') : undefined })}
+            />
+          </BaseForm.Item>
+        </BaseForm>
+      </BaseModal>
+
+      <BaseTable
+        columns={columns}
+        dataSource={rows}
+        rowKey={(record) => `${record.ts_code}-${record.trade_date}`}
+        loading={loading}
+        pagination={{
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          total: total,
+          showSizeChanger: true,
+          showTotal: (v) => `共 ${v} 条`,
+        }}
+        onChange={(pageConfig) => {
+          const current = pageConfig.current || 1;
+          const size = pageConfig.pageSize || 15;
+          fetchData(current, size);
+        }}
+      />
+    </>
+  );
+};
+

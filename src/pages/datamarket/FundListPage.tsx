@@ -17,7 +17,7 @@ import { addEntry } from '@app/store/slices/searchHistorySlice';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 
-const initialPagination = { current: 1, pageSize: 10 };
+const initialPagination = { current: 1, pageSize: 15 };
 
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 
@@ -69,7 +69,7 @@ const FundListPage: React.FC = () => {
   const [factorSyncLoading, setFactorSyncLoading] = useState(false);
 
   const fetchFunds = useCallback(
-    async (page = 1, pageSize = 10, params?: typeof query) => {
+    async (page = 1, pageSize = 15, params?: typeof query) => {
       setLoading(true);
       const q = params || query;
       try {
@@ -378,7 +378,7 @@ const FundListPage: React.FC = () => {
         }}
         onChange={(pageConfig) => {
           const current = pageConfig.current || 1;
-          const size = pageConfig.pageSize || 10;
+          const size = pageConfig.pageSize || 15;
           fetchFunds(current, size);
         }}
       />
