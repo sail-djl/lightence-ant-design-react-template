@@ -27,14 +27,16 @@ export const SwDailyTab: React.FC = () => {
   const [indexOptions, setIndexOptions] = useState<IndexBasic[]>([]);
   const [indexOptionsLoading, setIndexOptionsLoading] = useState(false);
 
-  // 加载查询区域的指数选项列表（加载前500条，过滤申万行业代码）
-  const fetchIndexOptions = useCallback(async () => {
+  // 加载查询区域的指数选项列表（支持关键词搜索，过滤申万行业代码）
+  const fetchIndexOptions = useCallback(async (keyword?: string) => {
     setIndexOptionsLoading(true);
     try {
+      // 如果有关键词，使用关键词搜索；否则使用 'SI' 作为默认搜索
+      const searchKeyword = keyword || 'SI';
       const res = await getIndexBasicList({
         skip: 0,
         limit: 500,
-        keyword: 'SI', // 申万行业代码通常以 .SI 结尾
+        keyword: searchKeyword,
       });
       // 过滤出申万行业代码（以 .SI 结尾）
       const swOptions = res.data.filter(item => item.ts_code.endsWith('.SI'));
@@ -99,10 +101,15 @@ export const SwDailyTab: React.FC = () => {
           maxTagCount="responsive"
           showSearch
           loading={indexOptionsLoading}
-          filterOption={(input, option) =>
-            (option?.label ?? '').toLowerCase().includes(input.toLowerCase()) ||
-            (option?.value ?? '').toLowerCase().includes(input.toLowerCase())
-          }
+          onSearch={(value) => {
+            // 当用户输入时，使用远程搜索重新加载选项列表
+            if (value) {
+              fetchIndexOptions(value);
+            } else {
+              fetchIndexOptions();
+            }
+          }}
+          filterOption={false}
         >
           {indexOptions.map((item) => (
             <Option key={item.ts_code} value={item.ts_code} label={`${item.ts_code} - ${item.name || ''}`}>

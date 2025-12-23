@@ -88,26 +88,11 @@ export const IndexOverview: React.FC<IndexOverviewProps> = ({ config }) => {
           const configData = await getDefaultConfig('dashboard_index_overview');
           userConfig = configData.config_value;
         } catch (error: any) {
-          // 如果配置不存在，使用默认配置
-          console.warn('未找到用户配置，使用默认配置', error);
-          userConfig = {
-            ts_codes: ['000001.SH', '000300.SH', '000905.SH', '399006.SZ', '000016.SH', '000688.SH'],
-            sort_order: {
-              '000001.SH': 1,
-              '000300.SH': 2,
-              '000905.SH': 3,
-              '399006.SZ': 4,
-              '000016.SH': 5,
-              '000688.SH': 6,
-            },
-            display_options: {
-              show_volume: true,
-              show_turnover: true,
-              show_pe: true,
-              show_pb: true,
-              show_ytd: true,
-            },
-          };
+          // 如果配置不存在，保持空
+          console.warn('未找到用户配置', error);
+          setData([]);
+          setLoading(false);
+          return;
         }
       }
 
@@ -152,12 +137,20 @@ export const IndexOverview: React.FC<IndexOverviewProps> = ({ config }) => {
         basicMap[basic.ts_code] = basic;
       });
 
-      // 5. 获取每个指数的最新日线行情和年初数据
+      // 5. 获取每个指数的最新日线行情和年初数据（添加错误处理）
       const dailyPromises = sortedCodes.map((code) =>
         getIndexDailyList({ ts_code: code, limit: 1 })
+          .catch((error) => {
+            console.error(`获取指数 ${code} 的日线数据失败:`, error);
+            return { data: [] }; // 返回空数据而不是抛出错误
+          })
       );
       const ytdPromises = sortedCodes.map((code) =>
         getIndexDailyList({ ts_code: code, start_date: yearStartDate, limit: 1 })
+          .catch((error) => {
+            console.error(`获取指数 ${code} 的年初数据失败:`, error);
+            return { data: [] };
+          })
       );
 
       const [dailyResults, ytdResults] = await Promise.all([
@@ -165,28 +158,44 @@ export const IndexOverview: React.FC<IndexOverviewProps> = ({ config }) => {
         Promise.all(ytdPromises),
       ]);
 
-      // 6. 获取每日指标（PE、PB）
+      // 6. 获取每日指标（PE、PB）（添加错误处理）
       const dailybasicPromises = sortedCodes.map((code) =>
         getIndexDailybasicList({ ts_code: code, limit: 1 })
+          .catch((error) => {
+            console.error(`获取指数 ${code} 的每日指标失败:`, error);
+            return { data: [] };
+          })
       );
       const dailybasicResults = await Promise.all(dailybasicPromises);
 
-      // 7. 数据合并和转换
+      // 7. 数据合并和转换（确保所有配置的指数都能显示）
       const result: IndexData[] = [];
 
       sortedCodes.forEach((code, index) => {
         const basic = basicMap[code];
-        if (!basic) {
-          console.warn(`未找到指数基础信息: ${code}`);
-          return;
-        }
-
         const daily = dailyResults[index]?.data?.[0];
         const ytdDaily = ytdResults[index]?.data?.[0];
         const dailybasic = dailybasicResults[index]?.data?.[0];
 
+        // 如果没有基础信息，使用代码作为名称
+        const indexName = basic?.name || code;
+
+        // 如果没有日线数据，创建占位数据而不是跳过
         if (!daily) {
-          console.warn(`未找到指数日线数据: ${code}`);
+          console.warn(`未找到指数日线数据: ${code}，将显示占位数据`);
+          result.push({
+            name: indexName,
+            code: code,
+            value: 0,
+            change: 0,
+            changePercent: 0,
+            ytd: 0,
+            volume: '-',
+            turnover: 0,
+            pePercentile: dailybasic?.pe || 0,
+            pbPercentile: dailybasic?.pb || 0,
+            trend: 'weak',
+          });
           return;
         }
 
@@ -203,7 +212,7 @@ export const IndexOverview: React.FC<IndexOverviewProps> = ({ config }) => {
         const volumeStr = daily.vol ? formatVolume(daily.vol) : '0';
 
         result.push({
-          name: basic.name,
+          name: indexName,
           code: code,
           value: daily.close || 0,
           change: daily.change || 0,
@@ -270,11 +279,17 @@ export const IndexOverview: React.FC<IndexOverviewProps> = ({ config }) => {
                 <S.IndexName>{index.name}</S.IndexName>
                 <S.FlameIcon>{index.trend === 'strong' ? '🔥' : '❄️'}</S.FlameIcon>
               </S.IndexCardHeader>
-              <S.IndexValue>{index.value.toFixed(2)}</S.IndexValue>
+              <S.IndexValue>{index.value > 0 ? index.value.toFixed(2) : '-'}</S.IndexValue>
               <S.IndexChange $positive={index.changePercent >= 0}>
-                {index.changePercent >= 0 ? '+' : ''}
-                {index.change.toFixed(2)} ({index.changePercent >= 0 ? '+' : ''}
-                {index.changePercent.toFixed(2)}%)
+                {index.value > 0 ? (
+                  <>
+                    {index.changePercent >= 0 ? '+' : ''}
+                    {index.change.toFixed(2)} ({index.changePercent >= 0 ? '+' : ''}
+                    {index.changePercent.toFixed(2)}%)
+                  </>
+                ) : (
+                  '暂无数据'
+                )}
               </S.IndexChange>
               <S.IndexMeta>
                 {displayOptions.show_ytd && (
