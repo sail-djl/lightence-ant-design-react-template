@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { BaseSelect } from '@app/components/common/selects/BaseSelect/BaseSelect';
@@ -28,6 +28,7 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
   const [indexOptions, setIndexOptions] = useState<IndexBasic[]>([]);
   const [indexSelectModalVisible, setIndexSelectModalVisible] = useState(false);
   const [indexSearchKeyword, setIndexSearchKeyword] = useState('');
+  const [indexOptionsLoading, setIndexOptionsLoading] = useState(false);
 
   useEffect(() => {
     if (configType === 'dashboard_index_overview' && initialValue) {
@@ -152,20 +153,33 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
     return () => clearTimeout(timer);
   }, [updateConfigValue]);
 
-  const loadIndexOptions = async () => {
+  const loadIndexOptions = useCallback(async (keyword?: string) => {
+    setIndexOptionsLoading(true);
     try {
-      const response = await getIndexBasicList({ limit: 1000 });
+      const response = await getIndexBasicList({
+        skip: 0,
+        limit: 500,
+        keyword: keyword || undefined,
+      });
       setIndexOptions(response.data);
     } catch (error) {
       console.error('Failed to load index options:', error);
+      setIndexOptions([]);
+    } finally {
+      setIndexOptionsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (indexSelectModalVisible) {
-      loadIndexOptions();
+      // 打开弹窗时，如果有搜索关键词则使用关键词搜索，否则加载默认列表
+      if (indexSearchKeyword) {
+        loadIndexOptions(indexSearchKeyword);
+      } else {
+        loadIndexOptions();
+      }
     }
-  }, [indexSelectModalVisible]);
+  }, [indexSelectModalVisible, loadIndexOptions]);
 
   const handleAddIndex = () => {
     setIndexSelectModalVisible(true);
@@ -188,12 +202,22 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
     setIndexSelectModalVisible(false);
   };
 
-  const filteredIndexOptions = indexOptions.filter(
-    (index) =>
-      !indexSearchKeyword ||
-      index.ts_code.toLowerCase().includes(indexSearchKeyword.toLowerCase()) ||
-      index.name.toLowerCase().includes(indexSearchKeyword.toLowerCase()),
-  );
+  // 处理搜索关键词变化，使用防抖
+  useEffect(() => {
+    if (!indexSelectModalVisible) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      if (indexSearchKeyword) {
+        loadIndexOptions(indexSearchKeyword);
+      } else {
+        loadIndexOptions();
+      }
+    }, 300); // 300ms 防抖
+
+    return () => clearTimeout(timer);
+  }, [indexSearchKeyword, indexSelectModalVisible, loadIndexOptions]);
 
   const indexTableColumns: ColumnsType<IndexBasic> = [
     {
@@ -295,7 +319,10 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
         <BaseModal
           title="选择指数"
           open={indexSelectModalVisible}
-          onCancel={() => setIndexSelectModalVisible(false)}
+          onCancel={() => {
+            setIndexSelectModalVisible(false);
+            setIndexSearchKeyword(''); // 关闭时清空搜索关键词
+          }}
           width={800}
           footer={null}
         >
@@ -304,11 +331,13 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
             value={indexSearchKeyword}
             onChange={(e) => setIndexSearchKeyword(e.target.value)}
             style={{ marginBottom: 16 }}
+            allowClear
           />
           <BaseTable
             columns={indexTableColumns}
-            dataSource={filteredIndexOptions}
+            dataSource={indexOptions}
             rowKey="ts_code"
+            loading={indexOptionsLoading}
             pagination={{ pageSize: 10 }}
             scroll={{ y: 400 }}
           />

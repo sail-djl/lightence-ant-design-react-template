@@ -21,10 +21,10 @@ export const useIndexData = <T, Q extends Record<string, any>>({
   const [total, setTotal] = useState(0);
 
   const fetchData = useCallback(
-    async (page = 1, pageSize = 10) => {
+    async (page = 1, pageSize = 10, overrideQuery?: Q) => {
       setLoading(true);
       try {
-        const params: any = { ...query };
+        const params: any = { ...(overrideQuery || query) };
         if (enablePagination) {
           params.skip = (page - 1) * pageSize;
           params.limit = pageSize;
@@ -61,5 +61,6 @@ export const useIndexData = <T, Q extends Record<string, any>>({
     fetchData,
   };
 };
+
 
 

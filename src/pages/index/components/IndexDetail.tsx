@@ -73,3 +73,4 @@ export const IndexDetail: React.FC<IndexDetailProps> = ({ selectedIndex, onIndex
 };
 
 
+
