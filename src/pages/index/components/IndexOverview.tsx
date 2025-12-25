@@ -80,13 +80,13 @@ export const IndexOverview: React.FC<IndexOverviewProps> = ({ config }) => {
     setLoading(true);
     try {
       // 1. 获取用户配置
-      let userConfig;
+      let userConfig: NonNullable<IndexOverviewProps['config']> | undefined;
       if (config) {
         userConfig = config;
       } else {
         try {
           const configData = await getDefaultConfig('dashboard_index_overview');
-          userConfig = configData.config_value;
+          userConfig = configData.config_value as NonNullable<IndexOverviewProps['config']>;
         } catch (error: any) {
           // 如果配置不存在，保持空
           console.warn('未找到用户配置', error);
@@ -97,7 +97,7 @@ export const IndexOverview: React.FC<IndexOverviewProps> = ({ config }) => {
       }
 
       // 设置显示选项
-      if (userConfig.display_options) {
+      if (userConfig?.display_options) {
         setDisplayOptions({
           show_volume: userConfig.display_options.show_volume !== false,
           show_turnover: userConfig.display_options.show_turnover !== false,
@@ -107,7 +107,7 @@ export const IndexOverview: React.FC<IndexOverviewProps> = ({ config }) => {
         });
       }
 
-      const tsCodes = userConfig.ts_codes || [];
+      const tsCodes = userConfig?.ts_codes || [];
       if (tsCodes.length === 0) {
         setData([]);
         setLoading(false);
@@ -116,8 +116,8 @@ export const IndexOverview: React.FC<IndexOverviewProps> = ({ config }) => {
 
       // 2. 按 sort_order 排序
       const sortedCodes = [...tsCodes].sort((a, b) => {
-        const orderA = userConfig.sort_order?.[a] || 999;
-        const orderB = userConfig.sort_order?.[b] || 999;
+        const orderA = userConfig?.sort_order?.[a] || 999;
+        const orderB = userConfig?.sort_order?.[b] || 999;
         return orderA - orderB;
       });
 

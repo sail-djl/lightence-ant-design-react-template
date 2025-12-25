@@ -56,24 +56,24 @@ export const StockIncomeTab: React.FC = () => {
   });
 
   const columns = [
-    { title: '股票代码', dataIndex: 'ts_code', key: 'ts_code', align: 'center' },
-    { title: '公告日期', dataIndex: 'ann_date', key: 'ann_date', align: 'center', render: (v: string) => {
+    { title: '股票代码', dataIndex: 'ts_code', key: 'ts_code', align: 'center' as const },
+    { title: '公告日期', dataIndex: 'ann_date', key: 'ann_date', align: 'center' as const, render: (v: string) => {
       if (!v) return '-';
       if (v.length === 8 && !v.includes('-')) {
         return `${v.slice(0, 4)}-${v.slice(4, 6)}-${v.slice(6, 8)}`;
       }
       return v;
     }},
-    { title: '报告期', dataIndex: 'end_date', key: 'end_date', align: 'center', render: (v: string) => {
+    { title: '报告期', dataIndex: 'end_date', key: 'end_date', align: 'center' as const, render: (v: string) => {
       if (!v) return '-';
       if (v.length === 8 && !v.includes('-')) {
         return `${v.slice(0, 4)}-${v.slice(4, 6)}-${v.slice(6, 8)}`;
       }
       return v;
     }},
-    { title: '基本每股收益', dataIndex: 'basic_eps', key: 'basic_eps', align: 'right', render: (v: any) => formatNumber(v, 4) },
-    { title: '营业总收入', dataIndex: 'total_revenue', key: 'total_revenue', align: 'right', render: (v: any) => formatNumberLocale(v) },
-    { title: '净利润', dataIndex: 'n_income', key: 'n_income', align: 'right', render: (v: any) => formatNumberLocale(v) },
+    { title: '基本每股收益', dataIndex: 'basic_eps', key: 'basic_eps', align: 'right' as const, render: (v: any) => formatNumber(v, 4) },
+    { title: '营业总收入', dataIndex: 'total_revenue', key: 'total_revenue', align: 'right' as const, render: (v: any) => formatNumberLocale(v) },
+    { title: '净利润', dataIndex: 'n_income', key: 'n_income', align: 'right' as const, render: (v: any) => formatNumberLocale(v) },
   ];
 
   return (

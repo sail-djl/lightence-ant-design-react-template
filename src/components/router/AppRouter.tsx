@@ -74,6 +74,7 @@ const FundListPage = React.lazy(() => import('@app/pages/datamarket/FundListPage
 const FundDetail = React.lazy(() => import('@app/pages/datamarket/FundDetail'));
 const IndexListPage = React.lazy(() => import('@app/pages/datamarket/IndexListPage'));
 const StockListPage = React.lazy(() => import('@app/pages/datamarket/StockListPage'));
+const MacroListPage = React.lazy(() => import('@app/pages/datamarket/MacroListPage'));
 const IndexDetailPage = React.lazy(() => import('@app/pages/index/IndexDetailPage'));
 const UserConfigPage = React.lazy(() => import('@app/pages/userconfig/UserConfigPage'));
 
@@ -127,6 +128,7 @@ const FundList = withLoading(FundListPage);
 const FundDetailPage = withLoading(FundDetail);
 const IndexList = withLoading(IndexListPage);
 const StockList = withLoading(StockListPage);
+const MacroList = withLoading(MacroListPage);
 const IndexDetail = withLoading(IndexDetailPage);
 const UserConfig = withLoading(UserConfigPage);
 
@@ -194,6 +196,7 @@ export const AppRouter: React.FC = () => {
             <Route path="fund/:code" element={<FundDetailPage />} />
             <Route path="index" element={<IndexList />} />
             <Route path="stock" element={<StockList />} />
+            <Route path="macro" element={<MacroList />} />
           </Route>
           <Route path="maps">
             <Route path="google-maps" element={<Google />} />

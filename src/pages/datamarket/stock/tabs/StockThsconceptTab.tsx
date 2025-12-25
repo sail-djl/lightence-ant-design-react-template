@@ -5,16 +5,13 @@ import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
-import { BaseSelect, Option } from '@app/components/common/selects/BaseSelect/BaseSelect';
 import { ColumnsType } from 'antd/es/table';
 import { StockThsconcept, getStockThsconceptList, syncStockThsconcept, StockThsconceptSyncPayload } from '@app/api/stock.api';
 import { useStockData } from '../hooks/useStockData';
 import { useStockSync } from '../hooks/useStockSync';
-import { useStockOptions } from '../hooks/useStockOptions';
 import { trim, formatNumber, formatNumberLocale, toNumber } from '../utils';
 
 export const StockThsconceptTab: React.FC = () => {
-  const { stockOptions, stockOptionsLoading, fetchStockOptions } = useStockOptions();
   const { query, setQuery, rows, loading, pagination, total, fetchData } = useStockData<
     StockThsconcept,
     { trade_date?: string; start_date?: string; end_date?: string }
@@ -111,29 +108,12 @@ export const StockThsconceptTab: React.FC = () => {
               onChange={(e) => setSyncPayload({ ...syncPayload, end_date: e.target.value ? e.target.value.replace(/-/g, '') : undefined })}
             />
           </BaseForm.Item>
-          <BaseForm.Item label="股票代码（可选）">
-            <BaseSelect
-              placeholder="选择股票代码"
-              allowClear
-              showSearch
-              loading={stockOptionsLoading}
+          <BaseForm.Item label="代码（可选）">
+            <BaseInput
+              placeholder="输入代码"
               value={syncPayload.ts_code}
-              onChange={(val) => setSyncPayload({ ...syncPayload, ts_code: val as string | undefined })}
-              onSearch={(value) => {
-                if (value) {
-                  fetchStockOptions(value);
-                } else {
-                  fetchStockOptions();
-                }
-              }}
-              filterOption={false}
-            >
-              {stockOptions.map((item) => (
-                <Option key={item.ts_code} value={item.ts_code} label={`${item.ts_code} - ${item.name || ''}`}>
-                  {item.ts_code} - {item.name || ''}
-                </Option>
-              ))}
-            </BaseSelect>
+              onChange={(e) => setSyncPayload({ ...syncPayload, ts_code: trim(e.target.value) || undefined })}
+            />
           </BaseForm.Item>
         </BaseForm>
       </BaseModal>

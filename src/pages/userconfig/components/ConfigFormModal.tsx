@@ -75,8 +75,8 @@ export const ConfigFormModal: React.FC<ConfigFormModalProps> = ({
     }
   }, [visible, editingConfig, form]);
 
-  const handleConfigTypeChange = (value: string) => {
-    setConfigType(value);
+  const handleConfigTypeChange = (value: unknown) => {
+    setConfigType(value as string);
     form.setFieldsValue({ config_value: {} });
     setJsonConfig({});
   };

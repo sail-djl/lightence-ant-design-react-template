@@ -436,7 +436,7 @@ export interface IndexFactorResponse {
 }
 
 export interface IndexFactorQuery {
-  ts_code: string;
+  ts_code?: string;
   start_date?: string;
   end_date?: string;
   limit?: number;

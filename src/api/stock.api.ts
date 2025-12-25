@@ -246,10 +246,10 @@ const mockStockIpoData: StockIpo[] = [
     ts_code: '001234.SZ',
     name: '新股名称',
     ipo_date: '20240115',
-    issue_price: 12.5,
-    issue_amount: 5000,
-    raise_amount: 62500,
-    pe_ratio: 22.5,
+    price: 12.5,
+    amount: 5000,
+    funds: 62500,
+    pe: 22.5,
   },
 ];
 
@@ -264,6 +264,7 @@ export const getStockIpoList = async (params: StockIpoQuery = {}): Promise<Stock
 };
 
 export interface StockIpoSyncPayload {
+  ts_code?: string;
   start_date?: string;
   end_date?: string;
 }
@@ -530,6 +531,7 @@ export interface StockBalancesheetQuery {
   period?: string;
   start_date?: string;
   end_date?: string;
+  report_type?: string;
 }
 
 const mockStockBalancesheetData: StockBalancesheet[] = [
@@ -943,12 +945,28 @@ export const syncStockMargin = async (payload: StockMarginSyncPayload): Promise<
   }
 };
 
-export const getStockTransferList = async (params: any = {}): Promise<{ data: any[]; count?: number }> => {
+// ==================== 转融资交易汇总 ====================
+export interface StockTransfer {
+  trade_date: string;
+  ob?: number;
+  auc_amount?: number;
+  repo_amount?: number;
+  repay_amount?: number;
+  cb?: number;
+}
+
+export interface StockTransferSyncPayload {
+  trade_date?: string;
+  start_date?: string;
+  end_date?: string;
+}
+
+export const getStockTransferList = async (params: any = {}): Promise<{ data: StockTransfer[]; count?: number }> => {
   await new Promise((resolve) => setTimeout(resolve, 300));
   return { data: [], count: 0 };
 };
 
-export const syncStockTransfer = async (payload: any): Promise<{ message: string; success: number; failed: number }> => {
+export const syncStockTransfer = async (payload: StockTransferSyncPayload): Promise<{ message: string; success: number; failed: number }> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return { message: '同步完成', success: 0, failed: 0 };
 };

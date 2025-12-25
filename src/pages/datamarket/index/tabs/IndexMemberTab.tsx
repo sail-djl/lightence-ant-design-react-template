@@ -62,6 +62,13 @@ export const IndexMemberTab: React.FC = () => {
     autoFetch: false,
   });
 
+  const { syncOpen, setSyncOpen, syncLoading, syncPayload, setSyncPayload, handleSync } = useIndexSync<
+    IndexMemberSyncPayload
+  >({
+    syncFn: syncIndexMember,
+    onSuccess: () => fetchData(pagination.current, pagination.pageSize),
+  });
+
   // 根据选择的上级行业过滤下级行业选项
   const filteredL2Options = useMemo(() => {
     if (!query.l1_code) {
@@ -114,13 +121,6 @@ export const IndexMemberTab: React.FC = () => {
     }
     // eslint-disable-line react-hooks/exhaustive-deps
   }, [query.l1_code, query.l2_code, query.l3_code, query.ts_code, query.is_new]);
-
-  const { syncOpen, setSyncOpen, syncLoading, syncPayload, setSyncPayload, handleSync } = useIndexSync<
-    IndexMemberSyncPayload
-  >({
-    syncFn: syncIndexMember,
-    onSuccess: () => fetchData(pagination.current, pagination.pageSize),
-  });
 
   const columns: ColumnsType<IndexMember> = [
     { title: '一级行业', dataIndex: 'l1_name', key: 'l1_name', align: 'center', render: (v: string) => v || '-' },
