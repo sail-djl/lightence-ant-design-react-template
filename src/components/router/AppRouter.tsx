@@ -77,6 +77,10 @@ const StockListPage = React.lazy(() => import('@app/pages/datamarket/StockListPa
 const MacroListPage = React.lazy(() => import('@app/pages/datamarket/MacroListPage'));
 const FuturesListPage = React.lazy(() => import('@app/pages/datamarket/FuturesListPage'));
 const SpotListPage = React.lazy(() => import('@app/pages/datamarket/SpotListPage'));
+const OptionListPage = React.lazy(() => import('@app/pages/datamarket/OptionListPage'));
+const BondListPage = React.lazy(() => import('@app/pages/datamarket/BondListPage'));
+const ForexListPage = React.lazy(() => import('@app/pages/datamarket/ForexListPage'));
+const UsStockListPage = React.lazy(() => import('@app/pages/datamarket/UsStockListPage'));
 const IndexDetailPage = React.lazy(() => import('@app/pages/index/IndexDetailPage'));
 const UserConfigPage = React.lazy(() => import('@app/pages/userconfig/UserConfigPage'));
 
@@ -133,6 +137,10 @@ const StockList = withLoading(StockListPage);
 const MacroList = withLoading(MacroListPage);
 const FuturesList = withLoading(FuturesListPage);
 const SpotList = withLoading(SpotListPage);
+const OptionList = withLoading(OptionListPage);
+const BondList = withLoading(BondListPage);
+const ForexList = withLoading(ForexListPage);
+const UsStockList = withLoading(UsStockListPage);
 const IndexDetail = withLoading(IndexDetailPage);
 const UserConfig = withLoading(UserConfigPage);
 
@@ -203,6 +211,10 @@ export const AppRouter: React.FC = () => {
             <Route path="macro" element={<MacroList />} />
             <Route path="futures" element={<FuturesList />} />
             <Route path="spot" element={<SpotList />} />
+            <Route path="option" element={<OptionList />} />
+            <Route path="bond" element={<BondList />} />
+            <Route path="forex" element={<ForexList />} />
+            <Route path="us_stock" element={<UsStockList />} />
           </Route>
           <Route path="maps">
             <Route path="google-maps" element={<Google />} />
