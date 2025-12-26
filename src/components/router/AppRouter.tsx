@@ -76,6 +76,7 @@ const IndexListPage = React.lazy(() => import('@app/pages/datamarket/IndexListPa
 const StockListPage = React.lazy(() => import('@app/pages/datamarket/StockListPage'));
 const MacroListPage = React.lazy(() => import('@app/pages/datamarket/MacroListPage'));
 const FuturesListPage = React.lazy(() => import('@app/pages/datamarket/FuturesListPage'));
+const SpotListPage = React.lazy(() => import('@app/pages/datamarket/SpotListPage'));
 const IndexDetailPage = React.lazy(() => import('@app/pages/index/IndexDetailPage'));
 const UserConfigPage = React.lazy(() => import('@app/pages/userconfig/UserConfigPage'));
 
@@ -131,6 +132,7 @@ const IndexList = withLoading(IndexListPage);
 const StockList = withLoading(StockListPage);
 const MacroList = withLoading(MacroListPage);
 const FuturesList = withLoading(FuturesListPage);
+const SpotList = withLoading(SpotListPage);
 const IndexDetail = withLoading(IndexDetailPage);
 const UserConfig = withLoading(UserConfigPage);
 
@@ -200,6 +202,7 @@ export const AppRouter: React.FC = () => {
             <Route path="stock" element={<StockList />} />
             <Route path="macro" element={<MacroList />} />
             <Route path="futures" element={<FuturesList />} />
+            <Route path="spot" element={<SpotList />} />
           </Route>
           <Route path="maps">
             <Route path="google-maps" element={<Google />} />
