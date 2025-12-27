@@ -13,6 +13,7 @@ import { useStockSync } from '../hooks/useStockSync';
 import { useStockOptions } from '../hooks/useStockOptions';
 import { trim } from '../utils';
 
+// 财报披露日期表
 export const StockReportTab: React.FC = () => {
   const { stockOptions, stockOptionsLoading, fetchStockOptions } = useStockOptions();
 

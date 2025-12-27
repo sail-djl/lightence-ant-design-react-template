@@ -156,11 +156,11 @@ const StockListPage: React.FC = () => {
         label: '龙虎榜机构明细',
         children: <StockLhbinstitutionTab />,
       },
-      {
-        key: 'strongest',
-        label: '最强板块统计',
-        children: <StockStrongestTab />,
-      },
+      // {
+      //   key: 'strongest',
+      //   label: '最强板块统计',
+      //   children: <StockStrongestTab />,
+      // },
     ],
     []
   );

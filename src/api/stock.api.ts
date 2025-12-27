@@ -296,6 +296,7 @@ export interface StockDaily {
 
 export interface StockDailyResponse {
   data: StockDaily[];
+  count?: number;
 }
 
 export interface StockDailyQuery {
@@ -303,6 +304,7 @@ export interface StockDailyQuery {
   trade_date?: string;
   start_date?: string;
   end_date?: string;
+  skip?: number;
   limit?: number;
 }
 
@@ -341,7 +343,7 @@ export const getStockDailyList = async (params: StockDailyQuery = {}): Promise<S
     return response.data;
   } catch (error) {
     console.error('Failed to fetch stock daily list:', error);
-    return { data: [] };
+    return { data: [], count: 0 };
   }
 };
 
@@ -581,7 +583,6 @@ export interface StockBusiness {
   ts_code: string;
   end_date: string;
   bz_item: string;
-  type?: string;
   bz_sales?: number;
   bz_profit?: number;
   bz_cost?: number;
@@ -601,7 +602,6 @@ export interface StockBusinessQuery {
   period?: string;
   start_date?: string;
   end_date?: string;
-  type?: string;
 }
 
 export const getStockBusinessList = async (params: StockBusinessQuery = {}): Promise<StockBusinessResponse> => {
@@ -619,7 +619,6 @@ export interface StockBusinessSyncPayload {
   period?: string;
   start_date?: string;
   end_date?: string;
-  type?: string;
 }
 
 export const syncStockBusiness = async (payload: StockBusinessSyncPayload): Promise<{ message: string; success: number; failed: number }> => {

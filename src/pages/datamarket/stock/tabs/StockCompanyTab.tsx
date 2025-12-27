@@ -13,6 +13,7 @@ import { useStockSync } from '../hooks/useStockSync';
 import { useStockOptions } from '../hooks/useStockOptions';
 import { trim, formatNumberLocale } from '../utils';
 
+// 上市公司基本信息
 export const StockCompanyTab: React.FC = () => {
   const { stockOptions, stockOptionsLoading, fetchStockOptions } = useStockOptions();
 

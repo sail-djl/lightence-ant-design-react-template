@@ -12,6 +12,7 @@ import { useStockData } from '../hooks/useStockData';
 import { useStockSync } from '../hooks/useStockSync';
 import { trim } from '../utils';
 
+// 股票基础信息
 export const StockBasicTab: React.FC = () => {
   // 查询区域的股票选项列表
   const [stockOptions, setStockOptions] = useState<StockBasic[]>([]);

@@ -13,6 +13,7 @@ import { useStockSync } from '../hooks/useStockSync';
 import { useStockOptions } from '../hooks/useStockOptions';
 import { trim, formatNumber, formatNumberLocale, toNumber } from '../utils';
 
+// IPO新股列表
 export const StockIpoTab: React.FC = () => {
   const { stockOptions, stockOptionsLoading, fetchStockOptions } = useStockOptions();
 

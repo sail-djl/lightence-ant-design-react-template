@@ -13,6 +13,7 @@ import { useStockSync } from '../hooks/useStockSync';
 import { useStockOptions } from '../hooks/useStockOptions';
 import { trim } from '../utils';
 
+// 券商每月荐股
 export const StockRecommendTab: React.FC = () => {
   const { stockOptions, stockOptionsLoading, fetchStockOptions } = useStockOptions();
 

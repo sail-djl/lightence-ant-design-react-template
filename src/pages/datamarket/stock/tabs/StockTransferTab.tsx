@@ -5,12 +5,16 @@ import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
+import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
+import { Dates } from '@app/constants/Dates';
 import { ColumnsType } from 'antd/es/table';
 import { StockTransfer, getStockTransferList, syncStockTransfer, StockTransferSyncPayload } from '@app/api/stock.api';
 import { useStockData } from '../hooks/useStockData';
 import { useStockSync } from '../hooks/useStockSync';
 import { formatNumberLocale } from '../utils';
+import dayjs from 'dayjs';
 
+// 转融资交易汇总
 export const StockTransferTab: React.FC = () => {
   const { query, setQuery, rows, loading, pagination, total, fetchData } = useStockData<
     StockTransfer,
@@ -51,6 +55,15 @@ export const StockTransferTab: React.FC = () => {
     { title: '期末余额(亿元)', dataIndex: 'cb', key: 'cb', align: 'right', render: (v: any) => formatNumberLocale(v) },
   ];
 
+  // 日期范围快捷选项
+  const dateRanges: Record<string, [dayjs.Dayjs, dayjs.Dayjs]> = {
+    '最近一周': [dayjs().subtract(7, 'day'), dayjs()],
+    '最近一月': [dayjs().subtract(1, 'month'), dayjs()],
+    '最近一年': [dayjs().subtract(1, 'year'), dayjs()],
+    '最近五年': [dayjs().subtract(5, 'year'), dayjs()],
+    '最近十年': [dayjs().subtract(10, 'year'), dayjs()],
+  };
+
   return (
     <>
       <BaseSpace style={{ display: 'flex', marginBottom: '1rem', flexWrap: 'wrap' }}>
@@ -61,19 +74,23 @@ export const StockTransferTab: React.FC = () => {
           onChange={(e) => setQuery((prev) => ({ ...prev, trade_date: e.target.value ? e.target.value.replace(/-/g, '') : undefined }))}
           style={{ width: 200 }}
         />
-        <BaseInput
-          type="date"
-          placeholder="开始日期"
-          value={query.start_date ? query.start_date.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : undefined}
-          onChange={(e) => setQuery((prev) => ({ ...prev, start_date: e.target.value ? e.target.value.replace(/-/g, '') : undefined }))}
-          style={{ width: 200 }}
-        />
-        <BaseInput
-          type="date"
-          placeholder="结束日期"
-          value={query.end_date ? query.end_date.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : undefined}
-          onChange={(e) => setQuery((prev) => ({ ...prev, end_date: e.target.value ? e.target.value.replace(/-/g, '') : undefined }))}
-          style={{ width: 200 }}
+        <DayjsDatePicker.RangePicker
+          format="YYYY-MM-DD"
+          placeholder={['开始日期', '结束日期']}
+          value={
+            query.start_date && query.end_date
+              ? [dayjs(query.start_date, 'YYYYMMDD'), dayjs(query.end_date, 'YYYYMMDD')]
+              : null
+          }
+          onChange={(dates) => {
+            setQuery({
+              ...query,
+              start_date: dates?.[0] ? Dates.format(dates[0], 'YYYYMMDD') : undefined,
+              end_date: dates?.[1] ? Dates.format(dates[1], 'YYYYMMDD') : undefined,
+            });
+          }}
+          ranges={dateRanges}
+          style={{ width: 300 }}
         />
         <BaseButton onClick={() => fetchData(1, pagination.pageSize)}>查询</BaseButton>
         <BaseButton onClick={() => { setQuery({ trade_date: undefined, start_date: undefined, end_date: undefined }); fetchData(1, pagination.pageSize); }}>重置</BaseButton>
@@ -90,18 +107,24 @@ export const StockTransferTab: React.FC = () => {
               onChange={(e) => setSyncPayload({ ...syncPayload, trade_date: e.target.value ? e.target.value.replace(/-/g, '') : undefined })}
             />
           </BaseForm.Item>
-          <BaseForm.Item label="开始日期（可选）">
-            <BaseInput
-              type="date"
-              value={syncPayload.start_date ? syncPayload.start_date.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : undefined}
-              onChange={(e) => setSyncPayload({ ...syncPayload, start_date: e.target.value ? e.target.value.replace(/-/g, '') : undefined })}
-            />
-          </BaseForm.Item>
-          <BaseForm.Item label="结束日期（可选）">
-            <BaseInput
-              type="date"
-              value={syncPayload.end_date ? syncPayload.end_date.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : undefined}
-              onChange={(e) => setSyncPayload({ ...syncPayload, end_date: e.target.value ? e.target.value.replace(/-/g, '') : undefined })}
+          <BaseForm.Item label="日期范围（可选）">
+            <DayjsDatePicker.RangePicker
+              format="YYYY-MM-DD"
+              placeholder={['开始日期', '结束日期']}
+              value={
+                syncPayload.start_date && syncPayload.end_date
+                  ? [dayjs(syncPayload.start_date, 'YYYYMMDD'), dayjs(syncPayload.end_date, 'YYYYMMDD')]
+                  : null
+              }
+              onChange={(dates) => {
+                setSyncPayload({
+                  ...syncPayload,
+                  start_date: dates?.[0] ? Dates.format(dates[0], 'YYYYMMDD') : undefined,
+                  end_date: dates?.[1] ? Dates.format(dates[1], 'YYYYMMDD') : undefined,
+                });
+              }}
+              ranges={dateRanges}
+              style={{ width: '100%' }}
             />
           </BaseForm.Item>
         </BaseForm>

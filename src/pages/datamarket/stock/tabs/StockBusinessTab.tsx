@@ -14,12 +14,13 @@ import { useStockOptions } from '../hooks/useStockOptions';
 import { notificationController } from '@app/controllers/notificationController';
 import { trim, formatNumberLocale } from '../utils';
 
+// 主营业务构成
 export const StockBusinessTab: React.FC = () => {
   const { stockOptions, stockOptionsLoading, fetchStockOptions } = useStockOptions();
 
   const { query, setQuery, rows, loading, pagination, total, fetchData } = useStockData<
     StockBusiness,
-    { ts_code?: string; period?: string; start_date?: string; end_date?: string; type?: string }
+    { ts_code?: string; period?: string; start_date?: string; end_date?: string }
   >({
     fetchFn: async (params) => {
       const res = await getStockBusinessList({
@@ -29,11 +30,10 @@ export const StockBusinessTab: React.FC = () => {
         period: params.period,
         start_date: params.start_date,
         end_date: params.end_date,
-        type: params.type,
       });
       return res;
     },
-    initialQuery: { ts_code: undefined, period: undefined, start_date: undefined, end_date: undefined, type: undefined },
+    initialQuery: { ts_code: undefined, period: undefined, start_date: undefined, end_date: undefined },
   });
 
   const { syncOpen, setSyncOpen, syncLoading, syncPayload, setSyncPayload, handleSync } = useStockSync<
@@ -43,7 +43,7 @@ export const StockBusinessTab: React.FC = () => {
     onSuccess: () => {
       const syncedTsCode = syncPayload.ts_code;
       if (syncedTsCode) {
-        const newQuery = { ts_code: syncedTsCode, period: undefined, start_date: undefined, end_date: undefined, type: undefined };
+        const newQuery = { ts_code: syncedTsCode, period: undefined, start_date: undefined, end_date: undefined };
         setQuery(newQuery);
         fetchData(1, pagination.pageSize, newQuery);
       } else {
@@ -62,10 +62,6 @@ export const StockBusinessTab: React.FC = () => {
       return v;
     }},
     { title: '主营业务来源', dataIndex: 'bz_item', key: 'bz_item', align: 'left' },
-    { title: '类型', dataIndex: 'type', key: 'type', align: 'center', render: (v: string) => {
-      const typeMap: Record<string, string> = { 'P': '按产品', 'D': '按地区', 'I': '按行业' };
-      return typeMap[v] || v || '-';
-    }},
     { title: '主营业务收入(元)', dataIndex: 'bz_sales', key: 'bz_sales', align: 'right', render: (v: any) => formatNumberLocale(v) },
     { title: '主营业务利润(元)', dataIndex: 'bz_profit', key: 'bz_profit', align: 'right', render: (v: any) => formatNumberLocale(v) },
     { title: '主营业务成本(元)', dataIndex: 'bz_cost', key: 'bz_cost', align: 'right', render: (v: any) => formatNumberLocale(v) },
@@ -98,10 +94,10 @@ export const StockBusinessTab: React.FC = () => {
           ))}
         </BaseSelect>
         <BaseButton onClick={() => fetchData(1, pagination.pageSize)}>查询</BaseButton>
-        <BaseButton onClick={() => { setQuery({ ts_code: undefined, period: undefined, start_date: undefined, end_date: undefined, type: undefined }); fetchData(1, pagination.pageSize); }}>重置</BaseButton>
+        <BaseButton onClick={() => { setQuery({ ts_code: undefined, period: undefined, start_date: undefined, end_date: undefined }); fetchData(1, pagination.pageSize); }}>重置</BaseButton>
       </BaseSpace>
       <BaseSpace style={{ display: 'flex', marginBottom: '1rem' }}>
-        <BaseButton type="primary" onClick={() => { setSyncPayload({ ts_code: query.ts_code, period: query.period, type: query.type }); setSyncOpen(true); }}>同步数据</BaseButton>
+        <BaseButton type="primary" onClick={() => { setSyncPayload({ ts_code: query.ts_code, period: query.period }); setSyncOpen(true); }}>同步数据</BaseButton>
       </BaseSpace>
       <BaseModal 
         title="主营业务构成同步" 
@@ -146,7 +142,7 @@ export const StockBusinessTab: React.FC = () => {
       <BaseTable
         columns={columns}
         dataSource={rows}
-        rowKey={(record) => `${record.ts_code}-${record.end_date}-${record.bz_item}-${record.type || ''}`}
+        rowKey={(record) => `${record.ts_code}-${record.end_date}-${record.bz_item}`}
         loading={loading}
         pagination={{
           current: pagination.current,

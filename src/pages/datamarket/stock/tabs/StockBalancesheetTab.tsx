@@ -14,6 +14,7 @@ import { useStockOptions } from '../hooks/useStockOptions';
 import { notificationController } from '@app/controllers/notificationController';
 import { trim, formatNumberLocale } from '../utils';
 
+// 资产负债表
 export const StockBalancesheetTab: React.FC = () => {
   const { stockOptions, stockOptionsLoading, fetchStockOptions } = useStockOptions();
 
