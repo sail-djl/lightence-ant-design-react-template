@@ -86,6 +86,7 @@ const ForexListPage = React.lazy(() => import('@app/pages/datamarket/ForexListPa
 const UsStockListPage = React.lazy(() => import('@app/pages/datamarket/UsStockListPage'));
 const IndexDetailPage = React.lazy(() => import('@app/pages/index/IndexDetailPage'));
 const UserConfigPage = React.lazy(() => import('@app/pages/userconfig/UserConfigPage'));
+const MarketConfigPage = React.lazy(() => import('@app/pages/sysconfig/MarketConfigPage'));
 
 export const NFT_DASHBOARD_PATH = '/';
 export const MEDICAL_DASHBOARD_PATH = '/medical-dashboard';
@@ -149,6 +150,7 @@ const ForexList = withLoading(ForexListPage);
 const UsStockList = withLoading(UsStockListPage);
 const IndexDetail = withLoading(IndexDetailPage);
 const UserConfig = withLoading(UserConfigPage);
+const MarketConfig = withLoading(MarketConfigPage);
 
 // Maps
 const Google = withLoading(GoogleMaps);
@@ -258,6 +260,10 @@ export const AppRouter: React.FC = () => {
             <Route path="menus" element={<MenuManagement />} />
             <Route path="roles" element={<RoleManagement />} />
             <Route path="user-config" element={<UserConfig />} />
+          </Route>
+          <Route path="sysconfig">
+            {/* 市场配置 /sysconfig/market  */}
+            <Route path="market" element={<MarketConfig />} />
           </Route>
           <Route path="ui-components">
             <Route path="button" element={<Buttons />} />
