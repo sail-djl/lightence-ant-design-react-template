@@ -14,8 +14,7 @@ import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';
 import ProfileLayout from '@app/components/profile/ProfileLayout';
 import RequireAuth from '@app/components/router/RequireAuth';
 import { withLoading } from '@app/hocs/withLoading.hoc';
-import MedicalDashboardPage from '@app/pages/DashboardPages/MedicalDashboardPage';
-import FinanceDashboardPage from '@app/pages/DashboardPages/FinanceDashboardPage';
+import DashboardPage from '@app/pages/dashboard/DashboardPage';
 import IndexDashboardPage from '@app/pages/index/IndexDashboardPage';
 
 const NewsFeedPage = React.lazy(() => import('@app/pages/NewsFeedPage'));
@@ -91,8 +90,7 @@ const UserConfigPage = React.lazy(() => import('@app/pages/userconfig/UserConfig
 export const NFT_DASHBOARD_PATH = '/';
 export const MEDICAL_DASHBOARD_PATH = '/medical-dashboard';
 
-const MedicalDashboard = withLoading(MedicalDashboardPage);
-const FinanceDashboard = withLoading(FinanceDashboardPage);
+const Dashboard = withLoading(DashboardPage);
 const NewsFeed = withLoading(NewsFeedPage);
 const AdvancedForm = withLoading(AdvancedFormsPage);
 const Kline = withLoading(KlinePage);
@@ -185,8 +183,8 @@ export const AppRouter: React.FC = () => {
     <BrowserRouter>
       <Routes>
         <Route path={NFT_DASHBOARD_PATH} element={protectedLayout}>
-          // 首页仪表盘，金融看板
-          <Route index element={<FinanceDashboard />} />
+          // 首页仪表盘，A股决策启动页
+          <Route index element={<Dashboard />} />
           {/* // 医疗主题仪表盘
           <Route path={MEDICAL_DASHBOARD_PATH} element={<MedicalDashboard />} /> */}
           // 市场部分主路由
