@@ -24,9 +24,13 @@ const ChartsPage = React.lazy(() => import('@app/pages/ChartsPage'));
 const KlinePage = React.lazy(() => import('@app/pages/trading/KlinePage'));
 const PortfolioPage = React.lazy(() => import('@app/pages/trading/PortfolioPage'));
 const PolarizationModelPage = React.lazy(() => import('@app/pages/model/PolarizationModelPage'));
-const StockMarketPage = React.lazy(() => import('@app/pages/market/StockMarketPage'));
-const CryptoMarketPage = React.lazy(() => import('@app/pages/market/CryptoMarketPage'));
-const ForexMarketPage = React.lazy(() => import('@app/pages/market/ForexMarketPage'));
+const MarketOverviewPage = React.lazy(() => import('@app/pages/market/MarketOverviewPage'));
+const MarketRatesPage = React.lazy(() => import('@app/pages/market/RatesPage'));
+const MarketLiquidityPage = React.lazy(() => import('@app/pages/market/LiquidityPage'));
+const MarketForexPage = React.lazy(() => import('@app/pages/market/ForexPage'));
+const MarketInflationPage = React.lazy(() => import('@app/pages/market/InflationPage'));
+const MarketRiskPage = React.lazy(() => import('@app/pages/market/RiskPage'));
+const MarketStructurePage = React.lazy(() => import('@app/pages/market/StructurePage'));
 const ServerErrorPage = React.lazy(() => import('@app/pages/ServerErrorPage'));
 const Error404Page = React.lazy(() => import('@app/pages/Error404Page'));
 const AdvancedFormsPage = React.lazy(() => import('@app/pages/AdvancedFormsPage'));
@@ -94,9 +98,13 @@ const AdvancedForm = withLoading(AdvancedFormsPage);
 const Kline = withLoading(KlinePage);
 const Portfolio = withLoading(PortfolioPage);
 const PolarizationModel = withLoading(PolarizationModelPage);
-const StockMarket = withLoading(StockMarketPage);
-const CryptoMarket = withLoading(CryptoMarketPage);
-const ForexMarket = withLoading(ForexMarketPage);
+const MarketOverview = withLoading(MarketOverviewPage);
+const MarketRates = withLoading(MarketRatesPage);
+const MarketLiquidity = withLoading(MarketLiquidityPage);
+const MarketForex = withLoading(MarketForexPage);
+const MarketInflation = withLoading(MarketInflationPage);
+const MarketRisk = withLoading(MarketRiskPage);
+const MarketStructure = withLoading(MarketStructurePage);
 
 // UI Components
 const Buttons = withLoading(ButtonsPage);
@@ -173,15 +181,32 @@ export const AppRouter: React.FC = () => {
   );
 
   return (
+    // 前端路由 硬编码优势 
     <BrowserRouter>
       <Routes>
         <Route path={NFT_DASHBOARD_PATH} element={protectedLayout}>
+          // 首页仪表盘，金融看板
           <Route index element={<FinanceDashboard />} />
-          <Route path={MEDICAL_DASHBOARD_PATH} element={<MedicalDashboard />} />
+          {/* // 医疗主题仪表盘
+          <Route path={MEDICAL_DASHBOARD_PATH} element={<MedicalDashboard />} /> */}
+          // 市场部分主路由
           <Route path="market">
-            <Route path="stock" element={<StockMarket />} />
-            <Route path="crypto" element={<CryptoMarket />} />
-            <Route path="forex" element={<ForexMarket />} />
+            {/* 市场总览 */}
+            <Route path="overview" element={<MarketOverview />} />
+            {/* 默认跳转到总览（可选，如果不加则/market无页面） */}
+            <Route index element={<MarketOverview />} />
+            {/* 利率分项 */}
+            <Route path="rates" element={<MarketRates />} />
+            {/* 流动性分项  /market/liquidity */}
+            <Route path="liquidity" element={<MarketLiquidity />} />
+            {/* 外汇分项  /market/forex */}
+            <Route path="forex" element={<MarketForex />} />
+            {/* 通胀分项  /market/inflation */}
+            <Route path="inflation" element={<MarketInflation />} />
+            {/* 风险分项  /market/risk */}
+            <Route path="risk" element={<MarketRisk />} />
+            {/* 市场结构分项  /market/structure */}
+            <Route path="structure" element={<MarketStructure />} />
           </Route>
           <Route path="trading">
             <Route path="kline" element={<Kline />} />

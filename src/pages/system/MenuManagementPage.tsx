@@ -152,6 +152,17 @@ export const MenuManagementPage: React.FC = () => {
     setIsModalVisible(true);
   };
 
+  const handleAddChild = (parentMenu: MenuItem) => {
+    setEditingMenu(null);
+    form.resetFields();
+    form.setFieldsValue({
+      sort_order: 0,
+      is_active: true,
+      parent_id: parentMenu.id,
+    });
+    setIsModalVisible(true);
+  };
+
   const handleEdit = (menu: MenuItem) => {
     setEditingMenu(menu);
     form.setFieldsValue({
@@ -258,10 +269,13 @@ export const MenuManagementPage: React.FC = () => {
     {
       title: t('tables.actions'),
       key: 'actions',
-      width: 200,
+      width: 250,
       align: 'center',
       render: (_, record: MenuItem) => (
         <BaseSpace>
+          <BaseButton type="link" onClick={() => handleAddChild(record)}>
+            新增
+          </BaseButton>
           <BaseButton type="link" onClick={() => handleEdit(record)}>
             {t('common.edit')}
           </BaseButton>
