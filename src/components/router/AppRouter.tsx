@@ -33,10 +33,10 @@ const MarketStructurePage = React.lazy(() => import('@app/pages/market/Structure
 const ServerErrorPage = React.lazy(() => import('@app/pages/ServerErrorPage'));
 const Error404Page = React.lazy(() => import('@app/pages/Error404Page'));
 const AdvancedFormsPage = React.lazy(() => import('@app/pages/AdvancedFormsPage'));
-const PersonalInfoPage = React.lazy(() => import('@app/pages/PersonalInfoPage'));
-const SecuritySettingsPage = React.lazy(() => import('@app/pages/SecuritySettingsPage'));
-const NotificationsPage = React.lazy(() => import('@app/pages/NotificationsPage'));
-const PaymentsPage = React.lazy(() => import('@app/pages/PaymentsPage'));
+const PersonalInfoPage = React.lazy(() => import('@app/pages/profile/PersonalInfoPage'));
+const SecuritySettingsPage = React.lazy(() => import('@app/pages/profile/SecuritySettingsPage'));
+const NotificationsPage = React.lazy(() => import('@app/pages/profile/NotificationsPage'));
+const PaymentsPage = React.lazy(() => import('@app/pages/profile/PaymentsPage'));
 const UserManagementPage = React.lazy(() => import('@app/pages/system/UserManagementPage'));
 const MenuManagementPage = React.lazy(() => import('@app/pages/system/MenuManagementPage'));
 const RoleManagementPage = React.lazy(() => import('@app/pages/system/RoleManagementPage'));
@@ -87,6 +87,7 @@ const UsStockListPage = React.lazy(() => import('@app/pages/datamarket/UsStockLi
 const IndexDetailPage = React.lazy(() => import('@app/pages/index/IndexDetailPage'));
 const UserConfigPage = React.lazy(() => import('@app/pages/userconfig/UserConfigPage'));
 const MarketConfigPage = React.lazy(() => import('@app/pages/sysconfig/MarketConfigPage'));
+const WatchlistPage = React.lazy(() => import('@app/pages/profile/WatchlistPage'));
 
 export const NFT_DASHBOARD_PATH = '/';
 export const MEDICAL_DASHBOARD_PATH = '/medical-dashboard';
@@ -151,6 +152,7 @@ const UsStockList = withLoading(UsStockListPage);
 const IndexDetail = withLoading(IndexDetailPage);
 const UserConfig = withLoading(UserConfigPage);
 const MarketConfig = withLoading(MarketConfigPage);
+const Watchlist = withLoading(WatchlistPage);
 
 // Maps
 const Google = withLoading(GoogleMaps);
@@ -254,12 +256,15 @@ export const AppRouter: React.FC = () => {
             <Route path="security-settings" element={<SecuritySettings />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="payments" element={<Payments />} />
+            {/* 个人自选 /profile/watchlist */}
+            <Route path="watchlist" element={<Watchlist />} />
+            {/* 个人配置 /profile/config */}
+            <Route path="config" element={<UserConfig />} />
           </Route>
           <Route path="system">
             <Route path="users" element={<UserManagement />} />
             <Route path="menus" element={<MenuManagement />} />
             <Route path="roles" element={<RoleManagement />} />
-            <Route path="user-config" element={<UserConfig />} />
           </Route>
           <Route path="sysconfig">
             {/* 市场配置 /sysconfig/market  */}

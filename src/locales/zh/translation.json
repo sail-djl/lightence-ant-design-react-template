@@ -705,6 +705,12 @@
         "title": "安全设置",
         "twoFactorAuth": "双因素认证",
         "verify": "验证"
+      },
+      "watchlist": {
+        "title": "个人自选"
+      },
+      "config": {
+        "title": "个人配置"
       }
     },
     "title": "个人资料"

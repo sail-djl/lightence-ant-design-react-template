@@ -697,6 +697,12 @@
         "title": "Security Settings",
         "twoFactorAuth": "Two–factor authentication",
         "verify": "Verify"
+      },
+      "watchlist": {
+        "title": "Watchlist"
+      },
+      "config": {
+        "title": "Config"
       }
     },
     "title": "Profile"
