@@ -9,7 +9,7 @@ import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
 import { Dates } from '@app/constants/Dates';
 import { ColumnsType } from 'antd/es/table';
-import { FutBasic, getFutBasicList, FutBasicQuery } from '@app/api/futures.api';
+import { FutBasic, getFutBasicList, FutBasicQuery } from '@app/api/datamarket/futures.api';
 import { useFuturesData } from '../hooks/useFuturesData';
 import { useFuturesSync } from '../hooks/useFuturesSync';
 import { formatNumber, formatDate, getDateRanges, EXCHANGE_OPTIONS, FUT_TYPE_OPTIONS } from '../utils';

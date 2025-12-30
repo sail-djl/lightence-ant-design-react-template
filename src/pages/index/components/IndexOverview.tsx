@@ -20,7 +20,7 @@ import {
   IndexBasic,
   IndexDaily,
   IndexDailybasic,
-} from '@app/api/index.api';
+} from '@app/api/datamarket/index.api';
 import { IndexData } from '../types';
 import * as S from '../IndexDashboardPage.styles';
 

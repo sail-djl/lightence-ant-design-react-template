@@ -8,7 +8,7 @@ import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
 import { Dates } from '@app/constants/Dates';
 import { ColumnsType } from 'antd/es/table';
-import { CbDaily, getCbDailyList, CbDailyQuery } from '@app/api/bond.api';
+import { CbDaily, getCbDailyList, CbDailyQuery } from '@app/api/datamarket/bond.api';
 import { useBondData } from '../hooks/useBondData';
 import { useBondSync } from '../hooks/useBondSync';
 import { formatNumber, formatNumberLocale, formatDate, getDateRanges } from '../utils';

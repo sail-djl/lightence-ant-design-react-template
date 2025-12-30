@@ -7,7 +7,7 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { BaseSelect, Option } from '@app/components/common/selects/BaseSelect/BaseSelect';
 import { Empty } from 'antd';
-import { StockIncome, getStockIncomeList, syncStockIncome, StockIncomeSyncPayload } from '@app/api/stock.api';
+import { StockIncome, getStockIncomeList, syncStockIncome, StockIncomeSyncPayload } from '@app/api/datamarket/stock.api';
 import { useStockData } from '../hooks/useStockData';
 import { useStockSync } from '../hooks/useStockSync';
 import { useStockOptions } from '../hooks/useStockOptions';

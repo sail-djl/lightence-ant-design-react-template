@@ -87,6 +87,7 @@ const UsStockListPage = React.lazy(() => import('@app/pages/datamarket/UsStockLi
 const IndexDetailPage = React.lazy(() => import('@app/pages/index/IndexDetailPage'));
 const UserConfigPage = React.lazy(() => import('@app/pages/userconfig/UserConfigPage'));
 const MarketConfigPage = React.lazy(() => import('@app/pages/sysconfig/MarketConfigPage'));
+const SystemConfigPage = React.lazy(() => import('@app/pages/sysconfig/SystemConfigPage'));
 const WatchlistPage = React.lazy(() => import('@app/pages/profile/WatchlistPage'));
 
 export const NFT_DASHBOARD_PATH = '/';
@@ -152,6 +153,7 @@ const UsStockList = withLoading(UsStockListPage);
 const IndexDetail = withLoading(IndexDetailPage);
 const UserConfig = withLoading(UserConfigPage);
 const MarketConfig = withLoading(MarketConfigPage);
+const SystemConfig = withLoading(SystemConfigPage);
 const Watchlist = withLoading(WatchlistPage);
 
 // Maps
@@ -249,17 +251,22 @@ export const AppRouter: React.FC = () => {
             <Route path="react-simple-maps" element={<ReactSimple />} />
             <Route path="pigeon-maps" element={<Pigeons />} />
           </Route>
+          <Route path="userconfig">
+            {/* 个人自选 /userconfig/watchlist */}
+            <Route path="watchlist" element={<Watchlist />} />
+            {/* 个人配置 /userconfig/config */}
+            <Route path="config" element={<UserConfig />} />
+          </Route>
           <Route path="server-error" element={<ServerError />} />
           <Route path="404" element={<Error404 />} />
+          {/* 个人中心 /profile */}
           <Route path="profile" element={<ProfileLayout />}>
+            {/* 个人中心 /profile/personal-info */}
             <Route path="personal-info" element={<PersonalInfo />} />
+            {/* 个人中心 /profile/security-settings */}
             <Route path="security-settings" element={<SecuritySettings />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="payments" element={<Payments />} />
-            {/* 个人自选 /profile/watchlist */}
-            <Route path="watchlist" element={<Watchlist />} />
-            {/* 个人配置 /profile/config */}
-            <Route path="config" element={<UserConfig />} />
           </Route>
           <Route path="system">
             <Route path="users" element={<UserManagement />} />
@@ -269,6 +276,8 @@ export const AppRouter: React.FC = () => {
           <Route path="sysconfig">
             {/* 市场配置 /sysconfig/market  */}
             <Route path="market" element={<MarketConfig />} />
+            {/* 系统配置管理 /sysconfig/system  */}
+            <Route path="system" element={<SystemConfig />} />
           </Route>
           <Route path="ui-components">
             <Route path="button" element={<Buttons />} />

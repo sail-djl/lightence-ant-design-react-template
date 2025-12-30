@@ -8,7 +8,7 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { notificationController } from '@app/controllers/notificationController';
 import { ColumnsType } from 'antd/es/table';
-import { IndexMember, getIndexMemberList, syncIndexMember, IndexMemberSyncPayload, getIndexClassifyList, IndexClassify } from '@app/api/index.api';
+import { IndexMember, getIndexMemberList, syncIndexMember, IndexMemberSyncPayload, getIndexClassifyList, IndexClassify } from '@app/api/datamarket/index.api';
 import { useIndexData } from '../hooks/useIndexData';
 import { useIndexSync } from '../hooks/useIndexSync';
 import { trim } from '../utils';

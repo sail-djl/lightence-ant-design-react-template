@@ -7,7 +7,7 @@ import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { ColumnsType } from 'antd/es/table';
-import { StockBasic, getStockBasicList, syncStockBasic, StockBasicSyncPayload } from '@app/api/stock.api';
+import { StockBasic, getStockBasicList, syncStockBasic, StockBasicSyncPayload } from '@app/api/datamarket/stock.api';
 import { useStockData } from '../hooks/useStockData';
 import { useStockSync } from '../hooks/useStockSync';
 import { trim } from '../utils';

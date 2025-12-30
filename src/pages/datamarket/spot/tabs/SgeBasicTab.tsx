@@ -6,7 +6,7 @@ import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { ColumnsType } from 'antd/es/table';
-import { SgeBasic, getSgeBasicList, SgeBasicQuery } from '@app/api/spot.api';
+import { SgeBasic, getSgeBasicList, SgeBasicQuery } from '@app/api/datamarket/spot.api';
 import { useSpotData } from '../hooks/useSpotData';
 import { useSpotSync } from '../hooks/useSpotSync';
 import { formatNumber, formatNumberLocale, formatDate } from '../utils';

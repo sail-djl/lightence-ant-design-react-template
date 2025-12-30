@@ -7,7 +7,7 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { BaseSelect, Option } from '@app/components/common/selects/BaseSelect/BaseSelect';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { ColumnsType } from 'antd/es/table';
-import { FxObasic, getFxObasicList, FxObasicQuery } from '@app/api/forex.api';
+import { FxObasic, getFxObasicList, FxObasicQuery } from '@app/api/datamarket/forex.api';
 import { useForexData } from '../hooks/useForexData';
 import { useForexSync } from '../hooks/useForexSync';
 import { formatNumber, EXCHANGE_OPTIONS, CLASSIFY_OPTIONS } from '../utils';

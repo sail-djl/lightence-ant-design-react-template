@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
-import { UsStockSyncPayload, syncUsStockData } from '@app/api/us_stock.api';
+import { UsStockSyncPayload, syncUsStockData } from '@app/api/datamarket/us_stock.api';
 
 interface UseUsStockSyncOptions {
   onSuccess?: () => void;

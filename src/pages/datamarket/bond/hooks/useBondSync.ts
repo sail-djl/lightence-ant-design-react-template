@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
-import { BondSyncPayload, syncBondData } from '@app/api/bond.api';
+import { BondSyncPayload, syncBondData } from '@app/api/datamarket/bond.api';
 
 interface UseBondSyncOptions {
   onSuccess?: () => void;

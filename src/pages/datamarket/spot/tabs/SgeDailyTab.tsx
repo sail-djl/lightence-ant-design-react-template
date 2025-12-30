@@ -8,7 +8,7 @@ import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
 import { Dates } from '@app/constants/Dates';
 import { ColumnsType } from 'antd/es/table';
-import { SgeDaily, getSgeDailyList, SgeDailyQuery } from '@app/api/spot.api';
+import { SgeDaily, getSgeDailyList, SgeDailyQuery } from '@app/api/datamarket/spot.api';
 import { useSpotData } from '../hooks/useSpotData';
 import { useSpotSync } from '../hooks/useSpotSync';
 import { formatNumber, formatNumberLocale, formatDate, getDateRanges } from '../utils';

@@ -8,7 +8,7 @@ import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
 import { Dates } from '@app/constants/Dates';
 import { ColumnsType } from 'antd/es/table';
-import { UsDaily, getUsDailyList, UsDailyQuery } from '@app/api/us_stock.api';
+import { UsDaily, getUsDailyList, UsDailyQuery } from '@app/api/datamarket/us_stock.api';
 import { useUsStockData } from '../hooks/useUsStockData';
 import { useUsStockSync } from '../hooks/useUsStockSync';
 import { formatNumber, formatNumberLocale, formatDate, getDateRanges } from '../utils';

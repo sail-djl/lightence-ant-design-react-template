@@ -8,7 +8,7 @@ import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
 import { Descriptions } from 'antd';
-import { FundBasic, getFundBasicList, getFundFactorList, FundFactor } from '@app/api/fund.api';
+import { FundBasic, getFundBasicList, getFundFactorList, FundFactor } from '@app/api/datamarket/fund.api';
 import { BaseChart } from '@app/components/common/charts/BaseChart';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { themeObject } from '@app/styles/themes/themeVariables';

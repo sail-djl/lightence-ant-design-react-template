@@ -7,7 +7,7 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { BaseSelect, Option } from '@app/components/common/selects/BaseSelect/BaseSelect';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { ColumnsType } from 'antd/es/table';
-import { UsBasic, getUsBasicList, UsBasicQuery } from '@app/api/us_stock.api';
+import { UsBasic, getUsBasicList, UsBasicQuery } from '@app/api/datamarket/us_stock.api';
 import { useUsStockData } from '../hooks/useUsStockData';
 import { useUsStockSync } from '../hooks/useUsStockSync';
 import { formatDate, CLASSIFY_OPTIONS } from '../utils';

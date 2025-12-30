@@ -7,7 +7,7 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
 import { Dates } from '@app/constants/Dates';
 import { ColumnsType } from 'antd/es/table';
-import { CPI, getCPIList, CPIQuery } from '@app/api/macro.api';
+import { CPI, getCPIList, CPIQuery } from '@app/api/datamarket/macro.api';
 import { useMacroData } from '../hooks/useMacroData';
 import { useMacroSync } from '../hooks/useMacroSync';
 import { formatNumber, getMonthRanges } from '../utils';

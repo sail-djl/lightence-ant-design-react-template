@@ -13,7 +13,7 @@ import { AppDate, Dates } from '@app/constants/Dates';
 import { notificationController } from '@app/controllers/notificationController';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { IndexFactor, getIndexFactorList, syncIndexFactor, IndexFactorSyncPayload, IndexBasic, getIndexBasicList } from '@app/api/index.api';
+import { IndexFactor, getIndexFactorList, syncIndexFactor, IndexFactorSyncPayload, IndexBasic, getIndexBasicList } from '@app/api/datamarket/index.api';
 import { trim } from '../utils';
 
 export const IndexFactorTab: React.FC = () => {

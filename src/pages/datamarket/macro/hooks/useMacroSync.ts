@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
-import { MacroSyncPayload, syncMacroData } from '@app/api/macro.api';
+import { MacroSyncPayload, syncMacroData } from '@app/api/datamarket/macro.api';
 
 interface UseMacroSyncOptions {
   onSuccess?: () => void;

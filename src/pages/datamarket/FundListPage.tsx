@@ -11,7 +11,7 @@ import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker'
 import { AppDate, Dates } from '@app/constants/Dates';
 import { notificationController } from '@app/controllers/notificationController';
 import { ColumnsType } from 'antd/es/table';
-import { FundBasic, getFundBasicList, syncFundNav, FundSyncPayload, syncFundFactor, FundFactorSyncPayload } from '@app/api/fund.api';
+import { FundBasic, getFundBasicList, syncFundNav, FundSyncPayload, syncFundFactor, FundFactorSyncPayload } from '@app/api/datamarket/fund.api';
 import { useDispatch, useSelector } from 'react-redux';
 import { addEntry } from '@app/store/slices/searchHistorySlice';
 import { useNavigate } from 'react-router-dom';

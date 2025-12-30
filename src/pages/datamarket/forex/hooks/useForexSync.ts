@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
-import { ForexSyncPayload, syncForexData } from '@app/api/forex.api';
+import { ForexSyncPayload, syncForexData } from '@app/api/datamarket/forex.api';
 
 interface UseForexSyncOptions {
   onSuccess?: () => void;

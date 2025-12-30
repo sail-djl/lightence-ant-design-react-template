@@ -8,7 +8,7 @@ import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
 import { Dates } from '@app/constants/Dates';
 import { ColumnsType } from 'antd/es/table';
-import { StockStrongest, getStockStrongestList, syncStockStrongest, StockStrongestSyncPayload } from '@app/api/stock.api';
+import { StockStrongest, getStockStrongestList, syncStockStrongest, StockStrongestSyncPayload } from '@app/api/datamarket/stock.api';
 import { useStockData } from '../hooks/useStockData';
 import { useStockSync } from '../hooks/useStockSync';
 import { trim, formatNumber, toNumber } from '../utils';

@@ -8,7 +8,7 @@ import { BaseSelect, Option } from '@app/components/common/selects/BaseSelect/Ba
 import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
 import { Dates } from '@app/constants/Dates';
 import { ColumnsType } from 'antd/es/table';
-import { TradeCal, getTradeCalList, TradeCalQuery } from '@app/api/futures.api';
+import { TradeCal, getTradeCalList, TradeCalQuery } from '@app/api/datamarket/futures.api';
 import { useFuturesData } from '../hooks/useFuturesData';
 import { useFuturesSync } from '../hooks/useFuturesSync';
 import { formatDate, getDateRanges, EXCHANGE_OPTIONS, IS_OPEN_OPTIONS } from '../utils';

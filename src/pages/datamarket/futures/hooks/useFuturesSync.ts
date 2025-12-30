@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
-import { FuturesSyncPayload, syncFuturesData } from '@app/api/futures.api';
+import { FuturesSyncPayload, syncFuturesData } from '@app/api/datamarket/futures.api';
 
 interface UseFuturesSyncOptions {
   onSuccess?: () => void;

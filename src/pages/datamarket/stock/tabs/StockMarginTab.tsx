@@ -9,7 +9,7 @@ import { BaseSelect, Option } from '@app/components/common/selects/BaseSelect/Ba
 import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
 import { Dates } from '@app/constants/Dates';
 import { ColumnsType } from 'antd/es/table';
-import { StockMargin, getStockMarginList, syncStockMargin, StockMarginSyncPayload } from '@app/api/stock.api';
+import { StockMargin, getStockMarginList, syncStockMargin, StockMarginSyncPayload } from '@app/api/datamarket/stock.api';
 import { useStockData } from '../hooks/useStockData';
 import { useStockSync } from '../hooks/useStockSync';
 import { trim, formatNumberLocale } from '../utils';

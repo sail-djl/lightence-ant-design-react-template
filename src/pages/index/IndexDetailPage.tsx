@@ -18,7 +18,7 @@ import ReactECharts from 'echarts-for-react';
 import type { EChartsOption } from 'echarts';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { notificationController } from '@app/controllers/notificationController';
-import { getIndexBasicList, getIndexDailyList } from '@app/api/index.api';
+import { getIndexBasicList, getIndexDailyList } from '@app/api/datamarket/index.api';
 import {
   mockIndexMetrics,
   mockKlineMetrics,

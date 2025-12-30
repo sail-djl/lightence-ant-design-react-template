@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getStockBasicList, StockBasic } from '@app/api/stock.api';
+import { getStockBasicList, StockBasic } from '@app/api/datamarket/stock.api';
 
 /**
  * 股票选项加载Hook

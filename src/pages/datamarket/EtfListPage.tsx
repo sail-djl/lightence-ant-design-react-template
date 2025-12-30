@@ -6,7 +6,7 @@ import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { BaseAutoComplete } from '@app/components/common/BaseAutoComplete/BaseAutoComplete';
 import { ColumnsType } from 'antd/es/table';
-import { EtfBasic, getEtfBasicList } from '@app/api/etf.api';
+import { EtfBasic, getEtfBasicList } from '@app/api/datamarket/etf.api';
 import { useDispatch, useSelector } from 'react-redux';
 import { addEntry } from '@app/store/slices/searchHistorySlice';
 

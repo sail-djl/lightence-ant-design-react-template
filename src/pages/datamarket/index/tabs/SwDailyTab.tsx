@@ -11,7 +11,7 @@ import { AppDate, Dates } from '@app/constants/Dates';
 import { notificationController } from '@app/controllers/notificationController';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { SwDaily, getSwDailyList, syncSwDaily, SwDailySyncPayload, IndexBasic, getIndexBasicList } from '@app/api/index.api';
+import { SwDaily, getSwDailyList, syncSwDaily, SwDailySyncPayload, IndexBasic, getIndexBasicList } from '@app/api/datamarket/index.api';
 import { trim } from '../utils';
 
 export const SwDailyTab: React.FC = () => {

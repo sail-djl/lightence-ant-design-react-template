@@ -1,0 +1,304 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
+import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
+import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
+import { BaseSelect } from '@app/components/common/selects/BaseSelect/BaseSelect';
+import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
+import { notificationController } from '@app/controllers/notificationController';
+import { ColumnsType } from 'antd/es/table';
+import { Tag } from 'antd';
+import {
+  SystemConfig,
+  getSystemConfigList,
+  deleteSystemConfig,
+  SystemConfigQuery,
+} from '@app/api/systemconfig.api';
+import { ConfigFormModal } from './components/ConfigFormModal';
+import * as S from './SystemConfigPage.styles';
+
+const initialPagination = {
+  current: 1,
+  pageSize: 10,
+};
+
+const CONFIG_CATEGORY_OPTIONS = [
+  { label: '全部分类', value: '' },
+  { label: '市场配置', value: 'market' },
+  { label: '策略配置', value: 'strategy' },
+  { label: '规则配置', value: 'rule' },
+  { label: '模板配置', value: 'template' },
+  { label: '系统配置', value: 'system' },
+];
+
+const CONFIG_TYPE_OPTIONS = [
+  { label: '全部类型', value: '' },
+  { label: '市场定义', value: 'market_definition' },
+  { label: 'Phase定义', value: 'phase_definitions' },
+  { label: '约束维度定义', value: 'constraint_dimensions' },
+  { label: '指标映射规则', value: 'metric_mapping_rules' },
+  { label: '环境许可度规则', value: 'permission_rules' },
+  { label: '文案模板', value: 'text_templates' },
+];
+
+const SystemConfigPage: React.FC = () => {
+  const { t } = useTranslation();
+  const [configs, setConfigs] = useState<SystemConfig[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState(initialPagination);
+  const [total, setTotal] = useState(0);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingConfig, setEditingConfig] = useState<SystemConfig | null>(null);
+  const [filters, setFilters] = useState<SystemConfigQuery>({
+    config_category: undefined,
+    config_type: undefined,
+    is_active: undefined,
+  });
+
+  const getErrorMessage = (error: unknown, fallback: string) =>
+    error instanceof Error ? error.message : fallback;
+
+  const fetchConfigs = useCallback(
+    async (page = 1, pageSize = 10) => {
+      setLoading(true);
+      try {
+        const skip = (page - 1) * pageSize;
+        const params: SystemConfigQuery = {
+          skip,
+          limit: pageSize,
+          ...filters,
+        };
+        const response = await getSystemConfigList(params);
+        setConfigs(response.data);
+        setTotal(response.count);
+        setPagination({ current: page, pageSize });
+      } catch (error: unknown) {
+        notificationController.error({
+          message: getErrorMessage(error, '获取配置列表失败'),
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [filters],
+  );
+
+  useEffect(() => {
+    fetchConfigs();
+  }, [fetchConfigs]);
+
+  const handleTableChange = (page: number, pageSize: number) => {
+    fetchConfigs(page, pageSize);
+  };
+
+  const handleCreate = () => {
+    setEditingConfig(null);
+    setIsModalVisible(true);
+  };
+
+  const handleEdit = (config: SystemConfig) => {
+    setEditingConfig(config);
+    setIsModalVisible(true);
+  };
+
+  const handleDelete = async (config: SystemConfig) => {
+    try {
+      await deleteSystemConfig(config.id);
+      notificationController.success({ message: '配置已删除' });
+      fetchConfigs(pagination.current, pagination.pageSize);
+    } catch (error: unknown) {
+      notificationController.error({
+        message: getErrorMessage(error, '删除配置失败'),
+      });
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    setEditingConfig(null);
+  };
+
+  const handleModalSuccess = () => {
+    handleModalClose();
+    fetchConfigs(pagination.current, pagination.pageSize);
+  };
+
+  const handleFilterChange = (key: keyof SystemConfigQuery, value: any) => {
+    setFilters((prev) => ({
+      ...prev,
+      [key]: value || undefined,
+    }));
+    setPagination(initialPagination);
+  };
+
+  const handleRefresh = () => {
+    fetchConfigs(pagination.current, pagination.pageSize);
+  };
+
+  const columns: ColumnsType<SystemConfig> = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      width: 80,
+    },
+    {
+      title: '配置分类',
+      dataIndex: 'config_category',
+      key: 'config_category',
+      width: 120,
+      render: (category: string) => <Tag color="blue">{category}</Tag>,
+    },
+    {
+      title: '配置类型',
+      dataIndex: 'config_type',
+      key: 'config_type',
+      width: 180,
+      render: (type: string) => <Tag color="green">{type}</Tag>,
+    },
+    {
+      title: '配置键',
+      dataIndex: 'config_key',
+      key: 'config_key',
+      width: 120,
+    },
+    {
+      title: '是否默认',
+      dataIndex: 'is_default',
+      key: 'is_default',
+      width: 100,
+      render: (isDefault: boolean) =>
+        isDefault ? <Tag color="orange">是</Tag> : <Tag>否</Tag>,
+    },
+    {
+      title: '状态',
+      dataIndex: 'is_active',
+      key: 'is_active',
+      width: 80,
+      render: (isActive: boolean) =>
+        isActive ? (
+          <Tag color="success">启用</Tag>
+        ) : (
+          <Tag color="error">禁用</Tag>
+        ),
+    },
+    {
+      title: '版本',
+      dataIndex: 'version',
+      key: 'version',
+      width: 80,
+    },
+    {
+      title: '描述',
+      dataIndex: 'description',
+      key: 'description',
+      ellipsis: true,
+    },
+    {
+      title: '创建人',
+      dataIndex: 'created_by',
+      key: 'created_by',
+      width: 120,
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updated_at',
+      key: 'updated_at',
+      width: 180,
+    },
+    {
+      title: '操作',
+      key: 'action',
+      width: 150,
+      fixed: 'right',
+      render: (_: any, record: SystemConfig) => (
+        <BaseSpace>
+          <BaseButton type="link" size="small" onClick={() => handleEdit(record)}>
+            编辑
+          </BaseButton>
+          <BaseButton
+            type="link"
+            size="small"
+            danger
+            onClick={() => handleDelete(record)}
+          >
+            删除
+          </BaseButton>
+        </BaseSpace>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <PageTitle>系统配置管理</PageTitle>
+      <S.Card>
+        <S.FilterBar>
+          <BaseSpace wrap>
+            <S.FilterItem>
+              <span>配置分类：</span>
+              <BaseSelect
+                style={{ width: 150 }}
+                value={filters.config_category}
+                onChange={(value) => handleFilterChange('config_category', value)}
+                options={CONFIG_CATEGORY_OPTIONS}
+              />
+            </S.FilterItem>
+            <S.FilterItem>
+              <span>配置类型：</span>
+              <BaseSelect
+                style={{ width: 200 }}
+                value={filters.config_type}
+                onChange={(value) => handleFilterChange('config_type', value)}
+                options={CONFIG_TYPE_OPTIONS}
+              />
+            </S.FilterItem>
+            <S.FilterItem>
+              <span>状态：</span>
+              <BaseSelect
+                style={{ width: 120 }}
+                value={filters.is_active}
+                onChange={(value) => handleFilterChange('is_active', value)}
+                options={[
+                  { label: '全部状态', value: undefined },
+                  { label: '启用', value: true },
+                  { label: '禁用', value: false },
+                ]}
+              />
+            </S.FilterItem>
+            <BaseButton onClick={handleRefresh}>刷新</BaseButton>
+          </BaseSpace>
+        </S.FilterBar>
+        <BaseSpace style={{ display: 'flex', marginBottom: '1rem' }}>
+          <BaseButton type="primary" onClick={handleCreate}>
+            + 新增配置
+          </BaseButton>
+        </BaseSpace>
+        <BaseTable
+          columns={columns}
+          dataSource={configs}
+          rowKey="id"
+          loading={loading}
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            total,
+            showSizeChanger: true,
+            showTotal: (total) => `共 ${total} 条`,
+            onChange: handleTableChange,
+            onShowSizeChange: handleTableChange,
+          }}
+          scroll={{ x: 'max-content' }}
+        />
+      </S.Card>
+      <ConfigFormModal
+        visible={isModalVisible}
+        editingConfig={editingConfig}
+        onCancel={handleModalClose}
+        onSuccess={handleModalSuccess}
+      />
+    </>
+  );
+};
+
+export default SystemConfigPage;

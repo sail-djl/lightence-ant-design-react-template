@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
-import { SpotSyncPayload, syncSpotData } from '@app/api/spot.api';
+import { SpotSyncPayload, syncSpotData } from '@app/api/datamarket/spot.api';
 
 interface UseSpotSyncOptions {
   onSuccess?: () => void;

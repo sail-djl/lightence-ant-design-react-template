@@ -9,7 +9,7 @@ import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
 import { Dates } from '@app/constants/Dates';
 import { ColumnsType } from 'antd/es/table';
-import { FxDaily, getFxDailyList, FxDailyQuery } from '@app/api/forex.api';
+import { FxDaily, getFxDailyList, FxDailyQuery } from '@app/api/datamarket/forex.api';
 import { useForexData } from '../hooks/useForexData';
 import { useForexSync } from '../hooks/useForexSync';
 import { formatNumber, formatNumberLocale, formatDate, getDateRanges, EXCHANGE_OPTIONS } from '../utils';

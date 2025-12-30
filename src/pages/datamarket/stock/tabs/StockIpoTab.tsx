@@ -7,7 +7,7 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { BaseSelect, Option } from '@app/components/common/selects/BaseSelect/BaseSelect';
 import { ColumnsType } from 'antd/es/table';
-import { StockIpo, getStockIpoList, syncStockIpo, StockIpoSyncPayload } from '@app/api/stock.api';
+import { StockIpo, getStockIpoList, syncStockIpo, StockIpoSyncPayload } from '@app/api/datamarket/stock.api';
 import { useStockData } from '../hooks/useStockData';
 import { useStockSync } from '../hooks/useStockSync';
 import { useStockOptions } from '../hooks/useStockOptions';

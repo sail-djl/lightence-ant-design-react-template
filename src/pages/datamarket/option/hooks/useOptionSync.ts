@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
-import { OptionSyncPayload, syncOptionData } from '@app/api/option.api';
+import { OptionSyncPayload, syncOptionData } from '@app/api/datamarket/option.api';
 
 interface UseOptionSyncOptions {
   onSuccess?: () => void;

@@ -9,7 +9,7 @@ import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { getIndexBasicList, IndexBasic } from '@app/api/index.api';
+import { getIndexBasicList, IndexBasic } from '@app/api/datamarket/index.api';
 import * as S from './ConfigFormCards.styles';
 
 interface ConfigFormCardsProps {

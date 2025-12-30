@@ -13,7 +13,7 @@ import { AppDate, Dates } from '@app/constants/Dates';
 import { notificationController } from '@app/controllers/notificationController';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { IndexWeekly, getIndexWeeklyList, syncIndexWeekly, IndexWeeklySyncPayload, IndexBasic, getIndexBasicList } from '@app/api/index.api';
+import { IndexWeekly, getIndexWeeklyList, syncIndexWeekly, IndexWeeklySyncPayload, IndexBasic, getIndexBasicList } from '@app/api/datamarket/index.api';
 import { trim } from '../utils';
 
 export const IndexWeeklyTab: React.FC = () => {

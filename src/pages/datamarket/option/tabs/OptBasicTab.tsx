@@ -9,7 +9,7 @@ import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
 import { Dates } from '@app/constants/Dates';
 import { ColumnsType } from 'antd/es/table';
-import { OptBasic, getOptBasicList, OptBasicQuery } from '@app/api/option.api';
+import { OptBasic, getOptBasicList, OptBasicQuery } from '@app/api/datamarket/option.api';
 import { useOptionData } from '../hooks/useOptionData';
 import { useOptionSync } from '../hooks/useOptionSync';
 import { formatNumber, formatDate, EXCHANGE_OPTIONS, CALL_PUT_OPTIONS } from '../utils';
