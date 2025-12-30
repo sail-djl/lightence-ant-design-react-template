@@ -15,31 +15,16 @@ import {
   SystemConfigQuery,
 } from '@app/api/systemconfig.api';
 import { ConfigFormModal } from './components/ConfigFormModal';
+import {
+  CONFIG_CATEGORY_OPTIONS_FOR_FILTER,
+  CONFIG_TYPE_OPTIONS_FOR_FILTER,
+} from './constants';
 import * as S from './SystemConfigPage.styles';
 
 const initialPagination = {
   current: 1,
   pageSize: 10,
 };
-
-const CONFIG_CATEGORY_OPTIONS = [
-  { label: '全部分类', value: '' },
-  { label: '市场配置', value: 'market' },
-  { label: '策略配置', value: 'strategy' },
-  { label: '规则配置', value: 'rule' },
-  { label: '模板配置', value: 'template' },
-  { label: '系统配置', value: 'system' },
-];
-
-const CONFIG_TYPE_OPTIONS = [
-  { label: '全部类型', value: '' },
-  { label: '市场定义', value: 'market_definition' },
-  { label: 'Phase定义', value: 'phase_definitions' },
-  { label: '约束维度定义', value: 'constraint_dimensions' },
-  { label: '指标映射规则', value: 'metric_mapping_rules' },
-  { label: '环境许可度规则', value: 'permission_rules' },
-  { label: '文案模板', value: 'text_templates' },
-];
 
 const SystemConfigPage: React.FC = () => {
   const { t } = useTranslation();
@@ -241,7 +226,7 @@ const SystemConfigPage: React.FC = () => {
                 style={{ width: 150 }}
                 value={filters.config_category}
                 onChange={(value) => handleFilterChange('config_category', value)}
-                options={CONFIG_CATEGORY_OPTIONS}
+                options={CONFIG_CATEGORY_OPTIONS_FOR_FILTER}
               />
             </S.FilterItem>
             <S.FilterItem>
@@ -250,7 +235,7 @@ const SystemConfigPage: React.FC = () => {
                 style={{ width: 200 }}
                 value={filters.config_type}
                 onChange={(value) => handleFilterChange('config_type', value)}
-                options={CONFIG_TYPE_OPTIONS}
+                options={CONFIG_TYPE_OPTIONS_FOR_FILTER}
               />
             </S.FilterItem>
             <S.FilterItem>

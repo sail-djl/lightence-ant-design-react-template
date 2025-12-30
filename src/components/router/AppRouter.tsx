@@ -277,7 +277,7 @@ export const AppRouter: React.FC = () => {
             {/* 市场配置 /sysconfig/market  */}
             <Route path="market" element={<MarketConfig />} />
             {/* 系统配置管理 /sysconfig/system  */}
-            <Route path="system" element={<SystemConfig />} />
+            <Route path="base" element={<SystemConfig />} />
           </Route>
           <Route path="ui-components">
             <Route path="button" element={<Buttons />} />

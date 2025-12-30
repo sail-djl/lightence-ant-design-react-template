@@ -8,6 +8,10 @@ import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { BaseSwitch } from '@app/components/common/BaseSwitch/BaseSwitch';
 import { notificationController } from '@app/controllers/notificationController';
 import { SystemConfig, createSystemConfig, updateSystemConfig, SystemConfigCreate, SystemConfigUpdate } from '@app/api/systemconfig.api';
+import {
+  CONFIG_CATEGORY_OPTIONS_FOR_FORM,
+  getConfigTypesByCategory,
+} from '../constants';
 import { JsonPreview } from './JsonPreview';
 import * as S from './ConfigFormModal.styles';
 
@@ -17,23 +21,6 @@ interface ConfigFormModalProps {
   onCancel: () => void;
   onSuccess: () => void;
 }
-
-const CONFIG_CATEGORY_OPTIONS = [
-  { label: '市场配置', value: 'market' },
-  { label: '策略配置', value: 'strategy' },
-  { label: '规则配置', value: 'rule' },
-  { label: '模板配置', value: 'template' },
-  { label: '系统配置', value: 'system' },
-];
-
-const CONFIG_TYPE_OPTIONS = [
-  { label: '市场定义', value: 'market_definition' },
-  { label: 'Phase定义', value: 'phase_definitions' },
-  { label: '约束维度定义', value: 'constraint_dimensions' },
-  { label: '指标映射规则', value: 'metric_mapping_rules' },
-  { label: '环境许可度规则', value: 'permission_rules' },
-  { label: '文案模板', value: 'text_templates' },
-];
 
 export const ConfigFormModal: React.FC<ConfigFormModalProps> = ({
   visible,
@@ -45,6 +32,9 @@ export const ConfigFormModal: React.FC<ConfigFormModalProps> = ({
   const [configCategory, setConfigCategory] = useState<string>('');
   const [configType, setConfigType] = useState<string>('');
   const [jsonConfig, setJsonConfig] = useState<Record<string, any>>({});
+  
+  // 根据选中的分类动态获取类型选项
+  const configTypeOptions = configCategory ? getConfigTypesByCategory(configCategory) : [];
 
   useEffect(() => {
     if (visible) {
@@ -77,7 +67,12 @@ export const ConfigFormModal: React.FC<ConfigFormModalProps> = ({
   }, [visible, editingConfig, form]);
 
   const handleConfigCategoryChange = (value: unknown) => {
-    setConfigCategory(value as string);
+    const category = value as string;
+    setConfigCategory(category);
+    // 当分类改变时，清空类型选择和JSON配置
+    form.setFieldsValue({ config_type: undefined, config_value: {} });
+    setConfigType('');
+    setJsonConfig({});
   };
 
   const handleConfigTypeChange = (value: unknown) => {
@@ -161,7 +156,7 @@ export const ConfigFormModal: React.FC<ConfigFormModalProps> = ({
                 rules={[{ required: true, message: '请选择配置分类' }]}
               >
                 <BaseSelect
-                  options={CONFIG_CATEGORY_OPTIONS}
+                  options={CONFIG_CATEGORY_OPTIONS_FOR_FORM}
                   placeholder="请选择配置分类"
                   onChange={handleConfigCategoryChange}
                 />
@@ -172,9 +167,10 @@ export const ConfigFormModal: React.FC<ConfigFormModalProps> = ({
                 rules={[{ required: true, message: '请选择配置类型' }]}
               >
                 <BaseSelect
-                  options={CONFIG_TYPE_OPTIONS}
-                  placeholder="请选择配置类型"
+                  options={configTypeOptions}
+                  placeholder={configCategory ? '请选择配置类型' : '请先选择配置分类'}
                   onChange={handleConfigTypeChange}
+                  disabled={!configCategory}
                 />
               </BaseForm.Item>
               <BaseForm.Item
