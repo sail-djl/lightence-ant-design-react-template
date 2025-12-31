@@ -34,6 +34,18 @@ const marketText = (v?: 'E' | 'O') => {
   return '-';
 };
 
+// 日期范围快捷选项
+const getDateRanges = (): Record<string, [AppDate, AppDate]> => {
+  const today = dayjs();
+  return {
+    '最近一周': [dayjs().subtract(7, 'day'), today] as [AppDate, AppDate],
+    '最近一月': [dayjs().subtract(1, 'month'), today] as [AppDate, AppDate],
+    '最近一年': [dayjs().subtract(1, 'year'), today] as [AppDate, AppDate],
+    '最近五年': [dayjs().subtract(5, 'year'), today] as [AppDate, AppDate],
+    '最近十年': [dayjs().subtract(10, 'year'), today] as [AppDate, AppDate],
+  };
+};
+
 const FundListPage: React.FC = () => {
   const navigate = useNavigate();
   const trim = (s?: string) => (s ?? '').trim();
@@ -296,6 +308,8 @@ const FundListPage: React.FC = () => {
               value={syncRange}
               disabledDate={(current) => current && current > dayjs().endOf('day')}
               onChange={(val) => setSyncRange([val?.[0] || null, val?.[1] || null])}
+              ranges={getDateRanges()}
+              style={{ width: '100%' }}
             />
           </BaseForm.Item>
           
@@ -352,6 +366,8 @@ const FundListPage: React.FC = () => {
               format="YYYY-MM-DD"
               value={factorSyncRange}
               onChange={(val) => setFactorSyncRange([val?.[0] || null, val?.[1] || null])}
+              ranges={getDateRanges()}
+              style={{ width: '100%' }}
             />
           </BaseForm.Item>
           <BaseForm.Item label="基金代码 (可选)">

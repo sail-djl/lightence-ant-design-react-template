@@ -1,0 +1,158 @@
+{
+    "radarCharts": {
+      "marketBreadthRadar": {
+        "title": "市场广度结构雷达",
+        "indicators": [
+          { "name": "涨跌比", "max": 100 },
+          { "name": "集中度", "max": 100 },
+          { "name": "扩散指数", "max": 100 },
+          { "name": "新高/新低", "max": 100 },
+          { "name": "成交量分布", "max": 100 },
+          { "name": "行业轮动", "max": 100 }
+        ],
+        "style": {
+          "shape": "circle",
+          "splitNumber": 3,
+          "radius": "70%",
+          "axisName": {
+            "color": "#666",
+            "fontSize": 12
+          },
+          "splitArea": {
+            "areaStyle": {
+              "color": ["#fff", "#f7f9fc"]
+            }
+          },
+          "dataStyle": {
+            "itemStyle": {
+              "color": "#52c41a"
+            },
+            "areaStyle": {
+              "opacity": 0.3
+            }
+          }
+        }
+      },
+      "structureTensionRadar": {
+        "title": "结构张力雷达",
+        "indicators": [
+          {
+            "name": "沪深300\n(核心定价层)",
+            "max": 2,
+            "code": "000300.SH",
+            "role": "核心定价层"
+          },
+          {
+            "name": "中证1000\n(次级博弈层)",
+            "max": 2,
+            "code": "000852.SH",
+            "role": "次级博弈层"
+          },
+          {
+            "name": "中证2000\n(尾部波动层)",
+            "max": 2,
+            "code": "000932.SH",
+            "role": "尾部波动层"
+          }
+        ],
+        "style": {
+          "shape": "circle",
+          "splitNumber": 4,
+          "radius": "70%",
+          "axisName": {
+            "color": "#666",
+            "fontSize": 12,
+            "fontWeight": "bold"
+          },
+          "splitArea": {
+            "areaStyle": {
+              "color": ["#fff", "#f7f9fc"]
+            }
+          },
+          "symbolSize": 8,
+          "areaStyleOpacity": 0.3
+        }
+      }
+    },
+    "healthScore": {
+      "weights": {
+        "gradientScore": 0.6,
+        "strengthAvg": 0.4
+      },
+      "gradientScores": {
+        "perfect": {
+          "condition": "index1000 > index300 && index2000 > index1000",
+          "score": 100
+        },
+        "good": {
+          "condition": "index1000 > index300",
+          "score": 70
+        },
+        "normal": {
+          "condition": "default",
+          "score": 50
+        }
+      }
+    },
+    "structureStatus": {
+      "rules": [
+        {
+          "label": "真扩散",
+          "color": "#52c41a",
+          "description": "行情健康扩散，具备可持续性",
+          "condition": "index1000.changePercent > index300.changePercent && index2000.changePercent > index1000.changePercent"
+        },
+        {
+          "label": "部分扩散",
+          "color": "#faad14",
+          "description": "扩散至次级层，需观察尾部层",
+          "condition": "index1000.changePercent > index300.changePercent"
+        },
+        {
+          "label": "假扩散",
+          "color": "#ff4d4f",
+          "description": "仅核心层上涨，结构不健康",
+          "condition": "index300.changePercent > 0 && index1000.changePercent < 0"
+        },
+        {
+          "label": "抱团行情",
+          "color": "#1890ff",
+          "description": "资金集中在核心资产",
+          "condition": "default"
+        }
+      ]
+    },
+    "tensionTrendChart": {
+      "series": [
+        {
+          "name": "沪深300",
+          "color": "#1890ff",
+          "lineStyle": {
+            "width": 2
+          }
+        },
+        {
+          "name": "中证1000",
+          "color": "#52c41a",
+          "lineStyle": {
+            "width": 2
+          }
+        },
+        {
+          "name": "中证2000",
+          "color": "#faad14",
+          "lineStyle": {
+            "width": 2
+          }
+        }
+      ],
+      "smooth": true,
+      "yAxis": {
+        "name": "涨跌幅 (%)"
+      }
+    },
+    "alertMessage": {
+      "title": "结构张力说明",
+      "description": "本模块通过核心定价层（300）、次级博弈层（1000）与尾部波动层（2000）的相对表现，判断行情是否具备内部扩散与承接能力，而非判断市场情绪。"
+    }
+  }

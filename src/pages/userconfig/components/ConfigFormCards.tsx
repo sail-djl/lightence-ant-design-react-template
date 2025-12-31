@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { BaseSelect } from '@app/components/common/selects/BaseSelect/BaseSelect';
@@ -29,6 +29,7 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
   const [indexSelectModalVisible, setIndexSelectModalVisible] = useState(false);
   const [indexSearchKeyword, setIndexSearchKeyword] = useState('');
   const [indexOptionsLoading, setIndexOptionsLoading] = useState(false);
+  const [jsonText, setJsonText] = useState<string>('');
 
   useEffect(() => {
     if (configType === 'dashboard_index_overview' && initialValue) {
@@ -74,8 +75,10 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
   const updateConfigValue = React.useCallback(() => {
     const values = form.getFieldsValue();
     let configValue: Record<string, any> = {};
+    let hasMatchedType = false;
 
     if (configType === 'dashboard_index_overview') {
+      hasMatchedType = true;
       const sortOrder: Record<string, number> = {};
       selectedIndexes.forEach((code, index) => {
         sortOrder[code] = index + 1;
@@ -95,6 +98,7 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
       configType === 'index_daily_query' ||
       configType === 'index_weekly_query'
     ) {
+      hasMatchedType = true;
       const tsCodes = values.default_ts_codes
         ? values.default_ts_codes.split(',').map((s: string) => s.trim()).filter(Boolean)
         : [];
@@ -111,6 +115,7 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
       configType === 'index_global_query' ||
       configType === 'sw_daily_query'
     ) {
+      hasMatchedType = true;
       const tsCodes = values.default_ts_codes
         ? values.default_ts_codes.split(',').map((s: string) => s.trim()).filter(Boolean)
         : [];
@@ -122,6 +127,7 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
         },
       };
     } else if (configType === 'index_factor_query') {
+      hasMatchedType = true;
       const tsCodes = values.default_ts_codes
         ? values.default_ts_codes.split(',').map((s: string) => s.trim()).filter(Boolean)
         : [];
@@ -134,6 +140,7 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
         },
       };
     } else if (configType === 'index_sync_settings') {
+      hasMatchedType = true;
       configValue = {
         auto_sync: values.auto_sync || false,
         sync_interval: parseInt(values.sync_interval) || 3600,
@@ -145,13 +152,31 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
       };
     }
 
-    onConfigValueChange(configValue);
+    // 只对匹配的配置类型调用 onConfigValueChange，避免对默认 JSON 编辑框传入空对象
+    if (hasMatchedType) {
+      onConfigValueChange(configValue);
+    }
   }, [configType, form, selectedIndexes, onConfigValueChange]);
 
+  // 只对已支持的定制配置类型调用 updateConfigValue，默认 JSON 编辑框不使用此逻辑
   useEffect(() => {
-    const timer = setTimeout(updateConfigValue, 100);
-    return () => clearTimeout(timer);
-  }, [updateConfigValue]);
+    const supportedConfigTypes = [
+      'dashboard_index_overview',
+      'index_daily_query',
+      'index_weekly_query',
+      'index_dailybasic_query',
+      'index_global_query',
+      'index_factor_query',
+      'sw_daily_query',
+      'index_sync_settings',
+    ];
+    
+    // 只对匹配的配置类型调用 updateConfigValue
+    if (configType && supportedConfigTypes.includes(configType)) {
+      const timer = setTimeout(updateConfigValue, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [configType, updateConfigValue]);
 
   const loadIndexOptions = useCallback(async (keyword?: string) => {
     setIndexOptionsLoading(true);
@@ -423,6 +448,73 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
     );
   }
 
-  return null;
+  // 定义所有已支持的定制配置类型
+  const supportedConfigTypes = useMemo(
+    () => [
+      'dashboard_index_overview',
+      'index_daily_query',
+      'index_weekly_query',
+      'index_dailybasic_query',
+      'index_global_query',
+      'index_factor_query',
+      'sw_daily_query',
+      'index_sync_settings',
+    ],
+    []
+  );
+
+  // 使用 useMemo 创建稳定的序列化值，避免对象引用变化导致的重复触发
+  const initialValueStr = useMemo(() => {
+    try {
+      return JSON.stringify(initialValue || {}, null, 2);
+    } catch (error) {
+      return '{}';
+    }
+  }, [initialValue]);
+
+  // 默认 JSON 编辑框：当 configType 不匹配定制配置类型时，初始化 JSON 文本
+  useEffect(() => {
+    // 如果 configType 存在但不匹配任何定制配置类型，则使用默认 JSON 编辑框
+    if (configType && !supportedConfigTypes.includes(configType)) {
+      // 直接使用序列化后的值，避免循环触发
+      setJsonText((prevJsonText) => {
+        if (prevJsonText === initialValueStr) {
+          return prevJsonText;
+        }
+        console.log('[ConfigFormCards] useEffect - 设置 jsonText', {
+          initialValue,
+          initialValueStr,
+          prevJsonText,
+        });
+        return initialValueStr;
+      });
+    }
+  }, [configType, initialValueStr, supportedConfigTypes]);
+
+  return (
+    <S.FormCard>
+      <S.FormCardTitle>配置值（JSON）</S.FormCardTitle>
+      <BaseForm form={form} layout="vertical">
+        <BaseForm.Item name="config_value_json" label="">
+          <BaseInput.TextArea
+            rows={15}
+            placeholder='请输入JSON格式的配置值，例如：{"key": "value"} 或 [{"id": "1", "name": "test"}]'
+            onChange={(e) => {
+              const text = e.target.value;
+              setJsonText(text);
+              try {
+                const value = text ? JSON.parse(text) : {};
+                console.log('[ConfigFormCards] TextArea onChange - 用户输入，解析成功', value);
+                onConfigValueChange(value);
+              } catch (error) {
+                // 忽略JSON解析错误，用户可能正在输入
+              }
+            }}
+            value={jsonText}
+          />
+        </BaseForm.Item>
+      </BaseForm>
+    </S.FormCard>
+  );
 };
 

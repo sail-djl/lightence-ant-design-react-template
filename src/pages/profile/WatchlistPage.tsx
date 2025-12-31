@@ -1,22 +1,33 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
-import { BaseCard } from '@app/components/common/BaseCard/BaseCard';
-import { Typography } from 'antd';
-
-const { Title, Text } = Typography;
+import { BaseTabs } from '@app/components/common/BaseTabs/BaseTabs';
+import { WatchlistIndexTab } from './tabs/WatchlistIndexTab';
+import { WatchlistEtfTab } from './tabs/WatchlistEtfTab';
 
 /**
  * 个人自选页面
  */
 const WatchlistPage: React.FC = () => {
+  const tabItems = useMemo(
+    () => [
+      {
+        key: 'index',
+        label: '指数',
+        children: <WatchlistIndexTab />,
+      },
+      {
+        key: 'etf',
+        label: 'ETF',
+        children: <WatchlistEtfTab />,
+      },
+    ],
+    [],
+  );
+
   return (
     <>
       <PageTitle>个人自选</PageTitle>
-      <BaseCard>
-        <Title level={4}>我的自选</Title>
-        <Text type="secondary">管理您的自选股票、指数、ETF等</Text>
-        {/* TODO: 实现自选列表功能 */}
-      </BaseCard>
+      <BaseTabs defaultActiveKey="index" items={tabItems} type="card" />
     </>
   );
 };

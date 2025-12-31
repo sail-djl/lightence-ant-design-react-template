@@ -15,34 +15,16 @@ import {
   UserConfigQuery,
 } from '@app/api/userconfig.api';
 import { ConfigFormModal } from './components/ConfigFormModal';
+import {
+  MODULE_OPTIONS_FOR_FILTER,
+  CONFIG_TYPE_OPTIONS_FOR_FILTER,
+} from './constants';
 import * as S from './UserConfigPage.styles';
 
 const initialPagination = {
   current: 1,
   pageSize: 10,
 };
-
-const MODULE_OPTIONS = [
-  { label: '全部模块', value: '' },
-  { label: '看板模块', value: 'dashboard' },
-  { label: '指数模块', value: 'index' },
-  { label: 'ETF模块', value: 'etf' },
-  { label: '基金模块', value: 'fund' },
-  { label: '股票模块', value: 'stock' },
-  { label: '系统模块', value: 'system' },
-];
-
-const CONFIG_TYPE_OPTIONS = [
-  { label: '全部类型', value: '' },
-  { label: '看板指数概览', value: 'dashboard_index_overview' },
-  { label: '指数日线查询', value: 'index_daily_query' },
-  { label: '指数周线查询', value: 'index_weekly_query' },
-  { label: '大盘指数每日指标查询', value: 'index_dailybasic_query' },
-  { label: '国际指数查询', value: 'index_global_query' },
-  { label: '指数技术因子查询', value: 'index_factor_query' },
-  { label: '申万行业日线查询', value: 'sw_daily_query' },
-  { label: '指数同步设置', value: 'index_sync_settings' },
-];
 
 const UserConfigPage: React.FC = () => {
   const { t } = useTranslation();
@@ -233,7 +215,7 @@ const UserConfigPage: React.FC = () => {
                 style={{ width: 150 }}
                 value={filters.module}
                 onChange={(value) => handleFilterChange('module', value)}
-                options={MODULE_OPTIONS}
+                options={MODULE_OPTIONS_FOR_FILTER}
               />
             </S.FilterItem>
             <S.FilterItem>
@@ -242,7 +224,7 @@ const UserConfigPage: React.FC = () => {
                 style={{ width: 200 }}
                 value={filters.config_type}
                 onChange={(value) => handleFilterChange('config_type', value)}
-                options={CONFIG_TYPE_OPTIONS}
+                options={CONFIG_TYPE_OPTIONS_FOR_FILTER}
               />
             </S.FilterItem>
             <S.FilterItem>

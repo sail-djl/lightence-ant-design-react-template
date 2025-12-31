@@ -5,10 +5,13 @@ import { BaseSelect } from '@app/components/common/selects/BaseSelect/BaseSelect
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { BaseAutoComplete } from '@app/components/common/BaseAutoComplete/BaseAutoComplete';
+import { DayjsDatePicker } from '@app/components/common/pickers/DayjsDatePicker';
+import { Dates } from '@app/constants/Dates';
 import { ColumnsType } from 'antd/es/table';
 import { EtfBasic, getEtfBasicList } from '@app/api/datamarket/etf.api';
 import { useDispatch, useSelector } from 'react-redux';
 import { addEntry } from '@app/store/slices/searchHistorySlice';
+import dayjs from 'dayjs';
 
 const initialPagination = { current: 1, pageSize: 10 };
 
@@ -25,13 +28,32 @@ const exchangeText = (v?: 'SH' | 'SZ') => {
   return '-';
 };
 
+// 日期范围快捷选项
+const getDateRanges = (): Record<string, [dayjs.Dayjs, dayjs.Dayjs]> => {
+  const today = dayjs();
+  return {
+    '最近一周': [dayjs().subtract(7, 'day'), today],
+    '最近一月': [dayjs().subtract(1, 'month'), today],
+    '最近一年': [dayjs().subtract(1, 'year'), today],
+    '最近五年': [dayjs().subtract(5, 'year'), today],
+    '最近十年': [dayjs().subtract(10, 'year'), today],
+  };
+};
+
 const EtfListPage: React.FC = () => {
+  // 设置默认日期范围为最近一年
+  const defaultDateRange = [dayjs().subtract(1, 'year'), dayjs()] as [dayjs.Dayjs, dayjs.Dayjs];
+  const defaultStartDate = Dates.format(defaultDateRange[0], 'YYYY-MM-DD');
+  const defaultEndDate = Dates.format(defaultDateRange[1], 'YYYY-MM-DD');
+
   const initialQuery = {
     keyword: '',
     exchange: undefined as 'SH' | 'SZ' | undefined,
     list_status: 'L' as 'L' | 'D' | 'P' | undefined,
     etf_type: undefined as string | undefined,
     mgr_name: undefined as string | undefined,
+    start_date: defaultStartDate,
+    end_date: defaultEndDate,
   };
 
   const [query, setQuery] = useState(initialQuery);
@@ -61,6 +83,8 @@ const EtfListPage: React.FC = () => {
           list_status: q.list_status,
           etf_type: q.etf_type,
           mgr_name: q.mgr_name,
+          start_date: q.start_date,
+          end_date: q.end_date,
         });
         setRows(res.data);
         setTotal(res.count);
@@ -196,6 +220,24 @@ const EtfListPage: React.FC = () => {
             }
           }}
           style={{ width: 180 }}
+        />
+        <DayjsDatePicker.RangePicker
+          format="YYYY-MM-DD"
+          placeholder={['开始日期', '结束日期']}
+          value={
+            query.start_date && query.end_date
+              ? [dayjs(query.start_date), dayjs(query.end_date)]
+              : null
+          }
+          onChange={(dates) => {
+            setQuery({
+              ...query,
+              start_date: dates?.[0] ? Dates.format(dates[0], 'YYYY-MM-DD') : undefined,
+              end_date: dates?.[1] ? Dates.format(dates[1], 'YYYY-MM-DD') : undefined,
+            });
+          }}
+          ranges={getDateRanges()}
+          style={{ width: 300 }}
         />
         <BaseButton
           onClick={() => {

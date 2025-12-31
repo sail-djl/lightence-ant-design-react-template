@@ -32,6 +32,8 @@ export interface EtfQuery {
   list_status?: 'L' | 'D' | 'P';
   etf_type?: string;
   mgr_name?: string;
+  start_date?: string;
+  end_date?: string;
 }
 
 export const getEtfBasicList = async (params: EtfQuery = {}): Promise<EtfBasicResponse> => {

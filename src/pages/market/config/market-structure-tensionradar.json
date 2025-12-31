@@ -1,0 +1,92 @@
+{
+  "title": "结构张力雷达 (Risk–Volatility Gradient)",
+  "description": "本模块通过核心定价层（300）、次级博弈层（1000）与尾部波动层（2000）的相对表现，判断行情是否具备内部扩散与承接能力，而非判断市场情绪。",
+  "radar": {
+    "indicators": [
+      {
+        "name": "沪深300\n(核心定价层)",
+        "max": 2,
+        "code": "000300.SH",
+        "role": "核心定价层",
+        "displayName": "沪深300"
+      },
+      {
+        "name": "中证1000\n(次级博弈层)",
+        "max": 2,
+        "code": "000852.SH",
+        "role": "次级博弈层",
+        "displayName": "中证1000"
+      },
+      {
+        "name": "中证2000\n(尾部波动层)",
+        "max": 2,
+        "code": "000932.SH",
+        "role": "尾部波动层",
+        "displayName": "中证2000"
+      }
+    ],
+    "style": {
+      "shape": "circle",
+      "splitNumber": 4,
+      "radius": "70%",
+      "axisName": {
+        "color": "#666",
+        "fontSize": 12,
+        "fontWeight": "bold"
+      },
+      "splitArea": {
+        "areaStyle": {
+          "color": ["#fff", "#f7f9fc"]
+        }
+      },
+      "symbolSize": 8,
+      "areaStyleOpacity": 0.3
+    },
+    "tooltip": {
+      "trigger": "item",
+      "formatterTemplate": "{name} ({code})<br/>涨跌幅: {changePercent}%<br/>结构强度: {strength}<br/>角色: {role}"
+    }
+  },
+  "trendChart": {
+    "title": "结构张力历史趋势",
+    "series": [
+      {
+        "name": "沪深300",
+        "color": "#1890ff",
+        "lineStyle": {
+          "width": 2
+        },
+        "smooth": true
+      },
+      {
+        "name": "中证1000",
+        "color": "#52c41a",
+        "lineStyle": {
+          "width": 2
+        },
+        "smooth": true
+      },
+      {
+        "name": "中证2000",
+        "color": "#faad14",
+        "lineStyle": {
+          "width": 2
+        },
+        "smooth": true
+      }
+    ],
+    "yAxis": {
+      "name": "涨跌幅 (%)",
+      "type": "value"
+    },
+    "tooltip": {
+      "trigger": "axis"
+    }
+  },
+  "alert": {
+    "title": "结构张力说明",
+    "description": "本模块通过核心定价层（300）、次级博弈层（1000）与尾部波动层（2000）的相对表现，判断行情是否具备内部扩散与承接能力，而非判断市场情绪。",
+    "type": "info"
+  }
+}
+
