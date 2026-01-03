@@ -1,24 +1,32 @@
 {
-    "index_codes": [
-      "000300.SH",
-      "000852.SH",
-      "399001.SZ"
-    ],
+  "module": "watchlist",
+  "config_type": "base",
+  "config_key": "watchlist-base",
+  "config_value": {
     "etf_codes": [
       "510300.SH",
       "159919.SZ",
       "510500.SH"
     ],
     "sort_order": {
+      "etf": {
+        "159919.SZ": 2,
+        "510300.SH": 1,
+        "510500.SH": 3
+      },
       "index": {
         "000300.SH": 1,
         "000852.SH": 2,
         "399001.SZ": 3
-      },
-      "etf": {
-        "510300.SH": 1,
-        "159919.SZ": 2,
-        "510500.SH": 3
       }
-    }
-  }
+    },
+    "index_codes": [
+      "000300.SH",
+      "000852.SH",
+      "399001.SZ"
+    ]
+  },
+  "is_active": true,
+  "is_default": true,
+  "description": null
+}

@@ -34,6 +34,8 @@ export interface EtfQuery {
   mgr_name?: string;
   start_date?: string;
   end_date?: string;
+  index_codes?: string[]; // 按指数代码数组查询
+  ts_codes?: string[]; // 按 ETF 代码数组查询
 }
 
 export const getEtfBasicList = async (params: EtfQuery = {}): Promise<EtfBasicResponse> => {
