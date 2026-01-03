@@ -163,3 +163,4 @@ const RatesPage: React.FC = () => {
 
 export default RatesPage;
 
+

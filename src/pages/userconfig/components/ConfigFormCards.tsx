@@ -23,13 +23,67 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
   initialValue,
   onConfigValueChange,
 }) => {
+
   const [form] = BaseForm.useForm();
   const [selectedIndexes, setSelectedIndexes] = useState<string[]>([]);
   const [indexOptions, setIndexOptions] = useState<IndexBasic[]>([]);
   const [indexSelectModalVisible, setIndexSelectModalVisible] = useState(false);
   const [indexSearchKeyword, setIndexSearchKeyword] = useState('');
   const [indexOptionsLoading, setIndexOptionsLoading] = useState(false);
-  const [jsonText, setJsonText] = useState<string>('');
+
+  // 定义所有已支持的定制配置类型（必须在所有 early return 之前）
+  const supportedConfigTypes = useMemo(
+    () => [
+      'dashboard_index_overview',
+      'index_daily_query',
+      'index_weekly_query',
+      'index_dailybasic_query',
+      'index_global_query',
+      'index_factor_query',
+      'sw_daily_query',
+      'index_sync_settings',
+    ],
+    []
+  );
+
+  // 使用 useMemo 创建稳定的序列化值，避免对象引用变化导致的重复触发
+  const initialValueStr = useMemo(() => {
+    try {
+      return JSON.stringify(initialValue || {}, null, 2);
+    } catch (error) {
+      return '{}';
+    }
+  }, [initialValue]);
+
+  // 计算初始的 jsonText 值，确保编辑模式下能正确回显
+  const initialJsonText = useMemo(() => {
+    // 如果 configType 存在且不在支持的配置类型列表中，使用序列化后的值
+    if (configType && !supportedConfigTypes.includes(configType)) {
+      return initialValueStr;
+    }
+    return '';
+  }, [configType, initialValueStr, supportedConfigTypes]);
+
+  // 使用函数式初始化，确保编辑模式下能正确回显
+  const [jsonText, setJsonText] = useState<string>(() => initialJsonText);
+
+
+  // 默认 JSON 编辑框：当 configType 不匹配定制配置类型时，初始化 JSON 文本
+  useEffect(() => {
+    // 如果 configType 存在但不匹配任何定制配置类型，则使用默认 JSON 编辑框
+    if (configType && !supportedConfigTypes.includes(configType)) {
+      // 直接使用序列化后的值，避免循环触发
+      setJsonText((prevJsonText) => {
+        if (prevJsonText === initialValueStr) {
+          return prevJsonText;
+        }
+        return initialValueStr;
+      });
+    } else if (configType && supportedConfigTypes.includes(configType)) {
+      // 如果是支持的配置类型，清空 jsonText（因为使用定制表单）
+      setJsonText('');
+    }
+  }, [configType, initialValue, initialValueStr, supportedConfigTypes]);
 
   useEffect(() => {
     if (configType === 'dashboard_index_overview' && initialValue) {
@@ -448,54 +502,11 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
     );
   }
 
-  // 定义所有已支持的定制配置类型
-  const supportedConfigTypes = useMemo(
-    () => [
-      'dashboard_index_overview',
-      'index_daily_query',
-      'index_weekly_query',
-      'index_dailybasic_query',
-      'index_global_query',
-      'index_factor_query',
-      'sw_daily_query',
-      'index_sync_settings',
-    ],
-    []
-  );
-
-  // 使用 useMemo 创建稳定的序列化值，避免对象引用变化导致的重复触发
-  const initialValueStr = useMemo(() => {
-    try {
-      return JSON.stringify(initialValue || {}, null, 2);
-    } catch (error) {
-      return '{}';
-    }
-  }, [initialValue]);
-
-  // 默认 JSON 编辑框：当 configType 不匹配定制配置类型时，初始化 JSON 文本
-  useEffect(() => {
-    // 如果 configType 存在但不匹配任何定制配置类型，则使用默认 JSON 编辑框
-    if (configType && !supportedConfigTypes.includes(configType)) {
-      // 直接使用序列化后的值，避免循环触发
-      setJsonText((prevJsonText) => {
-        if (prevJsonText === initialValueStr) {
-          return prevJsonText;
-        }
-        console.log('[ConfigFormCards] useEffect - 设置 jsonText', {
-          initialValue,
-          initialValueStr,
-          prevJsonText,
-        });
-        return initialValueStr;
-      });
-    }
-  }, [configType, initialValueStr, supportedConfigTypes]);
-
   return (
     <S.FormCard>
       <S.FormCardTitle>配置值（JSON）</S.FormCardTitle>
       <BaseForm form={form} layout="vertical">
-        <BaseForm.Item name="config_value_json" label="">
+        <BaseForm.Item label="">
           <BaseInput.TextArea
             rows={15}
             placeholder='请输入JSON格式的配置值，例如：{"key": "value"} 或 [{"id": "1", "name": "test"}]'
@@ -504,7 +515,6 @@ export const ConfigFormCards: React.FC<ConfigFormCardsProps> = ({
               setJsonText(text);
               try {
                 const value = text ? JSON.parse(text) : {};
-                console.log('[ConfigFormCards] TextArea onChange - 用户输入，解析成功', value);
                 onConfigValueChange(value);
               } catch (error) {
                 // 忽略JSON解析错误，用户可能正在输入
