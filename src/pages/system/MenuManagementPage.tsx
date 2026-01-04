@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
@@ -12,7 +12,7 @@ import { BaseSelect } from '@app/components/common/selects/BaseSelect/BaseSelect
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { notificationController } from '@app/controllers/notificationController';
 import { ColumnsType } from 'antd/es/table';
-import { MenuItem, getAllMenus, createMenu, updateMenu, deleteMenu, getMenuTree } from '@app/api/menu.api';
+import { MenuItem, getAllMenus, createMenu, updateMenu, deleteMenu } from '@app/api/menu.api';
 import { IconPicker } from '@app/components/common/IconPicker/IconPicker';
 import * as S from './MenuManagementPage.styles';
 
@@ -34,7 +34,6 @@ const initialPagination = {
 export const MenuManagementPage: React.FC = () => {
   const { t } = useTranslation();
   const [menus, setMenus] = useState<MenuItem[]>([]);
-  const [menuTree, setMenuTree] = useState<MenuItem[]>([]);
   const [filteredTree, setFilteredTree] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState(initialPagination);
@@ -43,9 +42,8 @@ export const MenuManagementPage: React.FC = () => {
   const [editingMenu, setEditingMenu] = useState<MenuItem | null>(null);
   const [form] = BaseForm.useForm<MenuFormData>();
   const [allMenus, setAllMenus] = useState<MenuItem[]>([]);
-  const [query, setQuery] = useState<{ keyword: string; status: 'all' | 'active' | 'inactive' }>({
+  const [query, setQuery] = useState<{ keyword: string }>({
     keyword: '',
-    status: 'all',
   });
 
   const getErrorMessage = (error: unknown, fallback: string) => {
@@ -57,27 +55,23 @@ export const MenuManagementPage: React.FC = () => {
 
   const applyFilters = useCallback((items: MenuItem[]) => {
     const kw = query.keyword.trim().toLowerCase();
-    let filtered = items;
-    if (kw) {
-      filtered = filtered.filter((i) => {
-        const values = [i.key, i.title, i.url || '', i.icon || ''];
-        return values.some((v) => v?.toLowerCase().includes(kw));
-      });
+    if (!kw) {
+      return items;
     }
-    if (query.status !== 'all') {
-      const active = query.status === 'active';
-      filtered = filtered.filter((i) => i.is_active === active);
-    }
-    return filtered;
+    return items.filter((i) => {
+      const values = [i.key, i.title, i.url || '', i.icon || ''];
+      return values.some((v) => v?.toLowerCase().includes(kw));
+    });
   }, [query]);
 
   const applyTreeFilters = useCallback((items: MenuItem[]): MenuItem[] => {
     const kw = query.keyword.trim().toLowerCase();
+    if (!kw) {
+      return items;
+    }
     const matchNode = (i: MenuItem) => {
       const values = [i.key, i.title, i.url || '', i.icon || ''];
-      const kwMatch = kw ? values.some((v) => v?.toLowerCase().includes(kw)) : true;
-      const statusMatch = query.status === 'all' ? true : i.is_active === (query.status === 'active');
-      return kwMatch && statusMatch;
+      return values.some((v) => v?.toLowerCase().includes(kw));
     };
     const filterRecursive = (nodes: MenuItem[]): MenuItem[] => {
       return nodes
@@ -111,19 +105,68 @@ export const MenuManagementPage: React.FC = () => {
     }
   }, [applyFilters]);
 
-  const fetchMenuTree = useCallback(async () => {
-    try {
-      const tree = await getMenuTree();
-      setMenuTree(tree);
-    } catch (error: unknown) {
-      console.error('获取菜单树失败:', error);
+  // 构建菜单树（从扁平列表构建树形结构）
+  const buildMenuTree = useCallback((items: MenuItem[]): MenuItem[] => {
+    if (!items || items.length === 0) {
+      return [];
     }
+
+    // 创建权限字典
+    const permissionDict = new Map<number, MenuItem>();
+    items.forEach((item) => {
+      permissionDict.set(item.id, { ...item, children: [] });
+    });
+
+    const rootPermissions: MenuItem[] = [];
+
+    // 构建树形结构
+    items.forEach((item) => {
+      const permission = permissionDict.get(item.id)!;
+      if (item.parent_id === null || item.parent_id === undefined) {
+        rootPermissions.push(permission);
+      } else {
+        const parent = permissionDict.get(item.parent_id);
+        if (parent && parent.children) {
+          parent.children.push(permission);
+        }
+      }
+    });
+
+    // 对每个权限的子权限进行排序
+    const sortChildren = (permission: MenuItem) => {
+      if (permission.children && permission.children.length > 0) {
+        permission.children.sort((a, b) => {
+          if (a.sort_order !== b.sort_order) {
+            return a.sort_order - b.sort_order;
+          }
+          return a.id - b.id;
+        });
+        permission.children.forEach((child) => sortChildren(child));
+      } else {
+        // 如果没有子权限，设置为 undefined（而不是空数组）
+        permission.children = undefined;
+      }
+    };
+
+    rootPermissions.forEach((permission) => sortChildren(permission));
+    rootPermissions.sort((a, b) => {
+      if (a.sort_order !== b.sort_order) {
+        return a.sort_order - b.sort_order;
+      }
+      return a.id - b.id;
+    });
+
+    return rootPermissions;
   }, []);
+
+  // 从 allMenus 构建菜单树
+  const menuTree = useMemo(() => {
+    return buildMenuTree(allMenus);
+  }, [allMenus, buildMenuTree]);
 
   useEffect(() => {
     fetchMenus();
-    fetchMenuTree();
-  }, [fetchMenus, fetchMenuTree]);
+  }, [fetchMenus]);
 
   useEffect(() => {
     setFilteredTree(applyTreeFilters(menuTree));
@@ -162,11 +205,12 @@ export const MenuManagementPage: React.FC = () => {
     });
     setIsModalVisible(true);
   };
-
+  
+  // 编辑-打开
   const handleEdit = (menu: MenuItem) => {
     setEditingMenu(menu);
     form.setFieldsValue({
-      key: menu.key,
+      key: menu.key, 
       title: menu.title,
       url: menu.url || '',
       parent_id: menu.parent_id || null,
@@ -182,7 +226,6 @@ export const MenuManagementPage: React.FC = () => {
       await deleteMenu(menu.id);
       notificationController.success({ message: '菜单删除成功' });
       fetchMenus(pagination.current, pagination.pageSize);
-      fetchMenuTree();
     } catch (error: unknown) {
       notificationController.error({
         message: getErrorMessage(error, '删除菜单失败'),
@@ -193,9 +236,25 @@ export const MenuManagementPage: React.FC = () => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
+      
+      // 调试日志：查看表单值
+      console.log('Form values:', values);
+      console.log('is_active value:', values.is_active);
+      console.log('is_active type:', typeof values.is_active);
 
       if (editingMenu) {
-        await updateMenu(editingMenu.id, values);
+        // 显式构建更新对象，确保所有字段正确传递
+        const updateData: Partial<MenuFormData> = {
+          key: values.key,
+          title: values.title,
+          url: values.url,
+          parent_id: values.parent_id,
+          icon: values.icon,
+          sort_order: values.sort_order,
+          is_active: values.is_active, // 直接使用表单值
+        };
+        console.log('Update data:', updateData);
+        await updateMenu(editingMenu.id, updateData);
         notificationController.success({ message: '菜单更新成功' });
       } else {
         await createMenu(values);
@@ -204,7 +263,6 @@ export const MenuManagementPage: React.FC = () => {
 
       setIsModalVisible(false);
       fetchMenus(pagination.current, pagination.pageSize);
-      fetchMenuTree();
     } catch (error: unknown) {
       notificationController.error({ message: getErrorMessage(error, '保存菜单失败') });
     }
@@ -301,18 +359,8 @@ export const MenuManagementPage: React.FC = () => {
             onChange={(e) => setQuery((prev) => ({ ...prev, keyword: e.target.value }))}
             style={{ width: 220 }}
           />
-          <BaseSelect
-            value={query.status}
-            onChange={(val) => setQuery((prev) => ({ ...prev, status: val as 'all' | 'active' | 'inactive' }))}
-            options={[
-              { value: 'all', label: '全部' },
-              { value: 'active', label: '启用' },
-              { value: 'inactive', label: '停用' },
-            ]}
-            style={{ width: 120 }}
-          />
           <BaseButton onClick={() => setFilteredTree(applyTreeFilters(menuTree))}>查询</BaseButton>
-          <BaseButton onClick={fetchMenuTree}>刷新</BaseButton>
+          <BaseButton onClick={() => fetchMenus(pagination.current, pagination.pageSize)}>刷新</BaseButton>
         </BaseSpace>
         <BaseSpace style={{ display: 'flex' }}>
           <BaseButton type="primary" onClick={handleCreate}>
@@ -365,9 +413,13 @@ export const MenuManagementPage: React.FC = () => {
             <InputNumber min={0} placeholder="0" style={{ width: '100%' }} />
           </BaseForm.Item>
 
-          <BaseForm.Item name="is_active" valuePropName="checked">
-            <BaseSwitch checkedChildren="启用" unCheckedChildren="停用" />
-            <S.Label>启用</S.Label>
+          <BaseForm.Item>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <BaseForm.Item name="is_active" valuePropName="checked" noStyle>
+                <BaseSwitch checkedChildren="启用" unCheckedChildren="停用" />
+              </BaseForm.Item>
+              <S.Label>启用</S.Label>
+            </div>
           </BaseForm.Item>
         </BaseForm>
       </BaseModal>
