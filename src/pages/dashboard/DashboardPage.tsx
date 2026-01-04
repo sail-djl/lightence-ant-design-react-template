@@ -83,7 +83,7 @@ const DashboardPage: React.FC = () => {
   };
 
   const handleMarketOverviewClick = () => {
-    navigate('/market/overview');
+    navigate('/macro/overview');
   };
 
   return (

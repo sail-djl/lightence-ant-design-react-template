@@ -23,13 +23,13 @@ const ChartsPage = React.lazy(() => import('@app/pages/ChartsPage'));
 const KlinePage = React.lazy(() => import('@app/pages/trading/KlinePage'));
 const PortfolioPage = React.lazy(() => import('@app/pages/trading/PortfolioPage'));
 const PolarizationModelPage = React.lazy(() => import('@app/pages/model/PolarizationModelPage'));
-const MarketOverviewPage = React.lazy(() => import('@app/pages/market/MarketOverviewPage'));
-const MarketRatesPage = React.lazy(() => import('@app/pages/market/RatesPage'));
-const MarketLiquidityPage = React.lazy(() => import('@app/pages/market/LiquidityPage'));
-const MarketForexPage = React.lazy(() => import('@app/pages/market/ForexPage'));
-const MarketInflationPage = React.lazy(() => import('@app/pages/market/InflationPage'));
-const MarketRiskPage = React.lazy(() => import('@app/pages/market/RiskPage'));
-const MarketStructurePage = React.lazy(() => import('@app/pages/market/StructurePage'));
+const MarketOverviewPage = React.lazy(() => import('@app/pages/macro/MarketOverviewPage'));
+const MarketRatesPage = React.lazy(() => import('@app/pages/macro/RatesPage'));
+const MarketLiquidityPage = React.lazy(() => import('@app/pages/macro/LiquidityPage'));
+const MarketForexPage = React.lazy(() => import('@app/pages/macro/ForexPage'));
+const MarketInflationPage = React.lazy(() => import('@app/pages/macro/InflationPage'));
+const MarketRiskPage = React.lazy(() => import('@app/pages/macro/RiskPage'));
+const MarketStructurePage = React.lazy(() => import('@app/pages/macro/StructurePage'));
 const ServerErrorPage = React.lazy(() => import('@app/pages/ServerErrorPage'));
 const Error404Page = React.lazy(() => import('@app/pages/Error404Page'));
 const AdvancedFormsPage = React.lazy(() => import('@app/pages/AdvancedFormsPage'));
@@ -193,23 +193,23 @@ export const AppRouter: React.FC = () => {
           <Route index element={<Dashboard />} />
           {/* // 医疗主题仪表盘
           <Route path={MEDICAL_DASHBOARD_PATH} element={<MedicalDashboard />} /> */}
-          // 市场部分主路由
-          <Route path="market">
-            {/* 市场总览 */}
+          // 宏观部分主路由
+          <Route path="macro">
+            {/* 宏观总览 */}
             <Route path="overview" element={<MarketOverview />} />
-            {/* 默认跳转到总览（可选，如果不加则/market无页面） */}
+            {/* 默认跳转到总览（可选，如果不加则/macro无页面） */}
             <Route index element={<MarketOverview />} />
             {/* 利率分项 */}
             <Route path="rates" element={<MarketRates />} />
-            {/* 流动性分项  /market/liquidity */}
+            {/* 流动性分项  /macro/liquidity */}
             <Route path="liquidity" element={<MarketLiquidity />} />
-            {/* 外汇分项  /market/forex */}
+            {/* 外汇分项  /macro/forex */}
             <Route path="forex" element={<MarketForex />} />
-            {/* 通胀分项  /market/inflation */}
+            {/* 通胀分项  /macro/inflation */}
             <Route path="inflation" element={<MarketInflation />} />
-            {/* 风险分项  /market/risk */}
+            {/* 风险分项  /macro/risk */}
             <Route path="risk" element={<MarketRisk />} />
-            {/* 市场结构分项  /market/structure */}
+            {/* 宏观结构分项  /macro/structure */}
             <Route path="structure" element={<MarketStructure />} />
           </Route>
           <Route path="trading">

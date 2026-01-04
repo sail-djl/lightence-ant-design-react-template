@@ -386,7 +386,7 @@ export const MenuManagementPage: React.FC = () => {
       >
         <BaseForm form={form} layout="vertical">
           <BaseForm.Item name="key" label="键" rules={[{ required: true, message: '请输入键' }]}>
-            <BaseInput placeholder="menu.key" disabled={!!editingMenu} />
+            <BaseInput placeholder="menu.key" />
           </BaseForm.Item>
 
           <BaseForm.Item name="title" label="标题" rules={[{ required: true, message: '请输入标题' }]}>
