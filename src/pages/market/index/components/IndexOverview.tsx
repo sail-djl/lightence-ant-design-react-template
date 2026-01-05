@@ -246,7 +246,7 @@ export const IndexOverview: React.FC<IndexOverviewProps> = ({ config }) => {
 
   // 处理卡片点击，跳转到详情页
   const handleCardClick = (code: string) => {
-    navigate(`/index/detail/${code}`);
+    navigate(`/market/index/detail/${code}`);
   };
 
   if (loading) {

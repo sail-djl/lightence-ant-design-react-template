@@ -15,7 +15,7 @@ import ProfileLayout from '@app/components/profile/ProfileLayout';
 import RequireAuth from '@app/components/router/RequireAuth';
 import { withLoading } from '@app/hocs/withLoading.hoc';
 import DashboardPage from '@app/pages/dashboard/DashboardPage';
-import IndexDashboardPage from '@app/pages/index/IndexDashboardPage';
+import IndexDashboardPage from '@app/pages/market/index/IndexDashboardPage';
 
 const NewsFeedPage = React.lazy(() => import('@app/pages/NewsFeedPage'));
 const DataTablesPage = React.lazy(() => import('@app/pages/DataTablesPage'));
@@ -84,7 +84,8 @@ const OptionListPage = React.lazy(() => import('@app/pages/datamarket/OptionList
 const BondListPage = React.lazy(() => import('@app/pages/datamarket/BondListPage'));
 const ForexListPage = React.lazy(() => import('@app/pages/datamarket/ForexListPage'));
 const UsStockListPage = React.lazy(() => import('@app/pages/datamarket/UsStockListPage'));
-const IndexDetailPage = React.lazy(() => import('@app/pages/index/IndexDetailPage'));
+const IndexDetailPage = React.lazy(() => import('@app/pages/market/index/IndexDetailPage'));
+const MarketListPage = React.lazy(() => import('@app/pages/market/MarketListPage'));
 const UserConfigPage = React.lazy(() => import('@app/pages/userconfig/UserConfigPage'));
 const MarketConfigPage = React.lazy(() => import('@app/pages/sysconfig/MarketConfigPage'));
 const SystemConfigPage = React.lazy(() => import('@app/pages/sysconfig/SystemConfigPage'));
@@ -151,6 +152,7 @@ const BondList = withLoading(BondListPage);
 const ForexList = withLoading(ForexListPage);
 const UsStockList = withLoading(UsStockListPage);
 const IndexDetail = withLoading(IndexDetailPage);
+const MarketList = withLoading(MarketListPage);
 const UserConfig = withLoading(UserConfigPage);
 const MarketConfig = withLoading(MarketConfigPage);
 const SystemConfig = withLoading(SystemConfigPage);
@@ -219,9 +221,12 @@ export const AppRouter: React.FC = () => {
           <Route path="model">
             <Route path="polarization" element={<PolarizationModel />} />
           </Route>
-          <Route path="index">
-            <Route path="dashboard" element={<IndexDashboardPage />} />
-            <Route path="detail/:code" element={<IndexDetail />} />
+          <Route path="market">
+            <Route path="list" element={<MarketList />} />
+            <Route path="index">
+              <Route path="dashboard" element={<IndexDashboardPage />} />
+              <Route path="detail/:code" element={<IndexDetail />} />
+            </Route>
           </Route>
           <Route path="apps">
             <Route path="feed" element={<NewsFeed />} />

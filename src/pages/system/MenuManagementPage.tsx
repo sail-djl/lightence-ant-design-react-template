@@ -9,6 +9,7 @@ import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { InputNumber } from '@app/components/common/inputs/InputNumber/InputNumber';
 import { BaseSwitch } from '@app/components/common/BaseSwitch/BaseSwitch';
 import { BaseSelect } from '@app/components/common/selects/BaseSelect/BaseSelect';
+import { BaseTreeSelect } from '@app/components/common/selects/BaseTreeSelect/BaseTreeSelect';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { notificationController } from '@app/controllers/notificationController';
 import { ColumnsType } from 'antd/es/table';
@@ -268,20 +269,41 @@ export const MenuManagementPage: React.FC = () => {
     }
   };
 
-  // 构建父菜单选项（扁平化菜单树）
-  const buildParentOptions = (items: MenuItem[], level = 0): Array<{ value: number; label: string }> => {
-    const options: Array<{ value: number; label: string }> = [];
-    items.forEach((item) => {
-      options.push({
-        value: item.id,
-        label: '  '.repeat(level) + t(item.title),
+  // 收集菜单及其所有子菜单的 ID
+  const collectMenuIds = useCallback((menu: MenuItem): number[] => {
+    const ids = [menu.id];
+    if (menu.children && menu.children.length > 0) {
+      menu.children.forEach((child) => {
+        ids.push(...collectMenuIds(child));
       });
-      if (item.children && item.children.length > 0) {
-        options.push(...buildParentOptions(item.children, level + 1));
-      }
-    });
-    return options;
-  };
+    }
+    return ids;
+  }, []);
+
+  // 将菜单树转换为 TreeSelect 需要的格式，编辑时排除当前菜单及其子菜单
+  const buildTreeSelectData = useCallback(
+    (items: MenuItem[], excludeIds: number[] = []): any[] => {
+      return items
+        .filter((item) => !excludeIds.includes(item.id))
+        .map((item) => ({
+          value: item.id,
+          title: t(item.title),
+          children: item.children && item.children.length > 0 
+            ? buildTreeSelectData(item.children, excludeIds) 
+            : undefined,
+        }));
+    },
+    [t],
+  );
+
+  // 获取父菜单树形选择数据（编辑时排除当前菜单及其子菜单）
+  const parentTreeSelectData = useMemo(() => {
+    if (editingMenu) {
+      const excludeIds = collectMenuIds(editingMenu);
+      return buildTreeSelectData(menuTree, excludeIds);
+    }
+    return buildTreeSelectData(menuTree);
+  }, [menuTree, editingMenu, buildTreeSelectData, collectMenuIds]);
 
   const columns: ColumnsType<MenuItem> = [
         {
@@ -402,7 +424,13 @@ export const MenuManagementPage: React.FC = () => {
           </BaseForm.Item>
 
           <BaseForm.Item name="parent_id" label="父菜单">
-            <BaseSelect placeholder="选择父菜单" allowClear options={buildParentOptions(menuTree)} />
+            <BaseTreeSelect
+              placeholder="选择父菜单"
+              allowClear
+              treeData={parentTreeSelectData}
+              treeDefaultExpandAll
+              style={{ width: '100%' }}
+            />
           </BaseForm.Item>
 
           <BaseForm.Item
